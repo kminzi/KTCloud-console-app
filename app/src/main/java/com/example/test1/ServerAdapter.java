@@ -143,11 +143,6 @@ public class ServerAdapter extends RecyclerView.Adapter {
         private ServerData sData;
 
         // API 여부와 관계없이 고정된 뷰들
-        private ImageView background;
-        private TextView state_back;
-        private TextView os_back;
-        private TextView zone_back;
-        private TextView date_back;
         private ConstraintLayout item;
         public Button buttonStop, buttonStart;
 
@@ -241,23 +236,7 @@ public class ServerAdapter extends RecyclerView.Adapter {
 
                     item.getLayoutParams().height = value;
                     item.requestLayout();
-                    /*
-                    created.getLayoutParams().height = value;
-                    zonename.getLayoutParams().height = value;
-                    osname.getLayoutParams().height = value;
-
-
-                    created.requestLayout();
-                    zonename.requestLayout();
-                    osname.requestLayout();
-
-                    created.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-                    zonename.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-                    osname.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-                    state.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-                     */
                     item.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-                    //background.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
                 }
             });
             // Animation start

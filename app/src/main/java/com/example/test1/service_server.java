@@ -1,14 +1,19 @@
 package com.example.test1;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import org.json.simple.parser.ParseException;
 
@@ -19,11 +24,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class service_server extends AppCompatActivity {
+public class service_server extends AppCompatActivity implements View.OnClickListener {
     public static Context mContext;
     Handler handler = new Handler();
     private ServerAdapter svAdpater;
     private List<ServerData> sData;
+    private Button btn_zone;
+    private EditText txt_zone;
 
     APIcall_main API = (APIcall_main) getApplication();
     APIcall_server api_server = new APIcall_server();
@@ -46,6 +53,13 @@ public class service_server extends AppCompatActivity {
         final String[] name = {"테스트 서버 내용 1", "테스트 서버 내용 2", "테스트 서버 내용 3", "시작"};
         final String[] zonename = {"테스트 서버 내용 1", "테스트 서버 내용 2", "테스트 서버 내용 3", "시작"};
         final String[] osname = {"테스트 서버 내용 1", "테스트 서버 내용 2", "테스트 서버 내용 3", "시작"};
+
+        btn_zone = (Button)findViewById(R.id.btn_server_zone_search);
+        btn_zone.setOnClickListener(this);
+        txt_zone = (EditText)findViewById(R.id.txt_server_zone_search);
+        txt_zone.setFocusable(false);
+        txt_zone.setOnClickListener(this);
+
 
         //사용자가 입력한 위치, 상태에 따른 서버 목록 가져오기
         new Thread(new Runnable() {
@@ -92,6 +106,13 @@ public class service_server extends AppCompatActivity {
         svAdpater = new ServerAdapter();
         recyclerView.setAdapter(svAdpater);
     }
+
+//    //액션버튼 메뉴 액션바에 집어 넣기
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//        return true;
+//    }
 
     private void getData_service_s(String[] state, String[] created, String[] name, String[] zonename, String[] osname) {
         // 임의의 데이터입니다.
@@ -163,4 +184,24 @@ public class service_server extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    @Override
+    public void onClick(View v) {
+        if (v == btn_zone || v == txt_zone) {
+            final CharSequence[] zoneItem = {"전체","KOR-Central A", "KOR-Central B", "KOR-Seoul M", "KOR-Seoul M2", "KOR-HA", "US-West"};
+
+            AlertDialog.Builder oDialog = new AlertDialog.Builder(this);
+
+            oDialog.setTitle("존(Zone) 위치 선택")
+                    .setItems(zoneItem, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            EditText tmp = (EditText)findViewById(R.id.txt_server_zone_search);
+                            tmp.setText(zoneItem[which]);
+                        }
+                    })
+                    .setCancelable(true)
+                    .show();
+        }
+    }
 }
