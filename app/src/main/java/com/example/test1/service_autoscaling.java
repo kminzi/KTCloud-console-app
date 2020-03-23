@@ -27,10 +27,9 @@ public class service_autoscaling extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.service_autoscaling);
 
-//            //액션바 타이틀 변경하기
-//            getSupportActionBar().setTitle("KT Cloud");
-//            //액션바 배경색 변경
-//            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+
+            //액션바 배경색 변경
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
             init();
 

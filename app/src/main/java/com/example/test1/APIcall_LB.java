@@ -76,6 +76,7 @@ public class APIcall_LB extends APIcall_main{
      * @throws IOException
      * @throws ParseException
      * @brief Networking 기능에 해당하는, LB 리스트 출력을 위한 함수
+     * @return 각 LoadBalancer의 LB이름, 옵션, 타입, 위치, IP, Port를 가진 리스트
      **/
     public static ArrayList<String[]> listLB() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 16;

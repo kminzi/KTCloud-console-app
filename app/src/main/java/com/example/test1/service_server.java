@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.simple.parser.ParseException;
 
@@ -42,10 +44,8 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.service_server);
 
-//        //액션바 타이틀 변경하기
-//        getSupportActionBar().setTitle("KT Cloud");
-//        //액션바 배경색 변경
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        //액션바 배경색 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
         init();
         list_size=0;
@@ -85,6 +85,14 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
                     e.printStackTrace();
                 } catch (ParseException e) {
                     e.printStackTrace();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "해당 존에 서버가 없습니다", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
                 handler.post(new Runnable() {
                     @Override

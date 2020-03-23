@@ -26,7 +26,13 @@ import javax.crypto.spec.SecretKeySpec;
 public class APIcall_main extends Application {
 
     private static String baseurl, apikey, secretKey, zone = "", state = "all";
-    private static final String TAG = "";
+    private static final String TAG = "";//테스트를 위한 변수
+    static final String Seoul_M_zoneid = "95e2f517-d64a-4866-8585-5177c256f7c7";
+    static final String Seoul_M2_zoneid = "d7d0177e-6cda-404a-a46f-a5b356d2874e";
+    static final String CentralB_zoneid = "9845bd17-d438-4bde-816d-1b12f37d5080";
+    static final String CentralA_zoneid = "eceb5d65-6571-4696-875f-5a17949f3317";
+    static final String HA_zoneid = "dfd6f03d-dae5-458e-a2ea-cb6a55d0d994";
+    static final String West_zoneid = "b7eb18c8-876d-4dc6-9215-3bd455bb05be";
 
     @Override
     public void onCreate() {
@@ -289,6 +295,24 @@ public class APIcall_main extends Application {
                 }
                 else if (zone.equals("HA"))  request.put("zoneid", "dfd6f03d-dae5-458e-a2ea-cb6a55d0d994");
                 else if (zone.equals("US-West"))  request.put("zoneid", "b7eb18c8-876d-4dc6-9215-3bd455bb05be");
+                break;
+
+            case 18: // DB 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/db/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
+                request.put("command", "listInstances" );
+                break;
+
+            case 19: // Autoscaling 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v1/client/api?";
+                request.put("command", "listAutoScalingGroups" );
+                break;
+
+            case 21: // NAS 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/nas/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/nas/v1/client/api?";
+                request.put("command", "listVolumes" );
                 break;
 
             default:

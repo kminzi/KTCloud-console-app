@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.simple.parser.ParseException;
 
@@ -40,10 +41,8 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.service_lb);
         final Handler handler = new Handler();
 
-//        //액션바 타이틀 변경하기
-//        getSupportActionBar().setTitle("KT Cloud");
-//        //액션바 배경색 변경
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        //액션바 배경색 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
         init();
 
@@ -81,6 +80,14 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
                     e.printStackTrace();
                 } catch (ParseException e) {
                     e.printStackTrace();
+                } catch (Exception e){
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "해당 존에 LB가 없습니다", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
                 handler.post(new Runnable() {
                     @Override
@@ -105,7 +112,7 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         if (v == btn_zone || v == txt_zone) {
-            final CharSequence[] zoneItem = {"전체", "Central-A", "Central-B", "Seoul-M", "Seoul-M2", "HA", "US-West"};
+            final CharSequence[] zoneItem = {"전체","Central-A", "Central-B", "Seoul-M", "Seoul-M2", "HA", "US-West"};
 
             AlertDialog.Builder oDialog = new AlertDialog.Builder(this);
 
@@ -113,7 +120,7 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
                     .setItems(zoneItem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            EditText tmp = (EditText) findViewById(R.id.txt_disk_zone_search);
+                            EditText tmp = (EditText)findViewById(R.id.txt_lb_zone_search);
                             tmp.setText(zoneItem[which]);
                             API.setZone((String) zoneItem[which]);
                             Intent intent = getIntent();
@@ -124,7 +131,6 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
                     .setCancelable(true)
                     .show();
         }
-
     }
 
     private void init() {

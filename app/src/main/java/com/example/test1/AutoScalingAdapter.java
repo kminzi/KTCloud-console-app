@@ -72,7 +72,6 @@ public class AutoScalingAdapter extends RecyclerView.Adapter {
         // 포지션
         private int position;
 
-
         public MessageViewHolder(View view) {
             super(view);
             imageView = view.findViewById(R.id.img_service_auto);

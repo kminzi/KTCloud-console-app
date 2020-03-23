@@ -6,12 +6,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,24 +31,27 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
     private Button btn_zone;
     private EditText txt_zone;
 
+    APIcall_main API = (APIcall_main) getApplication();
+    APIcall_NAS api_nas = new APIcall_NAS();
+
+    final int[] list_size = new int[1];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.service_nas);
 
-//        //액션바 타이틀 변경하기
-//        getSupportActionBar().setTitle("KT Cloud");
-//        //액션바 배경색 변경
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        final Handler handler = new Handler();
+        //액션바 배경색 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
         init();
 
-        String []name = {"NAS1", "NAS2","NAS3"};
-        String []zonename = {"목동1센터", "목동1센터","목동1센터"};
-        String []curSize = {"20GB", "20GB","20GB"};
-        String []tarSize = {"20GB", "20GB","20GB"};
-        String []protocol = {"HTTP", "HTTP","HTTP"};
-        getData_service_nas(name,zonename,curSize,tarSize,protocol);
+        final String []name = new String[100];
+        final String []zonename = new String[100];
+        final String []curSize = new String[100];
+        final String []tarSize = new String[100];
+        final String []protocol = new String[100];
 
         btn_zone = (Button)findViewById(R.id.btn_nas_zone_search);
         btn_zone.setOnClickListener(this);
@@ -47,12 +59,57 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
 
+        txt_zone.setText(API.getZone());
+
+        new Thread(new Runnable() {
+            ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+
+            @Override
+            public void run() {
+                try {
+//                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
+                    API.setState("all");//default 값 설정 - 추후 UI변경 시 수정
+                    list = api_nas.listNas();//이름, 위치, 신청용량, 현재 사용량, 프로토콜
+                    list_size[0] = list.size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "해당 존에 NAS가 없습니다", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {//UI접근
+                        for (int i = 0; i < list.size(); i++) {
+                            curSize[i] = list.get(i)[2];
+                            tarSize[i] = list.get(i)[3];
+                            name[i] = list.get(i)[0];
+                            zonename[i] = list.get(i)[1];
+                            protocol[i] = list.get(i)[4];
+                        }
+                        getData_service_nas(name,zonename,curSize,tarSize,protocol);
+                    }
+                });
+            }
+        }).start();
+
     }
 
     @Override
     public void onClick(View v) {
         if (v == btn_zone || v == txt_zone) {
-            final CharSequence[] zoneItem = {"전체","KOR-Central A", "KOR-Central B", "KOR-Seoul M", "KOR-Seoul M2", "KOR-HA", "US-West"};
+            final CharSequence[] zoneItem = {"전체", "Central-A", "Central-B", "Seoul-M", "Seoul-M2", "HA", "US-West"};
 
             AlertDialog.Builder oDialog = new AlertDialog.Builder(this);
 
@@ -62,6 +119,10 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
                         public void onClick(DialogInterface dialog, int which) {
                             EditText tmp = (EditText)findViewById(R.id.txt_nas_zone_search);
                             tmp.setText(zoneItem[which]);
+                            API.setZone((String) zoneItem[which]);
+                            Intent intent = getIntent();
+                            finish();
+                            startActivity(intent);
                         }
                     })
                     .setCancelable(true)
@@ -87,7 +148,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
         List<String> listTarSize = Arrays.asList(tarSize);
         List<String> listProtocol = Arrays.asList(protocol);
 
-        Integer [] tmp = new Integer[name.length];
+        Integer [] tmp = new Integer[list_size[0]];
 
         for(int i = 0; i < tmp.length; i++) {
             tmp[i] = R.drawable.nas;
@@ -95,7 +156,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
 
         List<Integer> listResId = Arrays.asList(tmp);
 
-        for (int i = 0; i < listName.size(); i++) {
+        for (int i = 0; i < list_size[0]; i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             NASData nData = new NASData();
             nData.setName(listName.get(i));

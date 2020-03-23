@@ -18,6 +18,7 @@ public class APIcall_server extends APIcall_main {
      * @return
      * @throws ParseException
      * @brief Server 기능에 해당하는, 생성된 VM 정보 출력을 위한 함수
+     * @return 각 서버의 서버명, 스펙, 상태, 생성일시, 운영체제를 가지고 있는 list
      */
     public static ArrayList<String[]> listServers() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
@@ -58,6 +59,8 @@ public class APIcall_server extends APIcall_main {
     /**
      * @throws ParseException
      * @brief Server 기능에 해당하는, 사용중인 VM을 정지시키기 위한 함수
+     * @return 현재 정지시킨 서버의 상태
+     * @param num 정지시키고자 하는 서버의 view내 상대적 위치
      **/
     public static String stopServer(int num) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
@@ -122,6 +125,7 @@ public class APIcall_server extends APIcall_main {
     /**
      * @throws ParseException
      * @brief Server 기능에 해당하는, 정지 상태인 VM을 시작하기 위한 함수
+     * @param num 정지시키고자 하는 서버의 view내 상대적 위치
      **/
     public static void startServer(int num) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
@@ -183,6 +187,7 @@ public class APIcall_server extends APIcall_main {
     /**
      * @throws ParseException
      * @brief Server 기능에 해당하는, VM을 재시작하기 위한 함수
+     * @param num 정지시키고자 하는 서버의 view내 상대적 위치
      **/
     public static void rebootServer(int num) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 

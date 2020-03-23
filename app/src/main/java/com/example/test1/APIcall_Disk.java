@@ -43,17 +43,18 @@ public class APIcall_Disk extends APIcall_main {
         for (int i = 0; i < parse_volume.size(); i++) {
             volume = (JSONObject) parse_volume.get(i);
 
-            String s = String.valueOf(volume.get("size")).substring(0,  String.valueOf(volume.get("size")).length()-10) + "0.00 GB";
+            String s = String.valueOf((int)((long) volume.get("size") / Math.pow(10,10)) * 10);
 
             String diskofferingname = String.valueOf(volume.get("diskofferingname"));
+
             if(diskofferingname.equals("SSD_C_100G")) diskofferingname = "SSD-Provisioned";
             else  diskofferingname = "일반";
 
             //disk명, 용량, 구분, 위치, 상태, 적용 서버, 타입, 생성일자
             list.add(new String[]{(String) volume.get("name"),
-                    s, diskofferingname, (String) volume.get("zonename"),
+                    s+ ".00 GB", diskofferingname, (String) volume.get("zonename"),
                     (String) volume.get("state"), (String)volume.get("vmname"), (String)volume.get("type"), (String)volume.get("created")});
-            //System.out.println(list.get(0)[0] + "   " + list.get(0)[1]+ "   " +list.get(0)[2]+ "   " +list.get(0)[3]);
+
         }
         return list;
     }

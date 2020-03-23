@@ -1,5 +1,6 @@
 package com.example.test1;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
@@ -9,10 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.ContextThemeWrapper;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,6 +46,14 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
+
+        View buttonlayout = getLayoutInflater().inflate(R.layout.techcenter, null);
+        ActionBar ab = getSupportActionBar();
+        ab.setCustomView(buttonlayout);
+        //ab.setDisplayOptions(ActionBar.Dis);
+
+        //액션바 배경색 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
         init();
 
@@ -96,6 +107,7 @@ public class Dashboard extends AppCompatActivity {
         }).start();
 
     }
+
 
     /**
      * 상단바 techcenter아이콘 클릭 처리 함수

@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.simple.parser.ParseException;
 
@@ -43,10 +44,9 @@ public class service_disk extends AppCompatActivity implements View.OnClickListe
 
         final Handler handler = new Handler();
 
-//        //액션바 타이틀 변경하기
-//        getSupportActionBar().setTitle("KT Cloud");
-//        //액션바 배경색 변경
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+
+        //액션바 배경색 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
         init();
 
@@ -67,7 +67,7 @@ public class service_disk extends AppCompatActivity implements View.OnClickListe
         txt_zone.setText(API.getZone());
 
 
-        //사용자가 입력한 위치, 상태에 따른 서버 목록 가져오기
+        //사용자가 입력한 위치, 상태에 따른 디스크 목록 가져오기
         new Thread(new Runnable() {
             ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
 
@@ -86,6 +86,14 @@ public class service_disk extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 } catch (ParseException e) {
                     e.printStackTrace();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "해당 존에 Disk가 없습니다", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
                 handler.post(new Runnable() {
                     @Override

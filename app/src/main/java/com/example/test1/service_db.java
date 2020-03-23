@@ -6,13 +6,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,27 +32,30 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
     private Button btn_zone;
     private EditText txt_zone;
 
+    APIcall_main API = (APIcall_main) getApplication();
+    APIcall_DB api_db = new APIcall_DB();
+
+    final int[] list_size = new int[1];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.service_db);
 
-//        //액션바 타이틀 변경하기
-//        getSupportActionBar().setTitle("KT Cloud");
-//        //액션바 배경색 변경
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        final Handler handler = new Handler();
+
+        //액션바 배경색 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
         init();
 
-        // (String[] state, String[] created, String[] name, String[] zoneName, String[] osname)
-
-        String []state = {"사용중", "사용중","사용중"};
-        String []created = {"1990-01-01","1990-01-01","1990-01-01"};
-        String []name = {"DB1", "DB2","DB3"};
-        String []zoneName = {"목동", "목동","목동"};
-        String []dev = {"HA", "HA", "HA"};
-        String []size = {"20GB", "25GB", "40GB"};
-        String []DBstate = {"정상", "정상", "정상"};
+        final String []state = new String[100];
+        final String []created = new String[100];
+        final String []name = new String[100];
+        final String []zoneName = new String[100];
+        final String []dev = new String[100];
+        final String []size = new String[100];
+        final String []DBstate = new String[100];
         getData_service_db(state, created, name, zoneName, dev, size, DBstate);
 
         btn_zone = (Button)findViewById(R.id.btn_db_zone_search);
@@ -52,13 +64,59 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
         txt_zone = (EditText)findViewById(R.id.txt_db_zone_search);
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
+        txt_zone.setText(API.getZone());
+
+        new Thread(new Runnable() {
+            ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+
+            @Override
+            public void run() {
+                try {
+//                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
+                    API.setState("all");//default 값 설정 - 추후 UI변경 시 수정
+                    list = api_db.listMysqlDB();//이름, 상태, DB상태(보류), 용량, 생성일, 종속장치, 위치
+                    list_size[0] = list.size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "해당 존에 DB가 없습니다", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {//UI접근
+                        for (int i = 0; i < list.size(); i++) {
+                            state[i] = list.get(i)[1];
+                            DBstate[i] = list.get(i)[2];
+                            created[i] = list.get(i)[4];
+                            name[i] = list.get(i)[0];
+                            zoneName[i] = list.get(i)[6];
+                            dev[i] = list.get(i)[5];
+                            size[i] = list.get(i)[3];
+                        }
+
+                        getData_service_db(state, created, name, zoneName, dev, size, DBstate);
+                    }
+                });
+            }
+        }).start();
 
     }
     @Override
     public void onClick(View v) {
         if (v == btn_zone || v == txt_zone) {
-            final CharSequence[] zoneItem = {"전체","KOR-Central A", "KOR-Central B", "KOR-Seoul M", "KOR-Seoul M2", "KOR-HA", "US-West"};
-
+            final CharSequence[] zoneItem = {"전체", "Central-A", "Central-B", "Seoul-M", "Seoul-M2", "HA", "US-West"};
             AlertDialog.Builder oDialog = new AlertDialog.Builder(this);
 
             oDialog.setTitle("존(Zone) 위치 선택")
@@ -67,6 +125,10 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
                         public void onClick(DialogInterface dialog, int which) {
                             EditText tmp = (EditText)findViewById(R.id.txt_db_zone_search);
                             tmp.setText(zoneItem[which]);
+                            API.setZone((String) zoneItem[which]);
+                            Intent intent = getIntent();
+                            finish();
+                            startActivity(intent);
                         }
                     })
                     .setCancelable(true)
@@ -98,14 +160,14 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
         List<String> listSize = Arrays.asList(size);
         List<String> listDBstate = Arrays.asList(DBstate);
 
-        Integer [] tmp = new Integer[state.length];
+        Integer [] tmp = new Integer[list_size[0]];
         for(int i = 0; i < tmp.length; i++) {
             tmp[i] = R.drawable.db;
         }
 
         List<Integer> listResId = Arrays.asList(tmp);
 
-        for (int i = 0; i < listState.size(); i++) {
+        for (int i = 0; i < list_size[0]; i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             DBData dbData = new DBData();
             dbData.setName(listName.get(i));
