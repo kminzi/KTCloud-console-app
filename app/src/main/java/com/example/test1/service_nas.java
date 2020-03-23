@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class service_nas extends AppCompatActivity implements View.OnClickListener{
+public class service_nas extends AppCompatActivity implements View.OnClickListener {
 
     private NASAdapter nsAdapter;
     private List<NASData> nData;
@@ -47,15 +47,15 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
 
         init();
 
-        final String []name = new String[100];
-        final String []zonename = new String[100];
-        final String []curSize = new String[100];
-        final String []tarSize = new String[100];
-        final String []protocol = new String[100];
+        final String[] name = new String[100];
+        final String[] zonename = new String[100];
+        final String[] curSize = new String[100];
+        final String[] tarSize = new String[100];
+        final String[] protocol = new String[100];
 
-        btn_zone = (Button)findViewById(R.id.btn_nas_zone_search);
+        btn_zone = (Button) findViewById(R.id.btn_nas_zone_search);
         btn_zone.setOnClickListener(this);
-        txt_zone = (EditText)findViewById(R.id.txt_nas_zone_search);
+        txt_zone = (EditText) findViewById(R.id.txt_nas_zone_search);
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
 
@@ -79,7 +79,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
                     e.printStackTrace();
                 } catch (ParseException e) {
                     e.printStackTrace();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     handler.post(new Runnable() {
                         @Override
@@ -98,7 +98,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
                             zonename[i] = list.get(i)[1];
                             protocol[i] = list.get(i)[4];
                         }
-                        getData_service_nas(name,zonename,curSize,tarSize,protocol);
+                        getData_service_nas(name, zonename, curSize, tarSize, protocol);
                     }
                 });
             }
@@ -117,7 +117,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
                     .setItems(zoneItem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            EditText tmp = (EditText)findViewById(R.id.txt_nas_zone_search);
+                            EditText tmp = (EditText) findViewById(R.id.txt_nas_zone_search);
                             tmp.setText(zoneItem[which]);
                             API.setZone((String) zoneItem[which]);
                             Intent intent = getIntent();
@@ -129,6 +129,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
                     .show();
         }
     }
+
     private void init() {
         // recyclerView = server list
         RecyclerView recyclerView = findViewById(R.id.recyclerView_service_nas);
@@ -140,7 +141,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
         recyclerView.setAdapter(nsAdapter);
     }
 
-    private void getData_service_nas(String[] name, String[] zonename, String[] curSize, String[] tarSize, String[] protocol){
+    private void getData_service_nas(String[] name, String[] zonename, String[] curSize, String[] tarSize, String[] protocol) {
         // 임의의 데이터입니다.
         List<String> listName = Arrays.asList(name);
         List<String> listZone = Arrays.asList(zonename);
@@ -148,9 +149,9 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
         List<String> listTarSize = Arrays.asList(tarSize);
         List<String> listProtocol = Arrays.asList(protocol);
 
-        Integer [] tmp = new Integer[list_size[0]];
+        Integer[] tmp = new Integer[list_size[0]];
 
-        for(int i = 0; i < tmp.length; i++) {
+        for (int i = 0; i < tmp.length; i++) {
             tmp[i] = R.drawable.nas;
         }
 
@@ -173,6 +174,37 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
         nsAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * 하단바의 Dashboard 버튼 클릭 처리 함수
+     */
+    public void DashboardClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 하단바의 service 버튼 클릭 처리 함수
+     */
+    public void ServiceClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), service_main.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 하단바의 Monitoring 버튼 클릭 처리 함수
+     */
+    public void MonitoringClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), Monitoring.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 하단바의 Payment 버튼 클릭 처리 함수
+     */
+    public void PaymentClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), Payment.class);
+        startActivity(intent);
+    }
 
 
 }
