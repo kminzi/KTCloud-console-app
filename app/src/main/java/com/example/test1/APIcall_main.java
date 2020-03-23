@@ -25,7 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class APIcall_main extends Application {
 
-    private static String baseurl, apikey, secretKey, zone = "Seoul-M", state = "all";
+    private static String baseurl, apikey, secretKey, zone = "", state = "all";
     private static final String TAG = "";
 
     @Override
@@ -208,6 +208,87 @@ public class APIcall_main extends Application {
                 if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/watch/v2/client/api?";
                 else baseurl = "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
                 request.put("command", "getMetricStatistics" );
+                break;
+            case 7: // Metric에 대한 알람리스트 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/watch/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
+                request.put("command", "listAlarms" );
+                break;
+
+            case 8: // Metric에 대한 알람이력 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/watch/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
+                request.put("command", "listAlarmHistory" );
+                request.put("historyitemtype", "StateUpdate" );
+                break;
+
+            case 9: // 특정 Metric에 대한 알람리스트 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/watch/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
+                request.put("command", "listAlarmsForMetric" );
+                break;
+
+            case 10: // 토픽 리스트 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/messaging/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/messaging/v1/client/api?";
+                request.put("command", "listTopics" );
+                break;
+
+            case 11: // 구독 리스트 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/messaging/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/messaging/v1/client/api?";
+                request.put("command", "listSubscriptions" );
+                break;
+
+            case 12: // 선택한 토픽의 모든 구독자들에게 메시지 발송
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/messaging/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/messaging/v1/client/api?";
+                request.put("command", "publish" );
+                break;
+
+            case 15: // Disk 조회
+                baseurl = "https://api.ucloudbiz.olleh.com/server/v1/client/api?";
+                request.put("command", "listVolumes" );
+
+                if(zone.equals("Central-A")) request.put("zoneid", "eceb5d65-6571-4696-875f-5a17949f3317");
+                else if (zone.equals("Central-B")) request.put("zoneid", "9845bd17-d438-4bde-816d-1b12f37d5080");
+                else if (zone.equals("Seoul-M"))  request.put("zoneid", "95e2f517-d64a-4866-8585-5177c256f7c7");
+                else if (zone.equals("Seoul-M2")) {
+                    request.put("zoneid", "d7d0177e-6cda-404a-a46f-a5b356d2874e");
+                    baseurl = "https://api.ucloudbiz.olleh.com/server/v2/client/api?";
+                }
+                else if (zone.equals("HA"))  request.put("zoneid", "dfd6f03d-dae5-458e-a2ea-cb6a55d0d994");
+                else if (zone.equals("US-West"))  request.put("zoneid", "b7eb18c8-876d-4dc6-9215-3bd455bb05be");
+                break;
+
+            case 16: // LB 조회
+                baseurl = "https://api.ucloudbiz.olleh.com/loadbalancer/v1/client/api?";
+                request.put("command", "listLoadBalancers" );
+
+                if(zone.equals("Central-A")) request.put("zoneid", "eceb5d65-6571-4696-875f-5a17949f3317");
+                else if (zone.equals("Central-B")) request.put("zoneid", "9845bd17-d438-4bde-816d-1b12f37d5080");
+                else if (zone.equals("Seoul-M"))  request.put("zoneid", "95e2f517-d64a-4866-8585-5177c256f7c7");
+                else if (zone.equals("Seoul-M2")) {
+                    request.put("zoneid", "d7d0177e-6cda-404a-a46f-a5b356d2874e");
+                    baseurl = "https://api.ucloudbiz.olleh.com/loadbalancer/v2/client/api?";
+                }
+                else if (zone.equals("HA"))  request.put("zoneid", "dfd6f03d-dae5-458e-a2ea-cb6a55d0d994");
+                else if (zone.equals("US-West"))  request.put("zoneid", "b7eb18c8-876d-4dc6-9215-3bd455bb05be");
+                break;
+
+            case 17: // LB에 등록된 웹서버 조회
+                baseurl = "https://api.ucloudbiz.olleh.com/loadbalancer/v1/client/api?";
+                request.put("command", "listLoadBalancerWebServers" );
+
+                if(zone.equals("Central-A")) request.put("zoneid", "eceb5d65-6571-4696-875f-5a17949f3317");
+                else if (zone.equals("Central-B")) request.put("zoneid", "9845bd17-d438-4bde-816d-1b12f37d5080");
+                else if (zone.equals("Seoul-M"))  request.put("zoneid", "95e2f517-d64a-4866-8585-5177c256f7c7");
+                else if (zone.equals("Seoul-M2")) {
+                    request.put("zoneid", "d7d0177e-6cda-404a-a46f-a5b356d2874e");
+                    baseurl = "https://api.ucloudbiz.olleh.com/loadbalancer/v2/client/api?";
+                }
+                else if (zone.equals("HA"))  request.put("zoneid", "dfd6f03d-dae5-458e-a2ea-cb6a55d0d994");
+                else if (zone.equals("US-West"))  request.put("zoneid", "b7eb18c8-876d-4dc6-9215-3bd455bb05be");
                 break;
 
             default:

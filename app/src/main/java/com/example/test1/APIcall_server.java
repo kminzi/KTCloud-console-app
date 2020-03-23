@@ -63,8 +63,6 @@ public class APIcall_server extends APIcall_main {
 
         int button = 3;
 
-        Scanner sc = new Scanner(System.in);
-
         List<Integer> vm = new ArrayList<Integer>();
         vm.add(num);
 
@@ -118,7 +116,7 @@ public class APIcall_server extends APIcall_main {
             request.remove("id");
         }
 
-        return (String)virtualmachine.get("state");
+        return (String) virtualmachine.get("state");
     }
 
     /**
@@ -186,22 +184,12 @@ public class APIcall_server extends APIcall_main {
      * @throws ParseException
      * @brief Server 기능에 해당하는, VM을 재시작하기 위한 함수
      **/
-    public static void rebootServer() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public static void rebootServer(int num) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 5;
 
-        Scanner sc = new Scanner(System.in);
-
         List<Integer> vm = new ArrayList<Integer>();
-        System.out.print("재시작할 vm 순서 전부 입력: ");
-
-        int num = sc.nextInt();
-
-        while (num != 9999) { // 9999 입력 시 종료
-            vm.add(num);
-            num = sc.nextInt();
-        }
-
+        vm.add(num);
 
         TreeMap<String, String> request = new TreeMap<String, String>();
 
@@ -232,15 +220,15 @@ public class APIcall_server extends APIcall_main {
 
             request.put("id", (String) virtualmachine.get("id"));
 
-            System.out.println("###########################");
-            System.out.println("재시작할 vm의 id: " + virtualmachine.get("id"));
-            System.out.println();
+//            System.out.println("###########################");
+//            System.out.println("재시작할 vm의 id: " + virtualmachine.get("id"));
+//            System.out.println();
 
             req_message = generateReq(request);
-
-            System.out.println("Request Message is...");
-            System.out.println(req_message);
-            System.out.println();
+//
+//            System.out.println("Request Message is...");
+//            System.out.println(req_message);
+//            System.out.println();
 
 
             readJsonFromUrl(req_message);

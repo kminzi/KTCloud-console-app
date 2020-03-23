@@ -58,6 +58,8 @@ public class ServerAdapter extends RecyclerView.Adapter {
         final String state = txt.getText().toString();
         Button bs = ((MessageViewHolder) holder).buttonStop;
         Button bst = ((MessageViewHolder) holder).buttonStart;
+        Button brs = ((MessageViewHolder) holder).buttonRestart;
+
         bs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -119,6 +121,27 @@ public class ServerAdapter extends RecyclerView.Adapter {
                 }).start();
             };
         });
+        brs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            api_server.rebootServer(position);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (InvalidKeyException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            };
+        });
     }
 
     @Override
@@ -144,7 +167,7 @@ public class ServerAdapter extends RecyclerView.Adapter {
 
         // API 여부와 관계없이 고정된 뷰들
         private ConstraintLayout item;
-        public Button buttonStop, buttonStart;
+        public Button buttonStop, buttonStart, buttonRestart;
 
         // 포지션
         private int position;
@@ -159,12 +182,11 @@ public class ServerAdapter extends RecyclerView.Adapter {
             zonename = view.findViewById(R.id.txt_service_server_zone);
             osname = view.findViewById(R.id.txt_service_server_os);
             item = view.findViewById(R.id.lay_service_server_item);
+
+
             buttonStop = view.findViewById(R.id.btn_service_server_stop_txt);
             buttonStart = view.findViewById(R.id.btn_service_server_start_txt);
-
-            //background = view.findViewById(R.id.img_service_server_item_back);
-            //listitem = view.findViewById(R.id.lay_service_server);
-
+            buttonRestart = view.findViewById(R.id.btn_service_server_reStart_txt);
         }
 
         void onBind(ServerData data, int position) {

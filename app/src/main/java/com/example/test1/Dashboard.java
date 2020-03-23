@@ -32,6 +32,7 @@ public class Dashboard extends AppCompatActivity {
     Handler handler = new Handler();
     APIcall_main API = (APIcall_main) getApplication();
     APIcall_server api_server = new APIcall_server();
+    int list_size;
 
     TextView server_num;
     private RecyclerAdapter adapter_s; // 서버용 어답터
@@ -45,12 +46,12 @@ public class Dashboard extends AppCompatActivity {
 
         init();
 
-        final String[] title_s = {"테스트 서버 이름 1", "테스트 서버 이름 2", "테스트 서버 이름 3", "테스트 서버 이름 3"};
-        final String[] content_s = {"테스트 서버 내용 1", "테스트 서버 내용 2", "테스트 서버 내용 3", "테스트 서버 이름 3"};
-        final String[] os_s = {"테스트 서버 내용 1", "테스트 서버 내용 2", "테스트 서버 내용 3", "테스트 서버 이름 3"};
+        final String[] title_s = new String[100];
+        final String[] content_s = new String[100];
+        final String[] os_s = new String[100];
 
-        String[] title_m = {"테스트 모니터링 상황 1", "테스트 모니터링 상황 2", "테스트 모니터링 상황 3"};
-        String[] content_m = {"테스트 모니터링 내용 1", "테스트 모니터링 내용 2", "테스트 모니터링 내용 3"};
+        String[] title_m = new String[100];
+        String[] content_m = new String[100];
 
         String[] title_a = {"[서버]", "[디스크]", "[디스크]"};
         String[] content_a = {"테스트 알람 내용 1", "테스트 알람 내용 2", "테스트 알람 내용 3"};
@@ -69,6 +70,7 @@ public class Dashboard extends AppCompatActivity {
                     API.setZone("Seoul-M");//default 값 설정
                     API.setState("all");
                     list = api_server.listServers();
+                    list_size = list.size();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InvalidKeyException e) {
@@ -82,7 +84,7 @@ public class Dashboard extends AppCompatActivity {
                     @Override
                     public void run() {//UI접근
                         server_num.setText(list.size() + "개 사용 중");
-                        for (int i = 0; i < 4; i++) {
+                        for (int i = 0; i < list.size(); i++) {
                             title_s[i] = list.get(i)[0];
                             content_s[i] = "스펙 : " + list.get(i)[1] + " 상태 : " + list.get(i)[2];
                             os_s[i] = list.get(i)[4];
@@ -205,7 +207,7 @@ public class Dashboard extends AppCompatActivity {
         List<String> listContent = Arrays.asList(content);
         List<String> listOS = Arrays.asList(os);
 
-        Integer[] tmp = new Integer[title.length];
+        Integer[] tmp = new Integer[list_size];
         for (int i = 0; i < tmp.length; i++) {
             if (os[i].contains("centos"))
                 tmp[i] = R.drawable.linux;
@@ -215,7 +217,7 @@ public class Dashboard extends AppCompatActivity {
 
         List<Integer> listResId = Arrays.asList(tmp);
 
-        for (int i = 0; i < listTitle.size(); i++) {
+        for (int i = 0; i < list_size; i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             Data data = new Data();
             data.setTitle(listTitle.get(i));

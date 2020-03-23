@@ -37,14 +37,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
-            android:text="KOR-Seoul M" />
+            android:text="Seoul M" />
 
         <Button
             android:id="@+id/btn_zone_seoulM2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
-            android:text="KOR-Seoul M2" />
+            android:text="Seoul M2" />
 
         <Button
             android:id="@+id/btn_zone_HA"

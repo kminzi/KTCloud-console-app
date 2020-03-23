@@ -32,6 +32,8 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
     private Button btn_zone;
     private EditText txt_zone;
 
+    int list_size;
+
     APIcall_main API = (APIcall_main) getApplication();
     APIcall_server api_server = new APIcall_server();
 
@@ -46,19 +48,23 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
 //        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
         init();
+        list_size=0;
         mContext = this;
 
-        final String[] state = {"시작", "시작", "시작", "시작"};
-        final String[] created = {"테스트 서버 내용 1", "테스트 서버 내용 2", "테스트 서버 내용 3", "시작"};
-        final String[] name = {"테스트 서버 내용 1", "테스트 서버 내용 2", "테스트 서버 내용 3", "시작"};
-        final String[] zonename = {"테스트 서버 내용 1", "테스트 서버 내용 2", "테스트 서버 내용 3", "시작"};
-        final String[] osname = {"테스트 서버 내용 1", "테스트 서버 내용 2", "테스트 서버 내용 3", "시작"};
+        final String[] state = new String[100];
+        final String[] created = new String[100];
+        final String[] name = new String[100];
+        final String[] zonename = new String[100];
+        final String[] osname = new String[100];
 
         btn_zone = (Button)findViewById(R.id.btn_server_zone_search);
         btn_zone.setOnClickListener(this);
+
+
         txt_zone = (EditText)findViewById(R.id.txt_server_zone_search);
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
+        txt_zone.setText(API.getZone());
 
 
         //사용자가 입력한 위치, 상태에 따른 서버 목록 가져오기
@@ -70,6 +76,7 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
                     API.setZone("Seoul-M");//default 값 설정 - UI변경되고 수정해야 함
                     API.setState("all");
                     list = api_server.listServers();
+                    list_size = list.size();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InvalidKeyException e) {
@@ -82,7 +89,7 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
                 handler.post(new Runnable() {
                     @Override
                     public void run() {//UI접근
-                        for (int i = 0; i < 4; i++) {
+                        for (int i = 0; i < list_size; i++) {
                             state[i] = list.get(i)[2];
                             created[i] = list.get(i)[3] ;
                             name[i] = list.get(i)[0];
@@ -122,14 +129,18 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
         List<String> listZone = Arrays.asList(zonename);
         List<String> listOsname = Arrays.asList(osname);
 
-        Integer[] tmp = new Integer[state.length];
+        Integer[] tmp = new Integer[list_size];
+
         for (int i = 0; i < tmp.length; i++) {
-            tmp[i] = R.drawable.kt_cloud;
+            if (osname[i].contains("centos"))
+                tmp[i] = R.drawable.linux;
+            else
+                tmp[i] = R.drawable.window;
         }
 
         List<Integer> listResId = Arrays.asList(tmp);
 
-        for (int i = 0; i < listState.size(); i++) {
+        for (int i = 0; i < list_size; i++) {//가진 객체만큼으로 수정
             // 각 List의 값들을 data 객체에 set 해줍니다.
             ServerData sData = new ServerData();
             sData.setName(listName.get(i));
@@ -188,7 +199,7 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if (v == btn_zone || v == txt_zone) {
-            final CharSequence[] zoneItem = {"전체","KOR-Central A", "KOR-Central B", "KOR-Seoul M", "KOR-Seoul M2", "KOR-HA", "US-West"};
+            final CharSequence[] zoneItem = {"전체","Central-A", "Central-B", "Seoul-M", "Seoul-M2", "HA", "US-West"};
 
             AlertDialog.Builder oDialog = new AlertDialog.Builder(this);
 
@@ -198,6 +209,11 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
                         public void onClick(DialogInterface dialog, int which) {
                             EditText tmp = (EditText)findViewById(R.id.txt_server_zone_search);
                             tmp.setText(zoneItem[which]);
+
+                            API.setZone((String) zoneItem[which]);
+                            Intent intent = getIntent();
+                            finish();
+                            startActivity(intent);
                         }
                     })
                     .setCancelable(true)

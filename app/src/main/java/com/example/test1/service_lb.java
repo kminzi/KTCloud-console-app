@@ -6,12 +6,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,10 +30,15 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
     private Button btn_zone;
     private EditText txt_zone;
 
+    final int[] list_size = new int[1];
+    APIcall_main API = (APIcall_main) getApplication();
+    APIcall_LB apicall_lb = new APIcall_LB();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.service_lb);
+        final Handler handler = new Handler();
 
 //        //액션바 타이틀 변경하기
 //        getSupportActionBar().setTitle("KT Cloud");
@@ -34,28 +47,65 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
 
         init();
 
-        String []lbType = {"타입", "타입","타입"};
-        String []lbOpt = {"옵션", "옵션","옵션"};
-        String []name = {"lB이름1", "lB이름2", "lB이름3"};
-        String []zonename = {"Zone","Zone","Zone"};
-        String []ip = {"127.0.0.1","127.0.0.1","127.0.0.1"};
-        String []port = {"80","80","80"};
-        String []server = {"적용서버","적용서버","적용서버"};
-
-        getData_service_lb(name,lbType, lbOpt, ip, port, server, zonename);
+        final String []lbType =  new String[100];
+        final String []lbOpt =  new String[100];
+        final String []name =  new String[100];
+        final String []zonename = new String[100];
+        final String []ip =  new String[100];
+        final String []port =  new String[100];
+        final String []server =  new String[100];
 
         btn_zone = (Button)findViewById(R.id.btn_lb_zone_search);
         btn_zone.setOnClickListener(this);
         txt_zone = (EditText)findViewById(R.id.txt_lb_zone_search);
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
+        txt_zone.setText(API.getZone());
+
+        //사용자가 입력한 위치, 상태에 따른 서버 목록 가져오기
+        new Thread(new Runnable() {
+            ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+
+            @Override
+            public void run() {
+                try {
+//                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
+                    API.setState("all");//default 값 설정 - 추후 UI변경 시 수정
+                    list = apicall_lb.listLB();//LB이름, 옵션, 타입, 위치, IP, Port
+                    list_size[0] = list.size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {//UI접근
+                        for (int i = 0; i < list.size(); i++) {
+                            lbOpt[i] = list.get(i)[1];
+                            lbType[i] = list.get(i)[2];
+                            name[i] = list.get(i)[0];
+                            zonename[i] = list.get(i)[3];
+                            server[i] = "추후적용";
+                            ip[i] = list.get(i)[4];
+                            port[i] = list.get(i)[5];
+                        }
+                        getData_service_lb(name,lbType, lbOpt, ip, port, server, zonename);
+                    }
+                });
+            }
+        }).start();
 
     }
 
     @Override
     public void onClick(View v) {
         if (v == btn_zone || v == txt_zone) {
-            final CharSequence[] zoneItem = {"전체","KOR-Central A", "KOR-Central B", "KOR-Seoul M", "KOR-Seoul M2", "KOR-HA", "US-West"};
+            final CharSequence[] zoneItem = {"전체", "Central-A", "Central-B", "Seoul-M", "Seoul-M2", "HA", "US-West"};
 
             AlertDialog.Builder oDialog = new AlertDialog.Builder(this);
 
@@ -63,13 +113,18 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
                     .setItems(zoneItem, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            EditText tmp = (EditText)findViewById(R.id.txt_lb_zone_search);
+                            EditText tmp = (EditText) findViewById(R.id.txt_disk_zone_search);
                             tmp.setText(zoneItem[which]);
+                            API.setZone((String) zoneItem[which]);
+                            Intent intent = getIntent();
+                            finish();
+                            startActivity(intent);
                         }
                     })
                     .setCancelable(true)
                     .show();
         }
+
     }
 
     private void init() {
@@ -93,14 +148,14 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
         List<String> listPort = Arrays.asList(port);
         List<String> listServer = Arrays.asList(server);
 
-        Integer [] tmp = new Integer[name.length];
+        Integer [] tmp = new Integer[list_size[0]];
         for(int i = 0; i < tmp.length; i++) {
             tmp[i] = R.drawable.lb;
         }
 
         List<Integer> listResId = Arrays.asList(tmp);
 
-        for (int i = 0; i < listName.size(); i++) {
+        for (int i = 0; i < list_size[0]; i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             LBData lbData = new LBData();
             lbData.setName(listName.get(i));
