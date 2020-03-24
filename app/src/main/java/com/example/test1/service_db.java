@@ -56,7 +56,6 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
         final String []dev = new String[100];
         final String []size = new String[100];
         final String []DBstate = new String[100];
-        getData_service_db(state, created, name, zoneName, dev, size, DBstate);
 
         btn_zone = (Button)findViewById(R.id.btn_db_zone_search);
         btn_zone.setOnClickListener(this);

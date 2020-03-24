@@ -127,7 +127,7 @@ public class APIcall_LB extends APIcall_main{
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("등록된 웹 서버를 조회할 LB 이름 입력: ");
+//        System.out.print("등록된 웹 서버를 조회할 LB 이름 입력: ");
 
         String lbNname = sc.next();
 
@@ -143,8 +143,8 @@ public class APIcall_LB extends APIcall_main{
 
         String req_message = generateReq(request);
 
-        System.out.println("Request Message is...");
-        System.out.println(req_message);
+//        System.out.println("Request Message is...");
+//        System.out.println(req_message);
 
         JSONObject obj =  readJsonFromUrl(req_message);
 
@@ -167,8 +167,8 @@ public class APIcall_LB extends APIcall_main{
 
         req_message = generateReq(request);
 
-        System.out.println("Request Message is...");
-        System.out.println(req_message);
+//        System.out.println("Request Message is...");
+//        System.out.println(req_message);
 
         obj =  readJsonFromUrl(req_message);
 

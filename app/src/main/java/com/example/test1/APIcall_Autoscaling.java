@@ -27,9 +27,9 @@ public class APIcall_Autoscaling extends APIcall_main {
 
 
         String req_message = generateReq(request);
-
-        System.out.println("Request Message is...");
-        System.out.println(req_message);
+//
+//        System.out.println("Request Message is...");
+//        System.out.println(req_message);
 
         JSONObject obj = readJsonFromUrl(req_message);
 
@@ -45,12 +45,12 @@ public class APIcall_Autoscaling extends APIcall_main {
 
             autoscalinggroup = (JSONObject) parse_autoscalinggroups.get(i);
 
-            System.out.println("이름: " + autoscalinggroup.get("autoscalinggroupname"));
-            System.out.println("상태: " + autoscalinggroup.get("status"));
-            System.out.println("VM 생성 설정: " + autoscalinggroup.get("launchconfigurationname"));
-
-
-            System.out.print("위치:");
+//            System.out.println("이름: " + autoscalinggroup.get("autoscalinggroupname"));
+//            System.out.println("상태: " + autoscalinggroup.get("status"));
+//            System.out.println("VM 생성 설정: " + autoscalinggroup.get("launchconfigurationname"));
+//
+//
+//            System.out.print("위치:");
 
             JSONArray availabilityzones = (JSONArray) autoscalinggroup.get("availabilityzones");
 
@@ -71,7 +71,7 @@ public class APIcall_Autoscaling extends APIcall_main {
             if (autoscalingtype.equals("Run")) autoscalingtype = "VM On/Off";
             else if (autoscalingtype.equals("Deploy")) autoscalingtype = "VM 생성/삭제";
 
-            System.out.println("동작 옵션: " + autoscalingtype);
+//            System.out.println("동작 옵션: " + autoscalingtype);
 
             JSONArray instance = (JSONArray) autoscalinggroup.get("instances");
 

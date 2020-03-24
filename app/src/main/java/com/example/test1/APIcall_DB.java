@@ -43,14 +43,14 @@ public class APIcall_DB extends APIcall_main {
 
         for(int i = 0 ; i < parse_instance.size(); i++) {
             instance = (JSONObject) parse_instance.get(i);
-
-            System.out.println("DB 서버명: "+ instance.get("instancename"));
-            System.out.println("위치: "+ instance.get("zone"));
-            System.out.println("상태: "+ instance.get("instancestatus"));
-            System.out.println("스토리지: "+ instance.get("storagesize") + " GB");
-            System.out.println("마스터/종속장치: "+ instance.get("instancetype"));
-            System.out.println("생성일시: "+ instance.get("instancecreationtime"));
-            System.out.println();
+//
+//            System.out.println("DB 서버명: "+ instance.get("instancename"));
+//            System.out.println("위치: "+ instance.get("zone"));
+//            System.out.println("상태: "+ instance.get("instancestatus"));
+//            System.out.println("스토리지: "+ instance.get("storagesize") + " GB");
+//            System.out.println("마스터/종속장치: "+ instance.get("instancetype"));
+//            System.out.println("생성일시: "+ instance.get("instancecreationtime"));
+//            System.out.println();
 
             String dbstatus =null;
             if(((String)instance.get("instancestatus")).equals("Running"))dbstatus="정상";

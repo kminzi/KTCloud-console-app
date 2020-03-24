@@ -173,15 +173,10 @@ public class APIcall_server extends APIcall_main {
 //            System.out.println(req_message);
 //            System.out.println();
 
-
             readJsonFromUrl(req_message);
-
             System.out.println("SUCCESS to START " + virtualmachine.get("displayname"));
-
             request.remove("id");
         }
-
-
     }
 
     /**
