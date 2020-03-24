@@ -160,9 +160,9 @@ public class service_autoscaling extends AppCompatActivity implements View.OnCli
         List<String> listMinVM = Arrays.asList(minVM);
         List<String> listMaxVM = Arrays.asList(maxVM);
 
-        Integer[] tmp = new Integer[state.length];
+        Integer[] tmp = new Integer[list_size[0]];
 
-        for (int i = 0; i < tmp.length; i++) {
+        for (int i = 0; i < list_size[0]; i++) {
             tmp[i] = R.drawable.autoscaling;
         }
 

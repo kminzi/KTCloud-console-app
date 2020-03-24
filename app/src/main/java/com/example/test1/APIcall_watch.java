@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -24,6 +25,13 @@ public class APIcall_watch extends APIcall_main {
 
     private static HashMap<String, HashMap<String, String>> metricList;
     // metricList의 key에는 "CPUUtilization", "NetworkIn" 등의 Metric명이 들어가고, value에는  각 Metric별 points<timestamp, value>가 들어간다.
+
+    public static HashMap<String, String> getInfo(String metricname){
+        HashMap<String, String> tmp = new HashMap<String, String>();
+        tmp = metricList.get(metricname);
+        return tmp;
+    }
+
 
     /**
      * @brief section 값을 구간으로, 현재 시간 및 통계 시작 시간을 설정하기 위한 함수
@@ -118,10 +126,10 @@ public class APIcall_watch extends APIcall_main {
 
                 if(String.valueOf(virtualmachine.get("displayname")).equals(displayname)) {
                     zoneid = String.valueOf(virtualmachine.get("zoneid"));
-                    System.out.println("Request Message is...");
-                    System.out.println(req_message);
-                    System.out.println("zoneid= " + zoneid);
-                    System.out.println();
+//                    System.out.println("Request Message is...");
+//                    System.out.println(req_message);
+//                    System.out.println("zoneid= " + zoneid);
+//                    System.out.println();
                     return zoneid;
                 }
 
@@ -151,10 +159,10 @@ public class APIcall_watch extends APIcall_main {
 
                 if(String.valueOf(virtualmachine.get("displayname")).equals(displayname)) {
                     zoneid = String.valueOf(virtualmachine.get("zone"));
-                    System.out.println("(For Zone ID) Request Message is...");
-                    System.out.println(req_message);
-                    System.out.println("zoneid= " + zoneid);
-                    System.out.println();
+//                    System.out.println("(For Zone ID) Request Message is...");
+//                    System.out.println(req_message);
+//                    System.out.println("zoneid= " + zoneid);
+//                    System.out.println();
                     return zoneid;
                 }
 
@@ -210,17 +218,15 @@ public class APIcall_watch extends APIcall_main {
 
                 if(String.valueOf(virtualmachine.get("displayname")).equals(displayname)) {
                     name = String.valueOf(virtualmachine.get("name"));
-                    System.out.println("(For Name)Request Message is...");
-                    System.out.println(req_message);
-                    System.out.println("name= " + name);
-                    System.out.println();
+//                    System.out.println("(For Name)Request Message is...");
+//                    System.out.println(req_message);
+//                    System.out.println("name= " + name);
+//                    System.out.println();
                     return name;
                 }
 
             }
         }
-
-
 
         return name;
     }
@@ -250,7 +256,6 @@ public class APIcall_watch extends APIcall_main {
         request.put("zoneid", zoneid);
 
 
-
         String req_message = generateReq(request);
 
         JSONObject obj =  readJsonFromUrl(req_message);
@@ -271,10 +276,10 @@ public class APIcall_watch extends APIcall_main {
                 if(String.valueOf(virtualmachine.get("displayname")).equals(displayname)) {
                     id = String.valueOf(virtualmachine.get("id"));
 
-                    System.out.println("(For ID)Request Message is...");
-                    System.out.println(req_message);
-                    System.out.println("id= " + id);
-                    System.out.println();
+//                    System.out.println("(For ID)Request Message is...");
+//                    System.out.println(req_message);
+//                    System.out.println("id= " + id);
+//                    System.out.println();
                     return id;
                 }
 
@@ -406,7 +411,8 @@ public class APIcall_watch extends APIcall_main {
 
         int button = 6;
 
-        setValue();
+//        setValue();
+        setTime(6);
 
         metricList = new HashMap<String, HashMap<String, String>> ();
         HashMap<String, String> points = new HashMap<String, String> ();
@@ -424,7 +430,7 @@ public class APIcall_watch extends APIcall_main {
         request.put("endtime", endtime);
         request.put("starttime", starttime);
         request.put("period", period);
-        request.put("unit", "Percent");
+        request.put("unit", unit);
 
         String req_message = generateReq(request);
 
@@ -448,12 +454,11 @@ public class APIcall_watch extends APIcall_main {
 
             points.put(String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "), String.valueOf(metric.get(statistics.toLowerCase())));
 
-
-            System.out.println("##############################");
-
-            System.out.println("timestamp: "+  String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "));
-            System.out.println(statistics+ ": "+  metric.get(statistics.toLowerCase()));
-            System.out.println("unit: "+  metric.get("unit"));
+//            System.out.println("##############################");
+//
+//            System.out.println("timestamp: "+  String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "));
+//            System.out.println(statistics+ ": "+  metric.get(statistics.toLowerCase()));
+//            System.out.println("unit: "+  metric.get("unit"));
 
 
         }
@@ -529,11 +534,11 @@ public class APIcall_watch extends APIcall_main {
 
             points.put(String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "), String.valueOf(metric.get(statistics.toLowerCase())));
 
-            System.out.println("##############################");
-
-            System.out.println("timestamp: "+  String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "));
-            System.out.println(statistics+ ": "+  metric.get(statistics.toLowerCase()));
-            System.out.println("unit: "+  metric.get("unit"));
+//            System.out.println("##############################");
+//
+//            System.out.println("timestamp: "+  String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "));
+//            System.out.println(statistics+ ": "+  metric.get(statistics.toLowerCase()));
+//            System.out.println("unit: "+  metric.get("unit"));
 
 
         }
