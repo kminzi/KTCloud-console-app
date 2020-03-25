@@ -101,13 +101,13 @@ public class Monitoring extends AppCompatActivity {
                         dataset.setDrawCubic(true); //선 둥글게 만들기
 
                         lineChart.setData(data);
-                        lineChart.animateY(3000);
+                        lineChart.animateY(2000);
 
                         LineData data2 = new LineData(labels2, dataset2);
                         dataset2.setColors(Collections.singletonList(0xFF94D1CA));
                         dataset2.setDrawCubic(true); //선 둥글게 만들기
 
-                        lineChart2.setData(data);
+                        lineChart2.setData(data2);
                         lineChart2.animateY(2000);
                     }
                 });

@@ -3,7 +3,6 @@ package com.example.test1;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -22,6 +21,8 @@ public class APIcall_watch extends APIcall_main {
     private static String namespace = "ucloud/server";
     private static String period = "60";
     private static String unit = "Bytes";
+    private static String statevalue = "ALL"; // 출력할 알람 상태 저장 변수
+
 
     private static HashMap<String, HashMap<String, String>> metricList;
     // metricList의 key에는 "CPUUtilization", "NetworkIn" 등의 Metric명이 들어가고, value에는  각 Metric별 points<timestamp, value>가 들어간다.
@@ -432,6 +433,9 @@ public class APIcall_watch extends APIcall_main {
         request.put("period", period);
         request.put("unit", unit);
 
+        if(metricname.equals("CPUUtilization")) request.put("unit", "Percent");
+        else request.put("unit", "Bytes");
+
         String req_message = generateReq(request);
 
         System.out.println("Request Message is...");
@@ -509,6 +513,8 @@ public class APIcall_watch extends APIcall_main {
         request.put("starttime", starttime);
         request.put("period", period);
         request.put("unit", "Percent");
+        if(metricname.equals("CPUUtilization")) request.put("unit", "Percent");
+        else request.put("unit", "Bytes");
 
         request.put("dimensions.member.1.name", "name");
         request.put("dimensions.member.1.value", value);
@@ -570,12 +576,12 @@ public class APIcall_watch extends APIcall_main {
 
             switch(metric) {
                 case "CPUUtilization": showMetric("CPUUtilization", displayname); break;
-                case "NetworkIn": setUnitForNetwork(); showMetric("NetworkIn", displayname); break;
-                case "NetworkOut": setUnitForNetwork(); showMetric("NetworkOut", displayname); break;
-                case "DiskReadBytes": setUnit(); showMetric("DiskReadBytes", displayname); break;
-                case "DiskWriteBytes": setUnit(); showMetric("DiskWriteBytes", displayname); break;
-                case "MemoryInternalFree": setUnit(); showMetric("MemoryInternalFree", displayname); break;
-                case "MemoryTarget": setUnit(); showMetric("MemoryTarget", displayname); break;
+                case "NetworkIn": showMetric("NetworkIn", displayname); break;
+                case "NetworkOut": showMetric("NetworkOut", displayname); break;
+                case "DiskReadBytes":showMetric("DiskReadBytes", displayname); break;
+                case "DiskWriteBytes": showMetric("DiskWriteBytes", displayname); break;
+                case "MemoryInternalFree": showMetric("MemoryInternalFree", displayname); break;
+                case "MemoryTarget": showMetric("MemoryTarget", displayname); break;
             }
 
             displayname = sc.next();
@@ -583,6 +589,18 @@ public class APIcall_watch extends APIcall_main {
 
     }
 
+    /**
+     * @throws ParseException
+     * @brief 조회할 알람 상태를 입력받는 함수
+     **/
+    public static void setAlarmState() {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("조회할 알람 상태 입력(ALL, INSUFFICIENT_DATA, OK, ALARM): ");
+        statevalue = sc.next();
+
+    }
 
     /**
      * @throws ParseException
@@ -598,6 +616,263 @@ public class APIcall_watch extends APIcall_main {
         showMetric("DiskReadBytes");
         showMetric("DiskWriteBytes");
         showMetric("MemoryInternalFree");
+
+    }
+
+    /**
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws IOException
+     * @throws ParseException
+     * @brief 메트릭에 대해 사용자 정의 알람 리스트 출력을 위한 함수
+     **/
+    public static void listAlarms() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+        int button = 7;
+
+
+        setAlarmState();
+
+
+        TreeMap<String, String> request = new TreeMap<String, String>();
+
+
+        request = generateRequire(button, request);
+
+        request.put("response", "json");
+        request.put("apiKey", getApikey());
+
+
+        if(!statevalue.equals("ALL")) request.put("statevalue", statevalue);
+
+
+
+        String req_message = generateReq(request);
+
+        System.out.println("Request Message is...");
+        System.out.println(req_message);
+        System.out.println();
+
+        JSONObject obj =  readJsonFromUrl(req_message);
+
+        JSONObject parse_listalarmsresponse = (JSONObject) obj.get("listalarmsresponse");
+
+        JSONArray parse_alarm = (JSONArray) parse_listalarmsresponse.get("alarm");
+        JSONObject alarm;
+        JSONObject dimensions;
+        JSONArray dimension;
+
+        System.out.println("총 alarm 수: "+ parse_listalarmsresponse.get("count"));
+
+        for(int i = 0 ; i <  parse_alarm.size(); i++) {
+            alarm = (JSONObject) parse_alarm.get(i);
+
+            System.out.println("#########################################");
+            System.out.println("알람명: "+  alarm.get("alarmname"));
+
+            String state = String.valueOf(alarm.get("statevalue"));
+            if(state.equals("OK")) state = "안정";
+            else if(state.equals("ALARM")) state = "알람 발생";
+            else if(state.equals("INSUFFICIENT_DATA")) state = "데이터 부족";
+
+            String comparisonoperator = String.valueOf(alarm.get("comparisonoperator"));
+            if(comparisonoperator.equals("GreaterThanThreshold")) comparisonoperator = "보다 클 때 ";
+            else if(comparisonoperator.equals("GreaterThanOrEqualToThreshold")) comparisonoperator = "보다 크거나 같을  ";
+            else if(comparisonoperator.equals("LessThanThreshold")) comparisonoperator = "보다 작을 때 ";
+            else if(comparisonoperator.equals("LessThanOrEqualToThreshold")) comparisonoperator = "보다 작거나 같을 때 ";
+
+            dimensions = (JSONObject) alarm.get("dimensions");
+            dimension = (JSONArray) dimensions.get("dimension");
+
+            String dimensionCount = String.valueOf(dimensions.get("count"));
+            String namespace = String.valueOf(alarm.get("namespace"));
+
+            if(dimensionCount.equals("0")) {
+                if(namespace.equals("ucloud/server")) namespace = "서버:모든서버통합";
+                else if (namespace.equals("ucloud/vr")) namespace = "ucloud/vr";
+            }
+            else {
+                JSONObject dimensionOb = (JSONObject) dimension.get(0);
+                String dimensionName = String.valueOf(dimensionOb.get("name"));
+                if(dimensionName.equals("templatename")) namespace = "서버:운영체제별통합";
+                else if(dimensionName.equals("name")) {
+                    if (namespace.equals("ucloud/vr")) namespace = "ucloud/vr:name";
+                    else if (namespace.equals("ucloud/server")) namespace = "서버:개별서버메트릭";
+                }
+                else if(dimensionName.equals("serviceofferingname")) namespace = "서버:스펙별통합";
+                else if(dimensionName.equals("LB")) namespace = "CloudLB:LB";
+            }
+
+
+            System.out.println("상태: "+  state );
+            System.out.println("알람 발생조건: "+  alarm.get("metricname") + " " + alarm.get("statistic") + "이(가) " + alarm.get("threshold") + alarm.get("unit") + comparisonoperator + "알람이 발생한다.");
+            System.out.println("액션 수행 여부: "+  (String.valueOf(alarm.get("actionsenabled")).equals("true")? "활성화" : "비활성화" ));
+            System.out.println("구분: "+  namespace );
+
+
+
+        }
+
+    }
+
+    /**
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws IOException
+     * @throws ParseException
+     * @brief 메트릭에 대한 알람 현황(갯수) 출력
+     **/
+    public static void listAlarmStatus() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+        int button = 7;
+
+        TreeMap<String, String> request = new TreeMap<String, String>();
+
+
+        request = generateRequire(button, request);
+
+        request.put("response", "json");
+        request.put("apiKey", getApikey());
+
+
+        String req_message = generateReq(request);
+
+        System.out.println("Request Message is...");
+        System.out.println(req_message);
+        System.out.println();
+
+        JSONObject obj =  readJsonFromUrl(req_message);
+
+        JSONObject parse_listalarmsresponse = (JSONObject) obj.get("listalarmsresponse");
+
+        JSONArray parse_alarm = (JSONArray) parse_listalarmsresponse.get("alarm");
+        JSONObject alarm;
+
+
+        System.out.println("총 alarm 수: "+ parse_listalarmsresponse.get("count"));
+
+        int ok_cnt = 0;
+        int alarm_cnt = 0;
+        int insufficientData_cnt = 0;
+
+        for(int i = 0 ; i <  parse_alarm.size(); i++) {
+
+
+            alarm = (JSONObject) parse_alarm.get(i);
+
+            String state = String.valueOf(alarm.get("statevalue"));
+            if(state.equals("OK")) ok_cnt++;
+            else if(state.equals("ALARM")) alarm_cnt++;
+            else if(state.equals("INSUFFICIENT_DATA")) insufficientData_cnt++;
+
+
+        }
+
+        System.out.println("발생: "+ alarm_cnt);
+        System.out.println("데이터 부족: "+ insufficientData_cnt);
+        System.out.println("안정: "+ ok_cnt);
+
+
+    }
+
+
+    /**
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws IOException
+     * @throws ParseException
+     * @brief (대시보드용) 발생 알람 출력을 위한 함수
+     **/
+    public static void listAlarmsForDashboard() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+        int button = 7;
+
+        TreeMap<String, String> request = new TreeMap<String, String>();
+
+        request = generateRequire(button, request);
+
+        request.put("response", "json");
+        request.put("apiKey", getApikey());
+
+
+        String req_message = generateReq(request);
+
+        System.out.println("Request Message is...");
+        System.out.println(req_message);
+        System.out.println();
+
+        JSONObject obj =  readJsonFromUrl(req_message);
+
+        JSONObject parse_listalarmsresponse = (JSONObject) obj.get("listalarmsresponse");
+
+        JSONArray parse_alarm = (JSONArray) parse_listalarmsresponse.get("alarm");
+        JSONObject alarm;
+
+        for(int i = 0 ; i <  parse_alarm.size(); i++) {
+
+            alarm = (JSONObject) parse_alarm.get(i);
+
+            String state = String.valueOf(alarm.get("statevalue"));
+            if(state.equals("ALARM")) {
+                System.out.println("[Watch]" + String.valueOf(alarm.get("metricname")) + " " + String.valueOf(alarm.get("alarmname") + "이 발생했습니다."));
+            }
+
+        }
+
+
+    }
+
+
+    /**
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws IOException
+     * @throws ParseException
+     * @brief 알람 발생 시, 알람이 발생한 메트릭 출력. StateUpdate 중에서도 from OK/INSUFFICIENT_DATA to ALARM 인 경우에만 알람 출력.
+     **/
+    public static void listAlarmHistory() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+        int button = 8;
+
+        // 알람 발생 시, 해당 알람에 대한 메트릭을 저장하기 위한 map
+        // alarmMetricList의 key에는 발생한 알람명이 들어가고, value에는  알람 발생시점의 points<timestamp, value>가 들어간다.
+        HashMap<String, HashMap<String, String>> alarmMetricList;
+
+        TreeMap<String, String> request = new TreeMap<String, String>();
+
+        request = generateRequire(button, request);
+
+        request.put("response", "json");
+        request.put("apiKey", getApikey());
+
+
+
+        String req_message = generateReq(request);
+
+        System.out.println("Request Message is...");
+        System.out.println(req_message);
+        System.out.println();
+
+        JSONObject obj =  readJsonFromUrl(req_message);
+
+        JSONObject parse_listalarmhistoryresponse = (JSONObject) obj.get("listalarmhistoryresponse");
+
+        JSONArray pasrse_alarmhistory = (JSONArray) parse_listalarmhistoryresponse.get("alarmhistory");
+        JSONObject alarmhistory;
+
+        int history_num = 0;
+
+
+        for(int i = 0 ; i <  pasrse_alarmhistory.size(); i++) {
+            alarmhistory = (JSONObject) pasrse_alarmhistory.get(i);
+
+
+            if(String.valueOf(alarmhistory.get("historysummary")).substring(String.valueOf(alarmhistory.get("historysummary")).length()-5, String.valueOf(alarmhistory.get("historysummary")).length()).equals("ALARM")) {
+                history_num++;
+                request.clear();
+
+                // 해당 알람에 대한 메트릭 출력
+                //	showMetric(alarmhistory.get(""));
+
+                if (history_num >= 3) break; // 최근 3개까지만 출력
+            }
+        }
 
     }
 }

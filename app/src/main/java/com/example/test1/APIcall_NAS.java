@@ -8,16 +8,18 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.TreeMap;
 
 public class APIcall_NAS extends APIcall_main {
     /**
      * @throws ParseException
+     * @return 각 NAS의 이름, 위치, 신청용량, 현재 사용량, 프로토콜를 담은 ArrayList
      * @brief NAS 기능에 해당하는, 생성된 NAS 출력을 위한 함수
      **/
     public static ArrayList<String[]> listNas() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
-        int button = 21;
+        int button = 18;
 
         TreeMap<String, String> request = new TreeMap<String, String>();
         request = generateRequire(button, request);
@@ -60,5 +62,77 @@ public class APIcall_NAS extends APIcall_main {
                     String.valueOf(totalsize), String.valueOf(usedsize), (String) response.get("volumetype")});
         }
         return list;
+    }
+
+
+    /**
+     * @throws ParseException
+     * @brief NAS 기능에 해당하는, NAS volume 사이즈 변경을 위한 함수
+     **/
+    public static void updateVolume() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+
+        int button = 19;
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("사이즈 변경할 NAS volume name 입력: ");
+        String name = sc.next();
+
+        // 먼저 name에 해당하는 id값을 받아옴
+        TreeMap<String, String> request = new TreeMap<String, String>();
+        request = generateRequire(18, request);
+
+        request.put("response", "json");
+        request.put("apiKey", getApikey());
+        request.put("name", name);
+
+        String req_message = generateReq(request);
+
+        System.out.println("Request Message is...");
+        System.out.println(req_message);
+
+        JSONObject obj =  readJsonFromUrl(req_message);
+
+        JSONObject parse_listvolumesresponsee = (JSONObject) obj.get("listvolumesresponse");
+
+        JSONArray parse_response = (JSONArray) parse_listvolumesresponsee.get("response");
+
+
+        if(parse_response.size() < 1) {
+            System.out.println("유효하지 않은 볼륨명입니다."); return;
+        }
+
+
+        JSONObject response = (JSONObject) parse_response.get(0);
+        String id = String.valueOf(response.get("id"));
+
+
+        request.clear();
+        request = generateRequire(button, request);
+
+        request.put("response", "json");
+        request.put("apiKey", getApikey());
+        request.put("id", id);
+
+        System.out.print("변경할 NAS volume 사이즈 입력(GB, 최소:500/ 최대:20000): ");
+        String size = sc.next();
+
+        request.put("totalsize", size);
+
+
+        req_message = generateReq(request);
+
+        System.out.println("Request Message is...");
+        System.out.println(req_message);
+
+        obj =  readJsonFromUrl(req_message);
+
+        JSONObject parse_updatevolumeresponse = (JSONObject) obj.get("updatevolumeresponse");
+
+        JSONObject parse_response2 = (JSONObject) parse_updatevolumeresponse.get("response");
+
+        if(parse_response2.size() < 1) System.out.println("사이즈 변경 실패");
+        else System.out.println("사이즈 변경 성공");
+
     }
 }

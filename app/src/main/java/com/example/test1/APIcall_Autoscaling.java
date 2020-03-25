@@ -17,7 +17,7 @@ public class APIcall_Autoscaling extends APIcall_main {
      **/
     public static ArrayList<String[]> listAutoscaling() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
-        int button = 19;
+        int button = 13;
 
         TreeMap<String, String> request = new TreeMap<String, String>();
         request = generateRequire(button, request);

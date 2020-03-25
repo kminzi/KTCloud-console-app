@@ -166,55 +166,51 @@ public class APIcall_main extends Application {
 
         switch (button) {
             case 1:  // Watch 관련 기능
-                if (zone.equals("Seoul-M2"))
-                    baseurl = "https://api.ucloudbiz.olleh.com/watch/v2/client/api?";
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/watch/v2/client/api?";
                 else baseurl = "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
                 request.put("command", "listMetrics");
                 break;
+
             case 2: // Server 조회
                 baseurl = "https://api.ucloudbiz.olleh.com/server/v1/client/api?";
-                request.put("command", "listVirtualMachines");
+                request.put("command", "listVirtualMachines" );
 
-                if (zone.equals("Central-A"))
-                    request.put("zoneid", "eceb5d65-6571-4696-875f-5a17949f3317");
-                else if (zone.equals("Central-B"))
-                    request.put("zoneid", "9845bd17-d438-4bde-816d-1b12f37d5080");
-                else if (zone.equals("Seoul-M"))
-                    request.put("zoneid", "95e2f517-d64a-4866-8585-5177c256f7c7");
+
+                if(zone.equals("Central-A")) request.put("zoneid", "eceb5d65-6571-4696-875f-5a17949f3317");
+                else if (zone.equals("Central-B")) request.put("zoneid", "9845bd17-d438-4bde-816d-1b12f37d5080");
+                else if (zone.equals("Seoul-M"))  request.put("zoneid", "95e2f517-d64a-4866-8585-5177c256f7c7");
                 else if (zone.equals("Seoul-M2")) {
                     request.put("zoneid", "d7d0177e-6cda-404a-a46f-a5b356d2874e");
                     baseurl = "https://api.ucloudbiz.olleh.com/server/v2/client/api?";
-                } else if (zone.equals("HA"))
-                    request.put("zoneid", "dfd6f03d-dae5-458e-a2ea-cb6a55d0d994");
-                else if (zone.equals("US-West"))
-                    request.put("zoneid", "b7eb18c8-876d-4dc6-9215-3bd455bb05be");
+                }
+                else if (zone.equals("HA"))  request.put("zoneid", "dfd6f03d-dae5-458e-a2ea-cb6a55d0d994");
+                else if (zone.equals("US-West"))  request.put("zoneid", "b7eb18c8-876d-4dc6-9215-3bd455bb05be");
 
-                if (!state.equals("all")) request.put("state", state);
+                if (!state.equals("all")) request.put("state", state );
 
                 break;
             case 3: // Server 정지
-                if (zone.equals("Seoul-M2"))
-                    baseurl = "https://api.ucloudbiz.olleh.com/server/v2/client/api?";
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/server/v2/client/api?";
                 else baseurl = "https://api.ucloudbiz.olleh.com/server/v1/client/api?";
-                request.put("command", "stopVirtualMachine");
+                request.put("command", "stopVirtualMachine" );
                 break;
             case 4: // Server 시작
-                if (zone.equals("Seoul-M2"))
-                    baseurl = "https://api.ucloudbiz.olleh.com/server/v2/client/api?";
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/server/v2/client/api?";
                 else baseurl = "https://api.ucloudbiz.olleh.com/server/v1/client/api?";
-                request.put("command", "startVirtualMachine");
+                request.put("command", "startVirtualMachine" );
                 break;
             case 5: // Server 재시작
-                if (zone.equals("Seoul-M2"))
-                    baseurl = "https://api.ucloudbiz.olleh.com/server/v2/client/api?";
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/server/v2/client/api?";
                 else baseurl = "https://api.ucloudbiz.olleh.com/server/v1/client/api?";
-                request.put("command", "rebootVirtualMachine");
+                request.put("command", "rebootVirtualMachine" );
                 break;
+
             case 6: // Metric 통계
                 if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/watch/v2/client/api?";
                 else baseurl = "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
                 request.put("command", "getMetricStatistics" );
                 break;
+
             case 7: // Metric에 대한 알람리스트 조회
                 if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/watch/v2/client/api?";
                 else baseurl = "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
@@ -234,17 +230,18 @@ public class APIcall_main extends Application {
                 request.put("command", "listAlarmsForMetric" );
                 break;
 
-            case 10: // 토픽 리스트 조회
-                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/messaging/v2/client/api?";
-                else baseurl = "https://api.ucloudbiz.olleh.com/messaging/v1/client/api?";
-                request.put("command", "listTopics" );
-                break;
-
-            case 11: // 구독 리스트 조회
+            case 10: // 구독 리스트 조회
                 if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/messaging/v2/client/api?";
                 else baseurl = "https://api.ucloudbiz.olleh.com/messaging/v1/client/api?";
                 request.put("command", "listSubscriptions" );
                 break;
+
+            case 11: // 특정 토픽에 대한 구독 목록 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/messaging/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/messaging/v1/client/api?";
+                request.put("command", "listSubscriptionsByTopic" );
+                break;
+
 
             case 12: // 선택한 토픽의 모든 구독자들에게 메시지 발송
                 if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/messaging/v2/client/api?";
@@ -252,67 +249,91 @@ public class APIcall_main extends Application {
                 request.put("command", "publish" );
                 break;
 
+            case 13: // Autoscaling 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v1/client/api?";
+                request.put("command", "listAutoScalingGroups" );
+                break;
+
+            case 14: // Autoscaling 목표 vm 수 조절
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v1/client/api?";
+                request.put("command", "setDesiredCapacity" );
+                break;
+
             case 15: // Disk 조회
                 baseurl = "https://api.ucloudbiz.olleh.com/server/v1/client/api?";
                 request.put("command", "listVolumes" );
 
-                if(zone.equals("Central-A")) request.put("zoneid", "eceb5d65-6571-4696-875f-5a17949f3317");
-                else if (zone.equals("Central-B")) request.put("zoneid", "9845bd17-d438-4bde-816d-1b12f37d5080");
-                else if (zone.equals("Seoul-M"))  request.put("zoneid", "95e2f517-d64a-4866-8585-5177c256f7c7");
+                if(zone.equals("Central-A")) request.put("zoneid", CentralA_zoneid);
+                else if (zone.equals("Central-B")) request.put("zoneid", CentralB_zoneid);
+                else if (zone.equals("Seoul-M"))  request.put("zoneid", Seoul_M_zoneid);
                 else if (zone.equals("Seoul-M2")) {
-                    request.put("zoneid", "d7d0177e-6cda-404a-a46f-a5b356d2874e");
+                    request.put("zoneid", Seoul_M2_zoneid);
                     baseurl = "https://api.ucloudbiz.olleh.com/server/v2/client/api?";
                 }
-                else if (zone.equals("HA"))  request.put("zoneid", "dfd6f03d-dae5-458e-a2ea-cb6a55d0d994");
-                else if (zone.equals("US-West"))  request.put("zoneid", "b7eb18c8-876d-4dc6-9215-3bd455bb05be");
+                else if (zone.equals("HA"))  request.put("zoneid", HA_zoneid);
+                else if (zone.equals("US-West"))  request.put("zoneid", West_zoneid);
                 break;
 
             case 16: // LB 조회
                 baseurl = "https://api.ucloudbiz.olleh.com/loadbalancer/v1/client/api?";
                 request.put("command", "listLoadBalancers" );
 
-                if(zone.equals("Central-A")) request.put("zoneid", "eceb5d65-6571-4696-875f-5a17949f3317");
-                else if (zone.equals("Central-B")) request.put("zoneid", "9845bd17-d438-4bde-816d-1b12f37d5080");
-                else if (zone.equals("Seoul-M"))  request.put("zoneid", "95e2f517-d64a-4866-8585-5177c256f7c7");
+                if(zone.equals("Central-A")) request.put("zoneid", CentralA_zoneid);
+                else if (zone.equals("Central-B")) request.put("zoneid", CentralB_zoneid);
+                else if (zone.equals("Seoul-M"))  request.put("zoneid", Seoul_M_zoneid);
                 else if (zone.equals("Seoul-M2")) {
-                    request.put("zoneid", "d7d0177e-6cda-404a-a46f-a5b356d2874e");
+                    request.put("zoneid", Seoul_M2_zoneid);
                     baseurl = "https://api.ucloudbiz.olleh.com/loadbalancer/v2/client/api?";
                 }
-                else if (zone.equals("HA"))  request.put("zoneid", "dfd6f03d-dae5-458e-a2ea-cb6a55d0d994");
-                else if (zone.equals("US-West"))  request.put("zoneid", "b7eb18c8-876d-4dc6-9215-3bd455bb05be");
+                else if (zone.equals("HA"))  request.put("zoneid", HA_zoneid);
+                else if (zone.equals("US-West"))  request.put("zoneid", West_zoneid);
                 break;
 
             case 17: // LB에 등록된 웹서버 조회
                 baseurl = "https://api.ucloudbiz.olleh.com/loadbalancer/v1/client/api?";
                 request.put("command", "listLoadBalancerWebServers" );
 
-                if(zone.equals("Central-A")) request.put("zoneid", "eceb5d65-6571-4696-875f-5a17949f3317");
-                else if (zone.equals("Central-B")) request.put("zoneid", "9845bd17-d438-4bde-816d-1b12f37d5080");
-                else if (zone.equals("Seoul-M"))  request.put("zoneid", "95e2f517-d64a-4866-8585-5177c256f7c7");
+                if(zone.equals("Central-A")) request.put("zoneid", CentralA_zoneid);
+                else if (zone.equals("Central-B")) request.put("zoneid", CentralB_zoneid);
+                else if (zone.equals("Seoul-M"))  request.put("zoneid", Seoul_M_zoneid);
                 else if (zone.equals("Seoul-M2")) {
-                    request.put("zoneid", "d7d0177e-6cda-404a-a46f-a5b356d2874e");
+                    request.put("zoneid", Seoul_M2_zoneid);
                     baseurl = "https://api.ucloudbiz.olleh.com/loadbalancer/v2/client/api?";
                 }
-                else if (zone.equals("HA"))  request.put("zoneid", "dfd6f03d-dae5-458e-a2ea-cb6a55d0d994");
-                else if (zone.equals("US-West"))  request.put("zoneid", "b7eb18c8-876d-4dc6-9215-3bd455bb05be");
+                else if (zone.equals("HA"))  request.put("zoneid", HA_zoneid);
+                else if (zone.equals("US-West"))  request.put("zoneid", West_zoneid);
                 break;
 
-            case 18: // DB 조회
+            case 18: // NAS 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/nas/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/nas/v1/client/api?";
+                request.put("command", "listVolumes" );
+                break;
+
+            case 19: // NAS 사이즈변경
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/nas/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/nas/v1/client/api?";
+                request.put("command", "updateVolume" );
+                break;
+
+            case 20: // DB 조회
                 if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/db/v2/client/api?";
                 else baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
                 request.put("command", "listInstances" );
                 break;
 
-            case 19: // Autoscaling 조회
-                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v2/client/api?";
-                else baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v1/client/api?";
-                request.put("command", "listAutoScalingGroups" );
+            case 21: // DB HA그룹 조회
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/db/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
+                request.put("command", "listHaGroups" );
                 break;
 
-            case 21: // NAS 조회
-                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/nas/v2/client/api?";
-                else baseurl = "https://api.ucloudbiz.olleh.com/nas/v1/client/api?";
-                request.put("command", "listVolumes" );
+            case 22: // 복제 그룹의 슬레이브의 수를 변경
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/db/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
+                request.put("command", "updateHaGroupSlaveCount" );
                 break;
 
             default:

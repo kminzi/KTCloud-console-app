@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.simple.parser.ParseException;
@@ -49,6 +50,13 @@ public class Dashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
 
+//        ProgressBar progress = (ProgressBar) findViewById(R.id.progressbar);
+//        progress.setMax(100);
+//        progress.setProgress(30);
+//        progress.setSecondaryProgress(70);
+
+
+
         View buttonlayout = getLayoutInflater().inflate(R.layout.techcenter, null);
         ActionBar ab = getSupportActionBar();
         ab.setCustomView(buttonlayout);
@@ -77,12 +85,15 @@ public class Dashboard extends AppCompatActivity {
         //서버 목록 가져오기
         new Thread(new Runnable() {
             ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+            ArrayList<String[]> list_m = new ArrayList<String[]>();//DB 정보를 받아올 ArrayList
             @Override
             public void run() {
                 try {
                     API.setZone("Seoul-M");//default 값 설정
                     API.setState("all");
                     list = api_server.listServers();
+                    list_size = list.size();
+                    list_m = api_db.listMysqlDB();
                     list_size_m = list.size();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -97,43 +108,17 @@ public class Dashboard extends AppCompatActivity {
                     @Override
                     public void run() {//UI접근
                         server_num.setText(list.size() + "개 사용 중");
+                        db_num.setText(list_m.size() + "개 사용 중");
                         for (int i = 0; i < list.size(); i++) {
                             title_s[i] = list.get(i)[0];
                             content_s[i] = "스펙 : " + list.get(i)[1] + " 상태 : " + list.get(i)[2];
                             os_s[i] = list.get(i)[4];
                         }
-                        getData_s(title_s, content_s, os_s);//
-                    }
-                });
-            }
-        }).start();
+                        getData_s(title_s, content_s, os_s);
 
-        //DB 정보 가져오기
-        new Thread(new Runnable() {
-            ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
-            @Override
-            public void run() {
-                try {
-                    API.setZone("Seoul-M");//default 값 설정
-                    API.setState("all");
-                    list = api_db.listMysqlDB();
-                    list_size = list.size();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InvalidKeyException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {//UI접근
-                        db_num.setText(list.size() + "개 사용 중");
-                        for (int i = 0; i < list.size(); i++) {
-                            title_m[i] = list.get(i)[0];
-                            content_m[i] = "용량 : " + list.get(i)[3] + " 상태 : " + list.get(i)[1];
+                        for (int i = 0; i < list_m.size(); i++) {
+                            title_m[i] = list_m.get(i)[0];
+                            content_m[i] = "용량 : " + list_m.get(i)[3] + " 상태 : " + list_m.get(i)[1];
                         }
                         getData_m(title_m, content_m);
                     }
@@ -141,7 +126,6 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
-
 
     /**
      * 상단바 techcenter아이콘 클릭 처리 함수
@@ -250,9 +234,8 @@ public class Dashboard extends AppCompatActivity {
     private void getData_s(String[] title, String[] content, String[] os) {
         List<String> listTitle = Arrays.asList(title);
         List<String> listContent = Arrays.asList(content);
-        List<String> listOS = Arrays.asList(os);
 
-        Integer[] tmp = new Integer[list_size];
+        Integer[] tmp = new Integer[6];
         for (int i = 0; i < tmp.length; i++) {
             if (os[i].contains("centos"))
                 tmp[i] = R.drawable.linux;
@@ -262,7 +245,7 @@ public class Dashboard extends AppCompatActivity {
 
         List<Integer> listResId = Arrays.asList(tmp);
 
-        for (int i = 0; i < list_size; i++) {
+        for (int i = 0; i < 6; i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             Data data = new Data();
             data.setTitle(listTitle.get(i));

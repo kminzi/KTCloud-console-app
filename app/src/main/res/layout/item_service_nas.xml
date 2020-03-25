@@ -214,12 +214,12 @@
 
         <EditText
             android:id="@+id/txt_nas_tarSize_change"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="175dp"
+            android:layout_height="38dp"
             android:ems="7"
             android:gravity="center"
+            android:hint="사이즈(500~20000GB) 입력"
             android:inputType="number"
-            android:hint="사이즈(GB) 입력"
             android:textColor="@color/검회색글자"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@+id/txt_nas_tarSize_change_back"
