@@ -38,7 +38,6 @@ public class ServerAdapter extends RecyclerView.Adapter {
     Handler handler = new Handler(Looper.getMainLooper());
 
 
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

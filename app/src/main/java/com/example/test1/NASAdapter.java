@@ -2,18 +2,27 @@ package com.example.test1;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +33,8 @@ public class NASAdapter extends RecyclerView.Adapter {
     private SparseBooleanArray selectedItems = new SparseBooleanArray();
     // 직전에 클릭됐던 Item의 position
     private int prePosition = -1;
+    APIcall_NAS apIcall_nas = new APIcall_NAS();
+    Handler handler = new Handler(Looper.getMainLooper());
 
     @NonNull
     @Override
@@ -35,11 +46,42 @@ public class NASAdapter extends RecyclerView.Adapter {
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
-
         messageViewHolder.onBind(listData.get(position), position);
 
+        Button ch = ((MessageViewHolder) holder).button_update;
+        ch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                final EditText tmp = (EditText) ((MessageViewHolder) holder).data;
+                final String id = ((MessageViewHolder) holder).id;
+                final String size = tmp.getText().toString();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            final String s = apIcall_nas.updateVolume(id, size);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(v.getContext(), s, Toast.LENGTH_LONG).show();
+                                    tmp.setText("");
+                                }
+                            });
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        } catch (NoSuchAlgorithmException ex) {
+                            ex.printStackTrace();
+                        } catch (InvalidKeyException ex) {
+                            ex.printStackTrace();
+                        } catch (ParseException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
     }
 
     @Override
@@ -54,6 +96,7 @@ public class NASAdapter extends RecyclerView.Adapter {
 
     private class MessageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        public String id;
         // API로 받아올 값들
         private ImageView imageView;
         private TextView name;
@@ -62,13 +105,14 @@ public class NASAdapter extends RecyclerView.Adapter {
         private TextView curSize;
         private TextView protocol;
         private NASData nData;
+        private EditText data;
+
         // API 여부와 관계없이 고정된 뷰들
         private ConstraintLayout item;
-
+        public Button button_update;
 
         // 포지션
         private int position;
-
 
         public MessageViewHolder(View view) {
             super(view);
@@ -79,12 +123,14 @@ public class NASAdapter extends RecyclerView.Adapter {
             zoneName = view.findViewById(R.id.txt_service_nas_zone);
             tarSize = view.findViewById(R.id.txt_service_nas_tarSize);
             item = view.findViewById(R.id.lay_service_nas_item);
+            button_update = view.findViewById(R.id.btn_nas_tarSize_change);
+            data = view.findViewById(R.id.txt_nas_tarSize_change);
+
         }
 
         void onBind(NASData data, int position) {
             this.nData = data;
             this.position = position;
-
 
             imageView.setImageResource(data.getResId());
             name.setText(data.getName());
@@ -92,6 +138,7 @@ public class NASAdapter extends RecyclerView.Adapter {
             tarSize.setText(data.getTarSize());
             zoneName.setText(data.getZoneName());
             protocol.setText(data.getProtocol());
+            id = data.getId();
 
             changeVisibility(selectedItems.get(position));
 
@@ -129,6 +176,7 @@ public class NASAdapter extends RecyclerView.Adapter {
 
         /**
          * 클릭된 Item의 상태 변경
+         *
          * @param isExpanded Item을 펼칠 것인지 여부
          */
         private void changeVisibility(final boolean isExpanded) {

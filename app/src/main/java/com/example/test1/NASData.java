@@ -49,10 +49,19 @@ public class NASData {
         this.resId = resId;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     private String name;
     private String zoneName;
     private String tarSize;
     private String curSize;
     private String protocol;
+    private String id;
     private int resId;
 }

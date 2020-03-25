@@ -35,7 +35,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
     APIcall_NAS api_nas = new APIcall_NAS();
 
     final int[] list_size = new int[1];
-
+    final ArrayList<String[]>[] list = new ArrayList[]{new ArrayList<String[]>()};//NAS 정보를 받아올 ArrayList-thread내 접근을 위해 배열로 변경
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +52,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
         final String[] curSize = new String[100];
         final String[] tarSize = new String[100];
         final String[] protocol = new String[100];
+        final String[] id = new String[100];
 
         btn_zone = (Button) findViewById(R.id.btn_nas_zone_search);
         btn_zone.setOnClickListener(this);
@@ -62,15 +63,13 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
         txt_zone.setText(API.getZone());
 
         new Thread(new Runnable() {
-            ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
-
             @Override
             public void run() {
                 try {
 //                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
                     API.setState("all");//default 값 설정 - 추후 UI변경 시 수정
-                    list = api_nas.listNas();//이름, 위치, 신청용량, 현재 사용량, 프로토콜
-                    list_size[0] = list.size();
+                    list[0] = api_nas.listNas();//이름, 위치, 신청용량, 현재 사용량, 프로토콜
+                    list_size[0] = list[0].size();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InvalidKeyException e) {
@@ -91,19 +90,27 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
                 handler.post(new Runnable() {
                     @Override
                     public void run() {//UI접근
-                        for (int i = 0; i < list.size(); i++) {
-                            curSize[i] = list.get(i)[2];
-                            tarSize[i] = list.get(i)[3];
-                            name[i] = list.get(i)[0];
-                            zonename[i] = list.get(i)[1];
-                            protocol[i] = list.get(i)[4];
+                        for (int i = 0; i < list[0].size(); i++) {
+                            curSize[i] = list[0].get(i)[2];
+                            tarSize[i] = list[0].get(i)[3];
+                            name[i] = list[0].get(i)[0];
+                            zonename[i] = list[0].get(i)[1];
+                            protocol[i] = list[0].get(i)[4];
+                            id[i] = list[0].get(i)[5];
                         }
-                        getData_service_nas(name, zonename, curSize, tarSize, protocol);
+                        getData_service_nas(name, zonename, curSize, tarSize, protocol,id);
                     }
                 });
             }
         }).start();
 
+    }
+
+    /**
+     * @brief 용량변경 처리 함수
+     */
+    public void Updatevolume(View v) {
+        Button btn_change = (Button) findViewById(R.id.btn_nas_tarSize_change);
     }
 
     @Override
@@ -141,13 +148,14 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
         recyclerView.setAdapter(nsAdapter);
     }
 
-    private void getData_service_nas(String[] name, String[] zonename, String[] curSize, String[] tarSize, String[] protocol) {
+    private void getData_service_nas(String[] name, String[] zonename, String[] curSize, String[] tarSize, String[] protocol, String[] id) {
         // 임의의 데이터입니다.
         List<String> listName = Arrays.asList(name);
         List<String> listZone = Arrays.asList(zonename);
         List<String> listCurSize = Arrays.asList(curSize);
         List<String> listTarSize = Arrays.asList(tarSize);
         List<String> listProtocol = Arrays.asList(protocol);
+        List<String> listId = Arrays.asList(id);
 
         Integer[] tmp = new Integer[list_size[0]];
 
@@ -166,6 +174,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
             nData.setCurSize(listCurSize.get(i));
             nData.setTarSize(listTarSize.get(i));
             nData.setProtocol(listProtocol.get(i));
+            nData.setId(listId.get(i));
             // 각 값이 들어간 data를 adapter에 추가합니다.
             nsAdapter.addItem(nData);
         }
