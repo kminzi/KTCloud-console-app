@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBAdapter extends RecyclerView.Adapter {
+public class MoniAlarmAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
-    private List<DBData> listData = new ArrayList<>();
+    private List<MoniAlarmData> listData = new ArrayList<>();
     private SparseBooleanArray selectedItems = new SparseBooleanArray();
     // 직전에 클릭됐던 Item의 position
     private int prePosition = -1;
@@ -29,7 +29,7 @@ public class DBAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.mContext = parent.getContext();
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_service_db, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_moni_alarm, parent, false);
         return new MessageViewHolder(view);
     }
 
@@ -47,7 +47,7 @@ public class DBAdapter extends RecyclerView.Adapter {
         return listData.size();
     }
 
-    void addItem(DBData data) {
+    void addItem(MoniAlarmData data) {
         // 외부에서 item을 추가시킬 함수입니다.
         listData.add(data);
     }
@@ -58,12 +58,11 @@ public class DBAdapter extends RecyclerView.Adapter {
         private ImageView imageView;
         private TextView name;
         private TextView state;
-        private TextView created;
-        private TextView zoneName;
-        private TextView DBstate;
-        private TextView dev;
-        private TextView size;
-        private DBData dbData;
+        private TextView onoff;
+        private TextView condi;
+        private TextView act;
+        private TextView type;
+        private MoniAlarmData maData;
 
         // API 여부와 관계없이 고정된 뷰들
         private ConstraintLayout item;
@@ -72,50 +71,46 @@ public class DBAdapter extends RecyclerView.Adapter {
         // 포지션
         private int position;
 
+
         public MessageViewHolder(View view) {
             super(view);
-            imageView = view.findViewById(R.id.img_service_db);
-            name = view.findViewById(R.id.txt_db_service_name);
-            state = view.findViewById(R.id.txt_service_db_state);
-            created = view.findViewById(R.id.txt_service_db_date);
-            zoneName = view.findViewById(R.id.txt_service_db_zone);
-            DBstate = view.findViewById(R.id.txt_service_db_DBstate);
-            dev = view.findViewById(R.id.txt_service_db_dev);
-            size = view.findViewById(R.id.txt_service_db_size);
-            item = view.findViewById(R.id.lay_service_db_item);
+            imageView = view.findViewById(R.id.img_moni_alarm);
+            name = view.findViewById(R.id.txt_alarm_moni_name);
+            state = view.findViewById(R.id.txt_moni_alarm_state);
+            onoff = view.findViewById(R.id.txt_moni_alarm_onoff);
+            condi = view.findViewById(R.id.txt_moni_alarm_opt);
+            act = view.findViewById(R.id.txt_moni_alarm_act);
+            type = view.findViewById(R.id.txt_moni_alarm_type);
+            item = view.findViewById(R.id.lay_moni_alarm_item);
         }
 
-        void onBind(DBData data, int position) {
-            this.dbData = data;
+        void onBind(MoniAlarmData data, int position) {
+            this.maData = data;
             this.position = position;
 
 
             imageView.setImageResource(data.getResId());
             name.setText(data.getName());
             state.setText(data.getState());
-            dev.setText(data.getDev());
-            size.setText(data.getSize());
-            zoneName.setText(data.getZoneName());
-            DBstate.setText(data.getDBstate());
-            created.setText(data.getCreated());
+            onoff.setText(data.getOnoff());
+            condi.setText(data.getCondi());
+            act.setText(data.getAct());
+            type.setText(data.getType());
 
             changeVisibility(selectedItems.get(position));
 
             imageView.setOnClickListener(this);
             name.setOnClickListener(this);
             state.setOnClickListener(this);
-            created.setOnClickListener(this);
-            zoneName.setOnClickListener(this);
-            dev.setOnClickListener(this);
-            DBstate.setOnClickListener(this);
-            size.setOnClickListener(this);
+            onoff.setOnClickListener(this);
+            condi.setOnClickListener(this);
         }
 
         //list click해서 접고 펼치기
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.txt_db_service_name:
+                case R.id.txt_alarm_moni_name:
                     if (selectedItems.get(position)) {
                         // 펼쳐진 Item을 클릭 시
                         selectedItems.delete(position);
@@ -141,7 +136,7 @@ public class DBAdapter extends RecyclerView.Adapter {
          */
         private void changeVisibility(final boolean isExpanded) {
             // height 값을 dp로 지정해서 넣고싶으면 아래 소스를 이용
-            int dpValue = 214;
+            int dpValue = 148;
             float d = mContext.getResources().getDisplayMetrics().density;
             int height = (int) (dpValue * d);
 
@@ -154,7 +149,6 @@ public class DBAdapter extends RecyclerView.Adapter {
                 public void onAnimationUpdate(ValueAnimator animation) {
 
                     int value = (int) animation.getAnimatedValue();
-
                     item.getLayoutParams().height = value;
                     item.requestLayout();
                     item.setVisibility(isExpanded ? View.VISIBLE : View.GONE);

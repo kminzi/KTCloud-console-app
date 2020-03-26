@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +30,8 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
     private LBAdapter lbAdpater;
     private List<LBData> lData;
     private Button btn_zone;
+    private Button btn_ser;
+    private Button btn_ser_img;
     private EditText txt_zone;
 
     final int[] list_size = new int[1];
@@ -143,6 +146,14 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
         lbAdpater = new LBAdapter();
         recyclerView.setAdapter(lbAdpater);
     }
+
+//    //액션버튼 메뉴 액션바에 집어 넣기
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//        return true;
+//    }
+
 
     private void getData_service_lb(String[] name, String[] lbType, String[] lbOpt, String[] ip, String[] port, String[] server, String[] zonename) {
         // 임의의 데이터입니다.

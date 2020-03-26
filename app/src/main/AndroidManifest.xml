@@ -30,6 +30,9 @@
         <activity android:name=".service_autoscaling" />
         <activity android:name=".Payment" />
         <activity android:name=".Monitoring" />
+        <activity android:name=".Monitoring_alarm"/>
+        <activity android:name=".Monitoring_Messaging"/>
+        <activity android:name=".Monitoring_Metric"/>
         <activity android:name=".service_disk" />
         <activity android:name=".service_server" />
         <activity android:name=".Dashboard" />

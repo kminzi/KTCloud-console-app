@@ -2,9 +2,13 @@ package com.example.test1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -114,6 +118,119 @@ public class Monitoring extends AppCompatActivity {
             }
         }).start();
 
+        // 메트릭 이동
+        Button b = (Button)findViewById(R.id.btn_moni_main_metric);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(), // 현재 화면의 제어권자
+                        Monitoring_Metric.class); // 다음 넘어갈 클래스 지정
+                startActivity(intent); // 다음 화면으로 넘어간다
+            }
+        });
+
+        // 알람 이동
+        Button al = (Button)findViewById(R.id.btn_moni_main_alarm);
+        al.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(), // 현재 화면의 제어권자
+                        Monitoring_alarm.class); // 다음 넘어갈 클래스 지정
+                intent.putExtra("btn_value", "전체");
+                startActivity(intent); // 다음 화면으로 넘어간다
+            }
+        });
+
+        // 메시지 이동
+        msg_btn();
+
+        // 알람 상황별 이동
+        alarm_btn();
+    }
+
+//    //액션버튼 메뉴 액션바에 집어 넣기
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//        return true;
+//    }
+
+    public void msg_btn() {
+        Button msg = (Button)findViewById(R.id.btn_moni_main_msg);
+        msg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(), // 현재 화면의 제어권자
+                        Monitoring_Messaging.class); // 다음 넘어갈 클래스 지정
+                intent.putExtra("btn_value", "전체");
+                startActivity(intent); // 다음 화면으로 넘어간다
+            }
+        });
+
+        Button tmsg = (Button)findViewById(R.id.tbtn_moni_main_msg);
+        tmsg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(), // 현재 화면의 제어권자
+                        Monitoring_Messaging.class); // 다음 넘어갈 클래스 지정
+                intent.putExtra("btn_value", "전체");
+                startActivity(intent); // 다음 화면으로 넘어간다
+            }
+        });
+    }
+
+    public void alarm_btn() {
+        Button occ = (Button)findViewById(R.id.btn_moni_alarm_occ);
+        occ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(), // 현재 화면의 제어권자
+                        Monitoring_alarm.class); // 다음 넘어갈 클래스 지정
+                intent.putExtra("btn_value", "발생");
+                startActivity(intent); // 다음 화면으로 넘어간다
+            }
+        });
+
+        Button data = (Button)findViewById(R.id.btn_moni_alarm_data);
+        data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(), // 현재 화면의 제어권자
+                        Monitoring_alarm.class); // 다음 넘어갈 클래스 지정
+                intent.putExtra("btn_value", "데이터 부족");
+                startActivity(intent); // 다음 화면으로 넘어간다
+            }
+        });
+
+        Button nor = (Button)findViewById(R.id.btn_moni_alarm_normal);
+        nor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(), // 현재 화면의 제어권자
+                        Monitoring_alarm.class); // 다음 넘어갈 클래스 지정
+                intent.putExtra("btn_value", "안정");
+                startActivity(intent); // 다음 화면으로 넘어간다
+            }
+        });
+
+        Button met = (Button)findViewById(R.id.btn_moni_alarm_metric);
+        met.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(
+                        getApplicationContext(), // 현재 화면의 제어권자
+                        Monitoring_alarm.class); // 다음 넘어갈 클래스 지정
+                intent.putExtra("btn_value", "전체");
+                startActivity(intent); // 다음 화면으로 넘어간다
+            }
+        });
     }
 
 

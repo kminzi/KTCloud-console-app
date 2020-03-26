@@ -2,26 +2,36 @@ package com.example.test1;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class LBAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     private List<LBData> listData = new ArrayList<>();
     private SparseBooleanArray selectedItems = new SparseBooleanArray();
+    private Button btn_ser_img;
+    private LBpopupAdapter adapter;
+
     // 직전에 클릭됐던 Item의 position
     private int prePosition = -1;
 
@@ -30,9 +40,9 @@ public class LBAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.mContext = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_service_lb, parent, false);
+
         return new MessageViewHolder(view);
     }
-
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -52,7 +62,11 @@ public class LBAdapter extends RecyclerView.Adapter {
         listData.add(data);
     }
 
-    private class MessageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    void rmItem() {
+        listData.clear();
+    }
+
+    private class MessageViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
 
         // API로 받아올 값들
         private ImageView imageView;
@@ -83,7 +97,6 @@ public class LBAdapter extends RecyclerView.Adapter {
             zoneName = view.findViewById(R.id.txt_service_lb_zone);
             ip = view.findViewById(R.id.txt_service_lb_ip);
             port = view.findViewById(R.id.txt_service_lb_port);
-
             item = view.findViewById(R.id.lay_service_lb_item);
         }
 
@@ -135,7 +148,42 @@ public class LBAdapter extends RecyclerView.Adapter {
                     break;
             }
 
+            if (v == btn_ser_img) {
+
+                String[] serSubject = {"서버명 : ","Public IP : ", "Public Port : ", "Throughput : ", "Server connections : ", "TTFB : ", "Request : ", "상태 : ", "\n"};
+
+                // 사용자가 클릭할 때 LB 적용 서버 정보 받아오면 됌
+                int serNum = 2;  // 적용 서버 개수
+
+                // 적용 서버가 많은 경우 아래와 같이 serContent 배열을 늘려주면 됌
+                String[] serContent = {"테스트서버","127.0.0.1", "10001", "0", "0", "1", "0", "DOWN", "",
+                        "테스트서버2","127.0.0.1", "10001", "0", "0", "1", "0", "DOWN", ""};
+
+
+                String[] serInfo = new String[serSubject.length * serNum];
+
+                int sub_idx = 0;
+                for (int i = 0; i < serSubject.length * serNum; i++) {
+                    serInfo[i] = serSubject[sub_idx++] + serContent[i];
+                    if (sub_idx == serSubject.length) sub_idx = 0;
+                }
+
+                AlertDialog.Builder sDialog = new AlertDialog.Builder(mContext);
+
+
+                sDialog.setTitle("적용 서버 상세 정보 리스트")
+                        .setItems(serInfo, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setCancelable(true)
+                        .show();
+
+            }
         }
+
 
         /**
          * 클릭된 Item의 상태 변경
@@ -143,7 +191,7 @@ public class LBAdapter extends RecyclerView.Adapter {
          */
         private void changeVisibility(final boolean isExpanded) {
             // height 값을 dp로 지정해서 넣고싶으면 아래 소스를 이용
-            int dpValue = 184;
+            int dpValue = 214;
             float d = mContext.getResources().getDisplayMetrics().density;
             int height = (int) (dpValue * d);
 
@@ -160,10 +208,13 @@ public class LBAdapter extends RecyclerView.Adapter {
                     item.getLayoutParams().height = value;
                     item.requestLayout();
                     item.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+
                 }
             });
             // Animation start
             va.start();
+            btn_ser_img = (Button)item.findViewById(R.id.btn_service_lb_serInfo_img);
+            btn_ser_img.setOnClickListener(this);
         }
     }
 }
