@@ -2,40 +2,90 @@ package com.example.test1;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Monitoring_Messaging extends AppCompatActivity {
     private TopicAdapter tpAdapter;
     private List<TopicData> tpData;
+    APIcall_main API = (APIcall_main) getApplication();
+    APIcall_Messaging apIcall_messaging = new APIcall_Messaging();
+    final int[] list_size = new int[1];
 
     protected void onCreate(Bundle savedInstanceState) {
-        //액션바 타이틀 변경하기
         super.onCreate(savedInstanceState);
         setContentView(R.layout.moni_messaging);
+        final Handler handler = new Handler();
 
-        getSupportActionBar().setTitle("KT Cloud");
         //액션바 배경색 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
         init();
 
-        String[] name = {"topic1", "topic2", "topic3"};
-        String[] pub = {"pub1", "pub2", "pub3"};
-        String[] pro = {"1.1", "1.1", "1.1"};
-        String[] con = {"설명1", "설명2", "설명3"};
-        String[] rec = {"리시버1", "리시버2", "리시버3"};
-        getData(name, pub, pro, con, rec);
+        final String[] name = new String[200];
+        final String[] pub = new String[200];
+        final String[] pro = new String[200];
+        final String[] con = new String[200];
+        final String[] rec = new String[200];
+
+        new Thread(new Runnable() {
+            ArrayList<String[]> list = new ArrayList<String[]>();//ALARM 정보를 받아올 ArrayList
+
+            @Override
+            public void run() {
+                try {
+                    list = apIcall_messaging.listSubscriptions();
+                    list_size[0] = list.size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (Exception e){
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "알람이 없습니다", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {//UI접근
+                        for (int i = 0; i < list.size(); i++) {
+                            pub[i] = list.get(i)[1];
+                            pro[i] = list.get(i)[2];
+                            name[i] = list.get(i)[0];
+                            con[i] = list.get(i)[3];
+                            rec[i] = list.get(i)[4];
+                        }
+                        getData(name, pub, pro, con, rec);
+                    }
+                });
+            }
+        }).start();
 
     }
 
@@ -66,14 +116,14 @@ public class Monitoring_Messaging extends AppCompatActivity {
         List<String> listCon = Arrays.asList(con);
         List<String> listRec = Arrays.asList(rec);
 
-        Integer [] tmp = new Integer[name.length];
+        Integer [] tmp = new Integer[list_size[0]];
         for(int i = 0; i < tmp.length; i++) {
             tmp[i] = R.drawable.alarm;
         }
 
         List<Integer> listResId = Arrays.asList(tmp);
 
-        for (int i = 0; i < listName.size(); i++) {
+        for (int i = 0; i < list_size[0]; i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             TopicData data = new TopicData();
             data.setName(listName.get(i));

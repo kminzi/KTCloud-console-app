@@ -11,6 +11,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -21,7 +22,7 @@ public class APIcall_watch extends APIcall_main {
     private static String namespace = "ucloud/server";
     private static String period = "60";
     private static String unit = "Bytes";
-    private static String statevalue = "ALL"; // 출력할 알람 상태 저장 변수
+//    private static String statevalue = "ALL"; // 출력할 알람 상태 저장 변수
 
 
     private static HashMap<String, HashMap<String, String>> metricList;
@@ -290,10 +291,6 @@ public class APIcall_watch extends APIcall_main {
         return id;
 
     }
-
-
-
-
 
     /**
      * @throws NoSuchAlgorithmException
@@ -589,18 +586,18 @@ public class APIcall_watch extends APIcall_main {
 
     }
 
-    /**
-     * @throws ParseException
-     * @brief 조회할 알람 상태를 입력받는 함수
-     **/
-    public static void setAlarmState() {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("조회할 알람 상태 입력(ALL, INSUFFICIENT_DATA, OK, ALARM): ");
-        statevalue = sc.next();
-
-    }
+//    /**
+//     * @throws ParseException
+//     * @brief 조회할 알람 상태를 입력받는 함수
+//     **/
+//    public static void setAlarmState() {
+//
+//        Scanner sc = new Scanner(System.in);
+//
+//        System.out.print("조회할 알람 상태 입력(ALL, INSUFFICIENT_DATA, OK, ALARM): ");
+//        statevalue = sc.next();
+//
+//    }
 
     /**
      * @throws ParseException
@@ -624,33 +621,25 @@ public class APIcall_watch extends APIcall_main {
      * @throws InvalidKeyException
      * @throws IOException
      * @throws ParseException
+     * @param statevalue 사용자가 보기 원하는 알람의 상태 - ALL, INSUFFICIENT_DATA, OK, ALARM
+     * @return 알람의 이름, 상태, 알람 발생 조건, 액션 수행 여부, 수행 액션, 구분을 담은 arraylist
      * @brief 메트릭에 대해 사용자 정의 알람 리스트 출력을 위한 함수
      **/
-    public static void listAlarms() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public static ArrayList<String[]> listAlarms(String statevalue) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 7;
 
-
-        setAlarmState();
-
+        //ALL, INSUFFICIENT_DATA, OK, ALARM
 
         TreeMap<String, String> request = new TreeMap<String, String>();
-
 
         request = generateRequire(button, request);
 
         request.put("response", "json");
         request.put("apiKey", getApikey());
 
-
         if(!statevalue.equals("ALL")) request.put("statevalue", statevalue);
 
-
-
         String req_message = generateReq(request);
-
-        System.out.println("Request Message is...");
-        System.out.println(req_message);
-        System.out.println();
 
         JSONObject obj =  readJsonFromUrl(req_message);
 
@@ -660,14 +649,17 @@ public class APIcall_watch extends APIcall_main {
         JSONObject alarm;
         JSONObject dimensions;
         JSONArray dimension;
+        JSONObject alarmactions;
+        JSONArray alarmaction;
 
         System.out.println("총 alarm 수: "+ parse_listalarmsresponse.get("count"));
 
+        ArrayList<String[]> list = new ArrayList<String[]>();
         for(int i = 0 ; i <  parse_alarm.size(); i++) {
             alarm = (JSONObject) parse_alarm.get(i);
 
-            System.out.println("#########################################");
-            System.out.println("알람명: "+  alarm.get("alarmname"));
+//            System.out.println("#########################################");
+//            System.out.println("알람명: "+  alarm.get("alarmname"));
 
             String state = String.valueOf(alarm.get("statevalue"));
             if(state.equals("OK")) state = "안정";
@@ -676,7 +668,7 @@ public class APIcall_watch extends APIcall_main {
 
             String comparisonoperator = String.valueOf(alarm.get("comparisonoperator"));
             if(comparisonoperator.equals("GreaterThanThreshold")) comparisonoperator = "보다 클 때 ";
-            else if(comparisonoperator.equals("GreaterThanOrEqualToThreshold")) comparisonoperator = "보다 크거나 같을  ";
+            else if(comparisonoperator.equals("GreaterThanOrEqualToThreshold")) comparisonoperator = "보다 크거나 같을 때 ";
             else if(comparisonoperator.equals("LessThanThreshold")) comparisonoperator = "보다 작을 때 ";
             else if(comparisonoperator.equals("LessThanOrEqualToThreshold")) comparisonoperator = "보다 작거나 같을 때 ";
 
@@ -702,16 +694,29 @@ public class APIcall_watch extends APIcall_main {
                 else if(dimensionName.equals("LB")) namespace = "CloudLB:LB";
             }
 
+//            System.out.println("상태: "+  state );
+//            System.out.println("알람 발생조건: "+  alarm.get("metricname") + " " + alarm.get("statistic") + "이(가) " + alarm.get("threshold") + alarm.get("unit") + comparisonoperator + "알람이 발생한다.");
+            String sr = alarm.get("metricname") + " " + alarm.get("statistic") + "이(가) " + alarm.get("threshold") + alarm.get("unit") + comparisonoperator + "알람이 발생한다.";
+//            System.out.println("액션 수행 여부: "+  (String.valueOf(alarm.get("actionsenabled")).equals("true")? "활성화" : "비활성화" ));
+            String sy = (String.valueOf(alarm.get("actionsenabled")).equals("true")? "활성화" : "비활성화" );
+//            System.out.println("구분: "+  namespace );
 
-            System.out.println("상태: "+  state );
-            System.out.println("알람 발생조건: "+  alarm.get("metricname") + " " + alarm.get("statistic") + "이(가) " + alarm.get("threshold") + alarm.get("unit") + comparisonoperator + "알람이 발생한다.");
-            System.out.println("액션 수행 여부: "+  (String.valueOf(alarm.get("actionsenabled")).equals("true")? "활성화" : "비활성화" ));
-            System.out.println("구분: "+  namespace );
+            alarmactions = (JSONObject) alarm.get("alarmactions");
+            alarmaction = (JSONArray) alarmactions.get("alarmaction");
+            JSONObject alarmactionObj ;
 
+            List<String> actionList = new ArrayList<String>();
 
+            String s="";
+//            System.out.print("액션 종류: " );
+            for(int k=0; k < alarmaction.size(); k++) {
+                s += (alarmaction.get(k)	+ " ");
+            }
 
+            //이름, 상태, 알람 발생 조건, 액션 수행 여부, 수행 액션, 구분
+            list.add(new String[]{(String) alarm.get("alarmname"), state, sr, sy, s, namespace});
         }
-
+        return list;
     }
 
     /**
@@ -721,12 +726,10 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 메트릭에 대한 알람 현황(갯수) 출력
      **/
-    public static void listAlarmStatus() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public static int[] listAlarmStatus() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 7;
 
         TreeMap<String, String> request = new TreeMap<String, String>();
-
-
         request = generateRequire(button, request);
 
         request.put("response", "json");
@@ -734,10 +737,10 @@ public class APIcall_watch extends APIcall_main {
 
 
         String req_message = generateReq(request);
-
-        System.out.println("Request Message is...");
-        System.out.println(req_message);
-        System.out.println();
+//
+//        System.out.println("Request Message is...");
+//        System.out.println(req_message);
+//        System.out.println();
 
         JSONObject obj =  readJsonFromUrl(req_message);
 
@@ -749,28 +752,18 @@ public class APIcall_watch extends APIcall_main {
 
         System.out.println("총 alarm 수: "+ parse_listalarmsresponse.get("count"));
 
-        int ok_cnt = 0;
-        int alarm_cnt = 0;
-        int insufficientData_cnt = 0;
+
+        int cnt[] = new int[3];
 
         for(int i = 0 ; i <  parse_alarm.size(); i++) {
-
-
             alarm = (JSONObject) parse_alarm.get(i);
 
             String state = String.valueOf(alarm.get("statevalue"));
-            if(state.equals("OK")) ok_cnt++;
-            else if(state.equals("ALARM")) alarm_cnt++;
-            else if(state.equals("INSUFFICIENT_DATA")) insufficientData_cnt++;
-
-
+            if(state.equals("OK")) cnt[2]++;
+            else if(state.equals("ALARM")) cnt[0]++;
+            else if(state.equals("INSUFFICIENT_DATA")) cnt[1]++;
         }
-
-        System.out.println("발생: "+ alarm_cnt);
-        System.out.println("데이터 부족: "+ insufficientData_cnt);
-        System.out.println("안정: "+ ok_cnt);
-
-
+        return cnt;
     }
 
 
@@ -791,12 +784,11 @@ public class APIcall_watch extends APIcall_main {
         request.put("response", "json");
         request.put("apiKey", getApikey());
 
-
         String req_message = generateReq(request);
-
-        System.out.println("Request Message is...");
-        System.out.println(req_message);
-        System.out.println();
+//
+//        System.out.println("Request Message is...");
+//        System.out.println(req_message);
+//        System.out.println();
 
         JSONObject obj =  readJsonFromUrl(req_message);
 
@@ -808,12 +800,12 @@ public class APIcall_watch extends APIcall_main {
         for(int i = 0 ; i <  parse_alarm.size(); i++) {
 
             alarm = (JSONObject) parse_alarm.get(i);
+            String s="";
 
             String state = String.valueOf(alarm.get("statevalue"));
             if(state.equals("ALARM")) {
-                System.out.println("[Watch]" + String.valueOf(alarm.get("metricname")) + " " + String.valueOf(alarm.get("alarmname") + "이 발생했습니다."));
+                s = "[Watch]" + String.valueOf(alarm.get("metricname")) + " " + String.valueOf(alarm.get("alarmname") + "이 발생했습니다.");
             }
-
         }
 
 

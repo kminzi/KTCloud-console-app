@@ -126,51 +126,27 @@ public class APIcall_LB extends APIcall_main{
         int button = 17;
 
         Scanner sc = new Scanner(System.in);
+        System.out.print("등록된 웹 서버를 조회할 LB id 입력: ");
+        String loadbalancerid = sc.next();
 
-//        System.out.print("등록된 웹 서버를 조회할 LB 이름 입력: ");
+        System.out.print("등록된 웹 서버를 조회할 zone id 입력: ");
+        String zoneid = sc.next();
 
-        String lbNname = sc.next();
 
-
-        // 먼저 LB 리스트 조회해서 해당 이름의 LB id를 받아옴
         TreeMap<String, String> request = new TreeMap<String, String>();
-        request = generateRequire(16, request);
+        request = generateRequire(button, request);
 
         request.put("response", "json");
         request.put("apiKey", getApikey());
-        request.put("name", lbNname);
+        request.put("loadbalancerid", loadbalancerid);
 
 
         String req_message = generateReq(request);
 
-//        System.out.println("Request Message is...");
-//        System.out.println(req_message);
+        System.out.println("Request Message is...");
+        System.out.println(req_message);
 
         JSONObject obj =  readJsonFromUrl(req_message);
-
-        JSONObject parse_listloadbalancersresponse = (JSONObject) obj.get("listloadbalancersresponse");
-
-        JSONArray parse_loadbalancer = (JSONArray) parse_listloadbalancersresponse.get("loadbalancer");
-
-        JSONObject loadbalancer = (JSONObject) parse_loadbalancer.get(0);
-
-        String loadbalancerid = String.valueOf(loadbalancer.get("loadbalancerid"));
-        String zoneid = String.valueOf(loadbalancer.get("zoneid"));
-
-        // listLoadBalancerWebServers api url 생성 시작
-        request.clear();
-        request = generateRequire(button, request);
-
-        request.put("response", "json");
-        request.put("apiKey",getApikey());
-        request.put("loadbalancerid", loadbalancerid);
-
-        req_message = generateReq(request);
-
-//        System.out.println("Request Message is...");
-//        System.out.println(req_message);
-
-        obj =  readJsonFromUrl(req_message);
 
         JSONObject parse_listLoadBalancerWebServersresponse = (JSONObject) obj.get("listloadbalancerwebserversresponse");
 

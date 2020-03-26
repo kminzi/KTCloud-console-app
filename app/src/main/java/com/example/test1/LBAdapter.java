@@ -149,7 +149,6 @@ public class LBAdapter extends RecyclerView.Adapter {
             }
 
             if (v == btn_ser_img) {
-
                 String[] serSubject = {"서버명 : ","Public IP : ", "Public Port : ", "Throughput : ", "Server connections : ", "TTFB : ", "Request : ", "상태 : ", "\n"};
 
                 // 사용자가 클릭할 때 LB 적용 서버 정보 받아오면 됌

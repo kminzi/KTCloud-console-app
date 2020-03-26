@@ -2,38 +2,52 @@ package com.example.test1;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapter maAdapter;
     private List<MoniAlarmData> maData;
+    APIcall_main API = (APIcall_main) getApplication();
+    APIcall_watch apIcall_watch = new APIcall_watch();
+    final int[] list_size = new int[1];
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.moni_watch_alarm);
+        final Handler handler = new Handler();
 
         //액션바 배경색 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
         init();
 
-        String[] state = {"안정", "알람발생", "안정"};
-        String[] name = {"ala1", "ala2", "ala3"};
-        String[] condi = {"메모리릭", "메모리릭", "메모리릭"};
-        String[] onoff = {"활성", "비활성", "활성"};
-        String[] act = {"이메일", "폰", "이메일"};
-        String[] type = {"모든 서버 통합", "모든 서버 통합", "모든 서버 통합"};
-        getData(name, state, condi, onoff,act, type);
+        final String[] state = new String[200];
+        final String[] name =  new String[200];
+        final String[] condi =  new String[200];
+        final String[] onoff =  new String[200];
+        final String[] act =  new String[200];
+        final String[] type =  new String[200];
+
+        final String[] statevalue = new String[1];
+
         menu_btn();
 
         Button btn_status = (Button) findViewById(R.id.btn_moni_alarm_status_sel);
@@ -45,6 +59,56 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
             value = "전체";
         }
         btn_status.setText(value);
+
+        //ALL, INSUFFICIENT_DATA, OK, ALARM
+        switch(value){
+            case "전체" : statevalue[0] = "ALL"; break;
+            case "발생" : statevalue[0] = "ALARM"; break;
+            case "안정" : statevalue[0] = "OK"; break;
+            case "데이터 부족" : statevalue[0] = "INSUFFICIENT_DATA"; break;
+        }
+
+        new Thread(new Runnable() {
+            ArrayList<String[]> list = new ArrayList<String[]>();//ALARM 정보를 받아올 ArrayList
+
+            @Override
+            public void run() {
+                try {
+                    list = apIcall_watch.listAlarms(statevalue[0]);
+                    list_size[0] = list.size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (Exception e){
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "알람이 없습니다", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {//UI접근
+                        for (int i = 0; i < list.size(); i++) {
+                            state[i] = list.get(i)[1];
+                            condi[i] = list.get(i)[2];
+                            name[i] = list.get(i)[0];
+                            onoff[i] = list.get(i)[3];
+                            act[i] = list.get(i)[4];
+                            type[i] = list.get(i)[5];
+                        }
+                        getData(name, state, condi, onoff,act, type);
+                    }
+                });
+            }
+        }).start();
     }
 
 //    //액션버튼 메뉴 액션바에 집어 넣기
@@ -112,14 +176,14 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
         List<String> listAct = Arrays.asList(act);
         List<String> listType = Arrays.asList(type);
 
-        Integer [] tmp = new Integer[name.length];
+        Integer [] tmp = new Integer[list_size[0]];
         for(int i = 0; i < tmp.length; i++) {
             tmp[i] = R.drawable.ic_notifications_black_24dp;
         }
 
         List<Integer> listResId = Arrays.asList(tmp);
 
-        for (int i = 0; i < listName.size(); i++) {
+        for (int i = 0; i < list_size[0]; i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             MoniAlarmData data = new MoniAlarmData();
             data.setName(listName.get(i));

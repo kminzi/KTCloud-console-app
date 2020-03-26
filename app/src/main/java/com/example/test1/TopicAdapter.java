@@ -124,6 +124,11 @@ public class TopicAdapter extends RecyclerView.Adapter {
                     break;
             }
 
+            if (v == btn_msg || v == btn_msg_img) {
+                CustomDialog dialog = new CustomDialog(mContext);
+                dialog.callFunction(this.name.getText().toString());
+            }
+
         }
 
         /**
