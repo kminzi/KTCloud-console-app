@@ -56,7 +56,6 @@ public class Dashboard extends AppCompatActivity {
 //        progress.setSecondaryProgress(70);
 
 
-
         View buttonlayout = getLayoutInflater().inflate(R.layout.techcenter, null);
         ActionBar ab = getSupportActionBar();
         ab.setCustomView(buttonlayout);
@@ -173,6 +172,22 @@ public class Dashboard extends AppCompatActivity {
     public void DashboardClicked(View v) {
         Intent intent = new Intent(getApplicationContext(), Dashboard.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+    }
+
+    /**
+     * @brief 서버 아이콘 클릭 처리 함수
+     */
+    public void ServerClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), service_server.class);
+        startActivity(intent);
+    }
+
+    /**
+     * @brief DB 아이콘 클릭 처리 함수
+     */
+    public void DBClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), service_db.class);
         startActivity(intent);
     }
 

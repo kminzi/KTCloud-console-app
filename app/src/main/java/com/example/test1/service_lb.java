@@ -56,6 +56,7 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
         final String []ip =  new String[100];
         final String []port =  new String[100];
         final String []server =  new String[100];
+        final String []id =  new String[100];
 
         btn_zone = (Button)findViewById(R.id.btn_lb_zone_search);
         btn_zone.setOnClickListener(this);
@@ -73,7 +74,7 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
                 try {
 //                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
                     API.setState("all");//default 값 설정 - 추후 UI변경 시 수정
-                    list = apicall_lb.listLB();//LB이름, 옵션, 타입, 위치, IP, Port
+                    list = apicall_lb.listLB();//LB이름, 위치, 옵션, 타입, IP, Port, id
                     list_size[0] = list.size();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -96,15 +97,16 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
                     @Override
                     public void run() {//UI접근
                         for (int i = 0; i < list.size(); i++) {
-                            lbOpt[i] = list.get(i)[1];
-                            lbType[i] = list.get(i)[2];
+                            lbOpt[i] = list.get(i)[2];
+                            lbType[i] = list.get(i)[3];
                             name[i] = list.get(i)[0];
-                            zonename[i] = list.get(i)[3];
-                            server[i] = "추후적용";
+                            zonename[i] = list.get(i)[1];
+                            server[i] = "(상세 보기)";
                             ip[i] = list.get(i)[4];
                             port[i] = list.get(i)[5];
+                            id[i] = list.get(i)[6];
                         }
-                        getData_service_lb(name,lbType, lbOpt, ip, port, server, zonename);
+                        getData_service_lb(name,lbType, lbOpt, ip, port, server, zonename,id);
                     }
                 });
             }
@@ -155,7 +157,7 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
 //    }
 
 
-    private void getData_service_lb(String[] name, String[] lbType, String[] lbOpt, String[] ip, String[] port, String[] server, String[] zonename) {
+    private void getData_service_lb(String[] name, String[] lbType, String[] lbOpt, String[] ip, String[] port, String[] server, String[] zonename, String[] id) {
         // 임의의 데이터입니다.
         List<String> listName = Arrays.asList(name);
         List<String> listZone = Arrays.asList(zonename);
@@ -164,6 +166,7 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
         List<String> listIp = Arrays.asList(ip);
         List<String> listPort = Arrays.asList(port);
         List<String> listServer = Arrays.asList(server);
+        List<String> listId = Arrays.asList(id);
 
         Integer [] tmp = new Integer[list_size[0]];
         for(int i = 0; i < tmp.length; i++) {
@@ -183,6 +186,7 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
             lbData.setPort(listPort.get(i));
             lbData.setLBType(listLBType.get(i));
             lbData.setServer(listServer.get(i));
+            lbData.setId(listId.get(i));
             // 각 값이 들어간 data를 adapter에 추가합니다.
             lbAdpater.addItem(lbData);
         }

@@ -13,7 +13,7 @@
         android:layout_height="36dp"
         android:background="@color/검회색글자"
         android:gravity="center|left"
-        android:text="      메시지 발행"
+        android:text="      messaging 발행"
         android:textColor="@color/colorPrimary"
         android:textSize="15sp"
         android:textStyle="bold"

@@ -73,7 +73,6 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
             @Override
             public void run() {
                 try {
-                    API.setZone("Seoul-M");//default 값 설정 - UI변경되고 수정해야 함
                     API.setState("all");
                     list = api_server.listServers();
                     list_size = list.size();
@@ -217,7 +216,6 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
                         public void onClick(DialogInterface dialog, int which) {
                             EditText tmp = (EditText)findViewById(R.id.txt_server_zone_search);
                             tmp.setText(zoneItem[which]);
-
                             API.setZone((String) zoneItem[which]);
                             Intent intent = getIntent();
                             finish();

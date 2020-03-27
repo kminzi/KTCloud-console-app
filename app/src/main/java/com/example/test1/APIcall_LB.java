@@ -34,8 +34,6 @@ public class APIcall_LB extends APIcall_main{
 
         request.put("zoneid", zoneid);
 
-
-
         String req_message = generateReq(request);
 
         JSONObject obj =  readJsonFromUrl(req_message);
@@ -55,20 +53,12 @@ public class APIcall_LB extends APIcall_main{
 
                 if(String.valueOf(virtualmachine.get("id")).equals(id)) {
                     displayName = String.valueOf(virtualmachine.get("displayname"));
-					/*
-					System.out.println("(For DisplayName)Request Message is...");
-					System.out.println(req_message);
-					System.out.println("DisplayName= " + displayName);
-					System.out.println();
-					*/
                     return displayName;
                 }
-
             }
         }
         return displayName;
     }
-
 
     /**
      * @throws NoSuchAlgorithmException
@@ -88,9 +78,6 @@ public class APIcall_LB extends APIcall_main{
         request.put("apiKey", getApikey());
 
         String req_message = generateReq(request);
-//
-//        System.out.println("Request Message is...");
-//        System.out.println(req_message);
 
         JSONObject obj =  readJsonFromUrl(req_message);
 
@@ -105,14 +92,12 @@ public class APIcall_LB extends APIcall_main{
         for(int i = 0 ; i < parse_loadbalancer.size(); i++) {
             loadbalancer = (JSONObject) parse_loadbalancer.get(i);
 
-            //LB이름, 옵션, 타입, 위치, IP, Port
+            //LB이름, 위치, 옵션, 타입, IP, Port, id
             list.add(new String[]{(String) loadbalancer.get("name"),
                     (String)loadbalancer.get("zonename"), (String)loadbalancer.get("loadbalanceroption"), (String) loadbalancer.get("servicetype"),
-                    (String)loadbalancer.get("serviceip"), (String) loadbalancer.get("serviceport")});
-
+                    (String)loadbalancer.get("serviceip"), (String) loadbalancer.get("serviceport"),String.valueOf(loadbalancer.get("loadbalancerid"))});
         }
         return list;
-
     }
 
     /**
@@ -120,18 +105,20 @@ public class APIcall_LB extends APIcall_main{
      * @throws InvalidKeyException
      * @throws IOException
      * @throws ParseException
+     * @param loadbalancerid 조회할 LB의 아이디
+     * @param zone 조회할 LB가 위치한 zone의 이름
      * @brief 각 LB에 등록된 웹 서버의 정보 조희를 위한 함수
      **/
-    public static void listLBWebServers() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public static ArrayList<String[]> listLBWebServers(String loadbalancerid, String zone) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 17;
+        String zoneid = Seoul_M_zoneid;
 
-        Scanner sc = new Scanner(System.in);
-        System.out.print("등록된 웹 서버를 조회할 LB id 입력: ");
-        String loadbalancerid = sc.next();
-
-        System.out.print("등록된 웹 서버를 조회할 zone id 입력: ");
-        String zoneid = sc.next();
-
+        if(zone.equals("KOR-Central A")) zoneid = CentralA_zoneid;
+        else if (zone.equals("KOR-Central B")) zoneid = CentralB_zoneid;
+        else if (zone.equals("KOR-Seoul M"))  zoneid = Seoul_M_zoneid;
+        else if (zone.equals("KOR-Seoul M2")) zoneid = Seoul_M2_zoneid;
+        else if (zone.equals("KOR-HA"))  zoneid = HA_zoneid;
+        else if (zone.equals("US-West")) zoneid = West_zoneid;
 
         TreeMap<String, String> request = new TreeMap<String, String>();
         request = generateRequire(button, request);
@@ -140,11 +127,7 @@ public class APIcall_LB extends APIcall_main{
         request.put("apiKey", getApikey());
         request.put("loadbalancerid", loadbalancerid);
 
-
         String req_message = generateReq(request);
-
-        System.out.println("Request Message is...");
-        System.out.println(req_message);
 
         JSONObject obj =  readJsonFromUrl(req_message);
 
@@ -153,8 +136,7 @@ public class APIcall_LB extends APIcall_main{
         JSONArray parse_loadbalancerwebserver = (JSONArray) parse_listLoadBalancerWebServersresponse.get("loadbalancerwebserver");
 
         JSONObject loadbalancerwebserver;
-
-
+        ArrayList<String[]> list = new ArrayList<String[]>();
 
         for(int i = 0 ; i < parse_loadbalancerwebserver.size(); i++) {
             loadbalancerwebserver = (JSONObject) parse_loadbalancerwebserver.get(i);
@@ -162,14 +144,13 @@ public class APIcall_LB extends APIcall_main{
             // response로 받은 virtualmachineid로부터 얻은 vm id와 zoneid를 사용하여 vm명 검색 및 출력
             String name = getDisplaynameById(zoneid, String.valueOf(loadbalancerwebserver.get("virtualmachineid")));
 
-            System.out.println("서버: "+ name);
-            System.out.println("Public IP: " + loadbalancerwebserver.get("ipaddress"));
-            System.out.println("Public Port: "+ loadbalancerwebserver.get("publicport"));
-            System.out.println("Throughput: "+ loadbalancerwebserver.get("throughputrate"));
-            System.out.println("Server connections: "+ loadbalancerwebserver.get("cursrvrconnections"));
-            System.out.println("상태: "+ loadbalancerwebserver.get("state"));
-            System.out.println();
-        }
+            //서버명, ip, port, throughput, server conn, ttfb, req, 상태
+            list.add(new String[]{name,
+                    (String)loadbalancerwebserver.get("ipaddress"), (String)loadbalancerwebserver.get("publicport"), (String) loadbalancerwebserver.get("throughputrate"),
+                    (String)loadbalancerwebserver.get("cursrvrconnections"), (String) loadbalancerwebserver.get("avgsvrttfb"),
+                    (String) loadbalancerwebserver.get("requestsrate"),(String)loadbalancerwebserver.get("state")});
 
+        }
+        return list;
     }
 }

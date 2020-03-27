@@ -3,7 +3,6 @@ package com.example.test1;
 public class TopicData {
     private String pub;
     private String protocol;
-    private String content;
     private String receiver;
     private String name;
     private int resId;
@@ -38,14 +37,6 @@ public class TopicData {
 
     public void setProtocol(String protocol) {
         this.protocol = protocol;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public String getReceiver() {

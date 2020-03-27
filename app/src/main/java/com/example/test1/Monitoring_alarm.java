@@ -67,7 +67,6 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
             case "안정" : statevalue[0] = "OK"; break;
             case "데이터 부족" : statevalue[0] = "INSUFFICIENT_DATA"; break;
         }
-
         new Thread(new Runnable() {
             ArrayList<String[]> list = new ArrayList<String[]>();//ALARM 정보를 받아올 ArrayList
 

@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +28,15 @@ public class APIcall_watch extends APIcall_main {
 
     private static HashMap<String, HashMap<String, String>> metricList;
     // metricList의 key에는 "CPUUtilization", "NetworkIn" 등의 Metric명이 들어가고, value에는  각 Metric별 points<timestamp, value>가 들어간다.
+
+    // 알람 발생 시, 해당 알람에 대한 메트릭을 저장하기 위한 map
+    // alarmMetricList의 key에는 발생한 알람명이 들어가고, value에는  알람 발생 전후의 points<timestamp, value>가 들어간다.
+    private static HashMap<String, HashMap<String, String>> alarmMetricList;
+
+    // 알람 발생 시, 해당 알람에 대한 threshold을 저장하기 위한 map
+    // key에는 발생한 알람명이 들어가고, value에는  threshold가 들어간다.
+    private static HashMap<String, String> alarmThreshold;
+
 
     public static HashMap<String, String> getInfo(String metricname){
         HashMap<String, String> tmp = new HashMap<String, String>();
@@ -161,10 +171,6 @@ public class APIcall_watch extends APIcall_main {
 
                 if(String.valueOf(virtualmachine.get("displayname")).equals(displayname)) {
                     zoneid = String.valueOf(virtualmachine.get("zone"));
-//                    System.out.println("(For Zone ID) Request Message is...");
-//                    System.out.println(req_message);
-//                    System.out.println("zoneid= " + zoneid);
-//                    System.out.println();
                     return zoneid;
                 }
 
@@ -336,6 +342,8 @@ public class APIcall_watch extends APIcall_main {
                 virtualmachine = (JSONObject) parse_virtualmachine.get(i);
 
                 System.out.println("서버명 : "+ virtualmachine.get("displayname"));
+                System.out.println("서버 id : "+ virtualmachine.get("id"));
+                System.out.println("zone id : "+ virtualmachine.get("zoneid"));
                 System.out.println();
             }
         }
@@ -455,13 +463,6 @@ public class APIcall_watch extends APIcall_main {
 
             points.put(String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "), String.valueOf(metric.get(statistics.toLowerCase())));
 
-//            System.out.println("##############################");
-//
-//            System.out.println("timestamp: "+  String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "));
-//            System.out.println(statistics+ ": "+  metric.get(statistics.toLowerCase()));
-//            System.out.println("unit: "+  metric.get("unit"));
-
-
         }
 
         metricList.put(metricname, points);
@@ -483,13 +484,11 @@ public class APIcall_watch extends APIcall_main {
 
         setValue();
 
-
         TreeMap<String, String> request = new TreeMap<String, String>();
         String zoneid = getZoneByDisplayname(displayname);
         String value = displayname + "(" + getIdByDisplayname(zoneid, displayname) + ")";
 
         request.clear();
-
 
         // displayname에 해당하는 getMetricStatistics api url 생성 시작
 
@@ -536,14 +535,6 @@ public class APIcall_watch extends APIcall_main {
             metric = (JSONObject) parse_metricstatistics.get(i);
 
             points.put(String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "), String.valueOf(metric.get(statistics.toLowerCase())));
-
-//            System.out.println("##############################");
-//
-//            System.out.println("timestamp: "+  String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "));
-//            System.out.println(statistics+ ": "+  metric.get(statistics.toLowerCase()));
-//            System.out.println("unit: "+  metric.get("unit"));
-
-
         }
 
         metricList.put(metricname, points);
@@ -585,19 +576,6 @@ public class APIcall_watch extends APIcall_main {
         }
 
     }
-
-//    /**
-//     * @throws ParseException
-//     * @brief 조회할 알람 상태를 입력받는 함수
-//     **/
-//    public static void setAlarmState() {
-//
-//        Scanner sc = new Scanner(System.in);
-//
-//        System.out.print("조회할 알람 상태 입력(ALL, INSUFFICIENT_DATA, OK, ALARM): ");
-//        statevalue = sc.next();
-//
-//    }
 
     /**
      * @throws ParseException
@@ -811,6 +789,189 @@ public class APIcall_watch extends APIcall_main {
 
     }
 
+    /**
+     * @throws ParseException
+     * @brief Watch 기능에 해당하는, 전체 서버에 대한 지정 메트릭 통계를 위한 함수
+     * @param alarmname 발생한 alarmname
+     * @param metricname 전체서버에 대해 조회하길 원하는 metricname
+     * @param timestamp 알람이 발생한 timestamp
+     **/
+    public static void showAlarmMetric(String alarmname, String metricname, LocalDateTime timestamp) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+
+        int button = 6;
+
+        alarmMetricList = new HashMap<String, HashMap<String, String>> ();
+
+        HashMap<String, String> points = new HashMap<String, String> ();
+
+        TreeMap<String, String> request = new TreeMap<String, String>();
+
+        request = generateRequire(button, request);
+
+        request.put("response", "json");
+        request.put("apiKey", getApikey());
+        request.put("metricname", metricname);
+        request.put("namespace", namespace);
+
+        request.put("statistics.member.1", statistics);
+
+        ZonedDateTime currDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        endtime = currDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+
+        int timestampInt = Integer.parseInt(String.valueOf(timestamp).substring(0,4) + String.valueOf(timestamp).substring(5,7) + String.valueOf(timestamp).substring(8,10) + String.valueOf(timestamp).substring(11,13));
+        int endtimeInt = Integer.parseInt(endtime.substring(0,4) + endtime.substring(5,7) + endtime.substring(8,10) + endtime.substring(11,13));
+
+
+        // timestamp보다 현재 시간이 3시간 이상 지나지 않았을 경우
+        if(  (timestampInt + 3) > endtimeInt ) {
+            request.put("endtime", endtime);
+
+            starttime = currDateTime.minusHours(6).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+            request.put("starttime", starttime);
+        }
+        // timestamp보다 3시간 이상 지났을 경우
+        else {
+
+            endtime = timestamp.plusHours(3).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+            starttime = timestamp.minusHours(3).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+
+            request.put("endtime", endtime);
+            request.put("starttime", starttime);
+        }
+
+        request.put("period", "60");
+
+        if(metricname.equals("CPUUtilization")) request.put("unit", "Percent");
+        else request.put("unit", "Bytes");
+
+        String req_message = generateReq(request);
+
+        System.out.println("Request Message is...");
+        System.out.println(req_message);
+        System.out.println();
+
+        JSONObject obj =  readJsonFromUrl(req_message);
+
+        JSONObject parse_getmetricstatisticsresponse = (JSONObject) obj.get("getmetricstatisticsresponse");
+
+        JSONArray parse_metricstatistics = (JSONArray) parse_getmetricstatisticsresponse.get("metricstatistics");
+        JSONObject metric;
+
+        System.out.println("총 point 수: "+ parse_getmetricstatisticsresponse.get("count"));
+
+        for(int i = 0 ; i <  parse_metricstatistics.size(); i++) {
+
+            metric = (JSONObject) parse_metricstatistics.get(i);
+
+
+            points.put(String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "), String.valueOf(metric.get(statistics.toLowerCase())));
+
+
+            System.out.println("##############################");
+
+            System.out.println("timestamp: "+  String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "));
+            System.out.println(statistics+ ": "+  metric.get(statistics.toLowerCase()));
+            System.out.println("unit: "+  metric.get("unit"));
+
+
+        }
+
+
+        alarmMetricList.put(alarmname, points);
+
+    }
+    /**
+     * @throws ParseException
+     * @brief 발생 알람에 대한 특정 서버의 지정 메트릭 통계를 위한 함수
+     * @param alarmname 발생한 알람 이름
+     * @param metricname 특성 서버에 대해 조회하길 원하는 metricname
+     * @param value 조회하길 원하는 특정 서버의 displayname(id) 값
+     * @param timestamp 알람이 발생한 timestamp
+     **/
+    public static void showAlarmMetric(String alarmname, String metricname, String value, LocalDateTime timestamp) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+        int button = 6;
+
+        alarmMetricList = new HashMap<String, HashMap<String, String>> ();
+
+        HashMap<String, String> points = new HashMap<String, String> ();
+
+        TreeMap<String, String> request = new TreeMap<String, String>();
+
+        request = generateRequire(button, request);
+
+        request.put("response", "json");
+        request.put("apiKey", getApikey());
+        request.put("metricname", metricname);
+        request.put("namespace", namespace);
+
+        request.put("statistics.member.1", statistics);
+
+        request.put("dimensions.member.1.name", "name");
+        request.put("dimensions.member.1.value", value);
+
+        ZonedDateTime currDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        endtime = currDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+
+
+        int timestampInt = Integer.parseInt(String.valueOf(timestamp).substring(0,4) + String.valueOf(timestamp).substring(5,7) + String.valueOf(timestamp).substring(8,10) + String.valueOf(timestamp).substring(11,13));
+        int endtimeInt = Integer.parseInt(endtime.substring(0,4) + endtime.substring(5,7) + endtime.substring(8,10) + endtime.substring(11,13));
+
+        // timestamp보다 현재 시간이 3시간 이상 지나지 않았을 경우
+        if(  (timestampInt + 3) > endtimeInt ) {
+            request.put("endtime", endtime);
+
+            starttime = currDateTime.minusHours(6).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+            request.put("starttime", starttime);
+        }
+        // timestamp보다 3시간 이상 지났을 경우
+        else {
+
+            endtime = timestamp.plusHours(3).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+            starttime = timestamp.minusHours(3).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+
+            request.put("endtime", endtime);
+            request.put("starttime", starttime);
+        }
+
+        request.put("period", "60");
+
+        if(metricname.equals("CPUUtilization")) request.put("unit", "Percent");
+        else request.put("unit", "Bytes");
+
+        String req_message = generateReq(request);
+
+        System.out.println("Request Message is...");
+        System.out.println(req_message);
+        System.out.println();
+
+        JSONObject obj =  readJsonFromUrl(req_message);
+
+        JSONObject parse_getmetricstatisticsresponse = (JSONObject) obj.get("getmetricstatisticsresponse");
+
+        JSONArray parse_metricstatistics = (JSONArray) parse_getmetricstatisticsresponse.get("metricstatistics");
+        JSONObject metric;
+
+        System.out.println("총 point 수: "+ parse_getmetricstatisticsresponse.get("count"));
+
+        for(int i = 0 ; i <  parse_metricstatistics.size(); i++) {
+
+            metric = (JSONObject) parse_metricstatistics.get(i);
+
+
+            points.put(String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "), String.valueOf(metric.get(statistics.toLowerCase())));
+
+
+            System.out.println("##############################");
+
+            System.out.println("timestamp: "+  String.valueOf(metric.get("timestamp")).substring(5,16).replaceAll("T", " "));
+            System.out.println(statistics+ ": "+  metric.get(statistics.toLowerCase()));
+            System.out.println("unit: "+  metric.get("unit"));
+
+        }
+        alarmMetricList.put(alarmname, points);
+    }
 
     /**
      * @throws NoSuchAlgorithmException
@@ -822,11 +983,11 @@ public class APIcall_watch extends APIcall_main {
     public static void listAlarmHistory() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 8;
 
-        // 알람 발생 시, 해당 알람에 대한 메트릭을 저장하기 위한 map
-        // alarmMetricList의 key에는 발생한 알람명이 들어가고, value에는  알람 발생시점의 points<timestamp, value>가 들어간다.
-        HashMap<String, HashMap<String, String>> alarmMetricList;
+
+        alarmThreshold = new HashMap<String, String> ();
 
         TreeMap<String, String> request = new TreeMap<String, String>();
+
 
         request = generateRequire(button, request);
 
@@ -851,19 +1012,87 @@ public class APIcall_watch extends APIcall_main {
         int history_num = 0;
 
 
+
         for(int i = 0 ; i <  pasrse_alarmhistory.size(); i++) {
             alarmhistory = (JSONObject) pasrse_alarmhistory.get(i);
 
-
+            // StateUpdate 중 from OK/INSUFFICIENT_DATA to ALARM 인 경우 알람 발생 메트릭 출력
             if(String.valueOf(alarmhistory.get("historysummary")).substring(String.valueOf(alarmhistory.get("historysummary")).length()-5, String.valueOf(alarmhistory.get("historysummary")).length()).equals("ALARM")) {
                 history_num++;
                 request.clear();
 
-                // 해당 알람에 대한 메트릭 출력
-                //	showMetric(alarmhistory.get(""));
+                String alarmname = String.valueOf(alarmhistory.get("alarmname"));
+                System.out.println("알람명: " + alarmname);
 
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                LocalDateTime timestamp = LocalDateTime.parse(String.valueOf(alarmhistory.get("timestamp")), formatter);
+                System.out.println("알람 발생시간: " + timestamp);
+
+                // 해당 알람이름에 대한 알람 조회 - namespace 및 임계치를 얻음
+                request.clear();
+                request = generateRequire(7, request);
+
+                request.put("response", "json");
+                request.put("apiKey", getApikey());
+                request.put("alarmnames.member.1", alarmname);
+
+                req_message = generateReq(request);
+
+                obj =  readJsonFromUrl(req_message);
+
+                System.out.println("Request Message is...");
+                System.out.println(req_message);
+                System.out.println();
+
+
+                obj =  readJsonFromUrl(req_message);
+
+                JSONObject parse_listalarmsresponse = (JSONObject) obj.get("listalarmsresponse");
+
+                JSONArray pasrse_alarm = (JSONArray) parse_listalarmsresponse.get("alarm");
+                JSONObject alarm = (JSONObject) pasrse_alarm.get(0);
+                JSONObject dimensions = (JSONObject) alarm.get("dimensions");
+                JSONArray dimension = (JSONArray) dimensions.get("dimension");
+
+                String dimensionCount = String.valueOf(dimensions.get("count"));
+                String namespace = String.valueOf(alarm.get("namespace"));
+                String metricname = String.valueOf(alarm.get("metricname"));
+
+                String threshold = String.valueOf(alarm.get("threshold"));
+                alarmThreshold.put(alarmname, threshold);
+
+
+                if(dimensionCount.equals("0")) {
+                    if(namespace.equals("ucloud/server")) {
+                        namespace = "서버:모든서버통합";
+
+                        showAlarmMetric(alarmname, metricname, timestamp);
+                    }
+                    else if (namespace.equals("ucloud/vr")) namespace = "ucloud/vr";
+                }
+
+                else {
+                    JSONObject dimensionOb = (JSONObject) dimension.get(0);
+                    String dimensionName = String.valueOf(dimensionOb.get("name"));
+                    if(dimensionName.equals("templatename")) namespace = "서버:운영체제별통합";
+                    else if(dimensionName.equals("name")) {
+                        if (namespace.equals("ucloud/vr")) namespace = "ucloud/vr:name";
+                        else if (namespace.equals("ucloud/server")) {
+                            String value = String.valueOf(dimensionOb.get("value"));
+                            namespace = "서버:개별서버메트릭";
+
+                            showAlarmMetric(alarmname, metricname, value, timestamp);
+                        }
+                    }
+                    else if(dimensionName.equals("serviceofferingname")) namespace = "서버:스펙별통합";
+                    else if(dimensionName.equals("LB")) namespace = "CloudLB:LB";
+                }
+
+                System.out.println();
                 if (history_num >= 3) break; // 최근 3개까지만 출력
             }
+
+
         }
 
     }

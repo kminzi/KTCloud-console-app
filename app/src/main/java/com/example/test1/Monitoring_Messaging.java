@@ -43,12 +43,10 @@ public class Monitoring_Messaging extends AppCompatActivity {
         final String[] name = new String[200];
         final String[] pub = new String[200];
         final String[] pro = new String[200];
-        final String[] con = new String[200];
         final String[] rec = new String[200];
 
         new Thread(new Runnable() {
             ArrayList<String[]> list = new ArrayList<String[]>();//ALARM 정보를 받아올 ArrayList
-
             @Override
             public void run() {
                 try {
@@ -78,10 +76,9 @@ public class Monitoring_Messaging extends AppCompatActivity {
                             pub[i] = list.get(i)[1];
                             pro[i] = list.get(i)[2];
                             name[i] = list.get(i)[0];
-                            con[i] = list.get(i)[3];
                             rec[i] = list.get(i)[4];
                         }
-                        getData(name, pub, pro, con, rec);
+                        getData(name, pub, pro, rec);
                     }
                 });
             }
@@ -108,12 +105,11 @@ public class Monitoring_Messaging extends AppCompatActivity {
     }
 
 
-    private void getData(String[] name, String[] pub, String[] pro, String[] con, String[] rec) {
+    private void getData(String[] name, String[] pub, String[] pro, String[] rec) {
         // 임의의 데이터입니다.
         List<String> listName = Arrays.asList(name);
         List<String> listPub = Arrays.asList(pub);
         List<String> listPro = Arrays.asList(pro);
-        List<String> listCon = Arrays.asList(con);
         List<String> listRec = Arrays.asList(rec);
 
         Integer [] tmp = new Integer[list_size[0]];
@@ -130,7 +126,6 @@ public class Monitoring_Messaging extends AppCompatActivity {
             data.setPub(listPub.get(i));
             data.setResId(listResId.get(i));
             data.setProtocol(listPro.get(i));
-            data.setContent(listCon.get(i));
             data.setReceiver(listRec.get(i));
 
             // 각 값이 들어간 data를 tpAdapter에 추가합니다.

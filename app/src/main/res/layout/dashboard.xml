@@ -190,7 +190,7 @@
                     android:id="@+id/txt_server_number"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="40dp"
                     android:background="@drawable/textboxline"
                     android:gravity="center_horizontal"
                     android:text="사용 중"
@@ -207,6 +207,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/ktlogo_server"
+                    android:onClick="ServerClicked"
                     android:stateListAnimator="@null"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -255,10 +256,10 @@
 
                 <TextView
                     android:id="@+id/txt_monitoring_number"
-                    android:layout_width="60dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="18dp"
-                    android:layout_marginStart="52dp"
-                    android:layout_marginLeft="52dp"
+                    android:layout_marginStart="40dp"
+                    android:background="@drawable/textboxline"
                     android:gravity="center_horizontal"
                     android:text="사용 중"
                     app:layout_constraintBottom_toBottomOf="@+id/editText8"
@@ -285,6 +286,7 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="14dp"
                     android:background="@drawable/ktlogo_db3"
+                    android:onClick="DBClicked"
                     android:stateListAnimator="@null"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -383,7 +385,6 @@
         android:layout_height="40dp"
         android:layout_marginStart="53dp"
         android:layout_marginBottom="16dp"
-        android:onClick="PaymentClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_monitoirng"
         app:srcCompat="@drawable/payment" />

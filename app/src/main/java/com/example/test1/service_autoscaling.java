@@ -168,7 +168,7 @@ public class service_autoscaling extends AppCompatActivity implements View.OnCli
 
         List<Integer> listResId = Arrays.asList(tmp);
 
-        for (int i = 0; i < listState.size(); i++) {
+        for (int i = 0; i < list_size[0]; i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             AutoscalingData atData = new AutoscalingData();
             atData.setName(listName.get(i));

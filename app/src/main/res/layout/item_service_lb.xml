@@ -232,11 +232,10 @@
 
         <Button
             android:id="@+id/btn_service_lb_serInfo_img"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginLeft="4dp"
-            android:background="@drawable/search"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/plus"
             app:layout_constraintBottom_toBottomOf="@+id/txt_service_lb_server"
             app:layout_constraintStart_toEndOf="@+id/txt_service_lb_server"
             app:layout_constraintTop_toTopOf="@+id/txt_service_lb_server" />

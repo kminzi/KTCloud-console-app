@@ -61,17 +61,14 @@ public class TopicAdapter extends RecyclerView.Adapter {
         private TextView name;
         private TextView protocol;
         private TextView pub;
-        private TextView content;
         private TextView receiver;
         private TopicData maData;
 
         // API 여부와 관계없이 고정된 뷰들
         private ConstraintLayout item;
 
-
         // 포지션
         private int position;
-
 
         public MessageViewHolder(View view) {
             super(view);
@@ -79,7 +76,6 @@ public class TopicAdapter extends RecyclerView.Adapter {
             name = view.findViewById(R.id.txt_topic_name);
             protocol = view.findViewById(R.id.txt_topic_protocol);
             pub = view.findViewById(R.id.txt_topic_pub);
-            content = view.findViewById(R.id.txt_topic_content);
             receiver = view.findViewById(R.id.txt_topic_receiver);
             item = view.findViewById(R.id.lay_moni_topic_item);
         }
@@ -88,12 +84,10 @@ public class TopicAdapter extends RecyclerView.Adapter {
             this.maData = data;
             this.position = position;
 
-
             imageView.setImageResource(data.getResId());
             name.setText(data.getName());
             protocol.setText(data.getProtocol());
             pub.setText(data.getPub());
-            content.setText(data.getContent());
             receiver.setText(data.getReceiver());
 
             changeVisibility(selectedItems.get(position));
@@ -137,7 +131,7 @@ public class TopicAdapter extends RecyclerView.Adapter {
          */
         private void changeVisibility(final boolean isExpanded) {
             // height 값을 dp로 지정해서 넣고싶으면 아래 소스를 이용
-            int dpValue = 164;
+            int dpValue = 137;
             float d = mContext.getResources().getDisplayMetrics().density;
             int height = (int) (dpValue * d);
 

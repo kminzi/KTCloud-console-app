@@ -3,6 +3,8 @@ package com.example.test1;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -18,6 +21,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +39,8 @@ public class LBAdapter extends RecyclerView.Adapter {
     private SparseBooleanArray selectedItems = new SparseBooleanArray();
     private Button btn_ser_img;
     private LBpopupAdapter adapter;
+    APIcall_LB apIcall_lb = new APIcall_LB();
+    Handler handler = new Handler(Looper.getMainLooper());
 
     // 직전에 클릭됐던 Item의 position
     private int prePosition = -1;
@@ -81,6 +91,7 @@ public class LBAdapter extends RecyclerView.Adapter {
 
         // API 여부와 관계없이 고정된 뷰들
         private ConstraintLayout item;
+        private String id;
 
 
         // 포지션
@@ -104,7 +115,6 @@ public class LBAdapter extends RecyclerView.Adapter {
             this.lData = data;
             this.position = position;
 
-
             imageView.setImageResource(data.getResId());
             name.setText(data.getName());
             server.setText(data.getServer());
@@ -113,6 +123,7 @@ public class LBAdapter extends RecyclerView.Adapter {
             lbOpt.setText(data.getLBOpt());
             ip.setText(data.getIp());
             port.setText(data.getPort());
+            id = data.getId();
 
             changeVisibility(selectedItems.get(position));
 
@@ -149,36 +160,60 @@ public class LBAdapter extends RecyclerView.Adapter {
             }
 
             if (v == btn_ser_img) {
-                String[] serSubject = {"서버명 : ","Public IP : ", "Public Port : ", "Throughput : ", "Server connections : ", "TTFB : ", "Request : ", "상태 : ", "\n"};
-
-                // 사용자가 클릭할 때 LB 적용 서버 정보 받아오면 됌
-                int serNum = 2;  // 적용 서버 개수
-
-                // 적용 서버가 많은 경우 아래와 같이 serContent 배열을 늘려주면 됌
-                String[] serContent = {"테스트서버","127.0.0.1", "10001", "0", "0", "1", "0", "DOWN", "",
-                        "테스트서버2","127.0.0.1", "10001", "0", "0", "1", "0", "DOWN", ""};
-
-
-                String[] serInfo = new String[serSubject.length * serNum];
-
-                int sub_idx = 0;
-                for (int i = 0; i < serSubject.length * serNum; i++) {
-                    serInfo[i] = serSubject[sub_idx++] + serContent[i];
-                    if (sub_idx == serSubject.length) sub_idx = 0;
-                }
-
-                AlertDialog.Builder sDialog = new AlertDialog.Builder(mContext);
-
-
-                sDialog.setTitle("적용 서버 상세 정보 리스트")
-                        .setItems(serInfo, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
+                final String[] serContent = new String[200];
+                final String zone = zoneName.getText().toString();
+                final int[] count = {0};
+                final String[] serSubject = {"서버명 : ", "Public IP : ", "Public Port : ", "Throughput : ", "Server connections : ", "TTFB : ", "Request : ", "상태 : ", "\n"};
+                new Thread(new Runnable() {
+                    ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+                    @Override
+                    public void run() {
+                        try {
+                            list = apIcall_lb.listLBWebServers(id, zone);
+                            count[0] = list.size();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (InvalidKeyException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        for(int i=0;i<count[0];i++){
+                            for(int j=0;j<serSubject.length;j++){
+                                int tmp = i*serSubject.length + j;
+                                if(j== serSubject.length-1) serContent[tmp] = "";
+                                else serContent[tmp] = list.get(i)[j];
                             }
-                        })
-                        .setCancelable(true)
-                        .show();
+                        }
+                        // 사용자가 클릭할 때 LB 적용 서버 정보 받아오면 됌
+                        int serNum = count[0];  // 적용 서버 개수
+                        final String[] serInfo = new String[serSubject.length * serNum];
+
+                        int sub_idx = 0;
+                        for (int i = 0; i < serSubject.length * serNum; i++) {
+                            serInfo[i] = serSubject[sub_idx++] + serContent[i];
+                            if (sub_idx == serSubject.length) sub_idx = 0;
+                        }
+
+                        final AlertDialog.Builder sDialog = new AlertDialog.Builder(mContext);
+
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {//UI접근
+                                sDialog.setTitle("적용 서버 상세 정보 리스트")
+                                        .setItems(serInfo, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                            }
+                                        })
+                                        .setCancelable(true)
+                                        .show();
+                            }
+                        });
+                    }
+                }).start();
 
             }
         }
@@ -186,6 +221,7 @@ public class LBAdapter extends RecyclerView.Adapter {
 
         /**
          * 클릭된 Item의 상태 변경
+         *
          * @param isExpanded Item을 펼칠 것인지 여부
          */
         private void changeVisibility(final boolean isExpanded) {
@@ -212,7 +248,7 @@ public class LBAdapter extends RecyclerView.Adapter {
             });
             // Animation start
             va.start();
-            btn_ser_img = (Button)item.findViewById(R.id.btn_service_lb_serInfo_img);
+            btn_ser_img = (Button) item.findViewById(R.id.btn_service_lb_serInfo_img);
             btn_ser_img.setOnClickListener(this);
         }
     }

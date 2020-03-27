@@ -2,6 +2,7 @@ package com.example.test1;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -12,9 +13,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+
 public class CustomDialog{
 
     private Context context;
+    APIcall_Messaging apIcall_messaging = new APIcall_Messaging();
 
     public CustomDialog(@NonNull Context context) {
         this.context = context;
@@ -22,7 +31,7 @@ public class CustomDialog{
 
     // 호출할 다이얼로그 함수를 정의한다.
     public void callFunction(final String auto_topic) {
-
+        final Handler handler = new Handler();
         // 커스텀 다이얼로그를 정의하기위해 Dialog클래스를 생성한다.
         final Dialog dlg = new Dialog(context);
 
@@ -56,7 +65,39 @@ public class CustomDialog{
             @Override
             public void onClick(View v) {
                 // 메시지 발행 API
-
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String topicurn = topic.getText().toString();
+                            String titles = title.getText().toString();
+                            String contents = content.getText().toString();
+                            apIcall_messaging.publishMessage(topicurn,titles,contents);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, "messaging 발행 성공", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (InvalidKeyException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        } catch (Exception e){
+                            e.printStackTrace();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, "messaging 발행 실패", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+                }).start();
                 dlg.dismiss();
             }
         });

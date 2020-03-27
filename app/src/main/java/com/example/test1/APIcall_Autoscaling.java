@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.TreeMap;
 
 public class APIcall_Autoscaling extends APIcall_main {
@@ -45,13 +46,6 @@ public class APIcall_Autoscaling extends APIcall_main {
 
             autoscalinggroup = (JSONObject) parse_autoscalinggroups.get(i);
 
-//            System.out.println("이름: " + autoscalinggroup.get("autoscalinggroupname"));
-//            System.out.println("상태: " + autoscalinggroup.get("status"));
-//            System.out.println("VM 생성 설정: " + autoscalinggroup.get("launchconfigurationname"));
-//
-//
-//            System.out.print("위치:");
-
             JSONArray availabilityzones = (JSONArray) autoscalinggroup.get("availabilityzones");
 
             for (int j = 0; j < availabilityzones.size(); j++) {
@@ -84,9 +78,49 @@ public class APIcall_Autoscaling extends APIcall_main {
 
             //이름, 상태, 위치, 현재 vm, 목표 vm, 최소 vm, 최대 vm
             list.add(new String[]{(String) autoscalinggroup.get("autoscalinggroupname"), (String) autoscalinggroup.get("status"),
-                    zone, String.valueOf(instance.size()), desiredcapacity, (String)autoscalinggroup.get("minsize"),
-                    (String)autoscalinggroup.get("maxsize")});
+                    zone, String.valueOf(instance.size()), desiredcapacity, String.valueOf(autoscalinggroup.get("minsize")),
+                    String.valueOf(autoscalinggroup.get("maxsize"))});
         }
         return list;
     }
+
+
+    /**
+     * @param autoScalingGroupName 목표 VM 수를 변경할 AutoScaling 그룹 이름
+     * @param desiredCapacity      목표 VM 수
+     * @throws ParseException
+     * @brief 매니지먼트 기능에 해당하는, 오토 스케일링 그룹의 목표 VM 수 조절을 위한 함수
+     **/
+    public static String updateDesiredCapacity(String autoScalingGroupName, String desiredCapacity) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+
+        int button = 14;
+
+        TreeMap<String, String> request = new TreeMap<String, String>();
+
+        request = generateRequire(button, request);
+
+        request.put("response", "json");
+        request.put("apiKey", getApikey());
+        request.put("autoscalinggroupname", autoScalingGroupName);
+        request.put("desiredcapacity", desiredCapacity);
+
+        String req_message = generateReq(request);
+//
+//        System.out.println("Request Message is...");
+//        System.out.println(req_message);
+
+        JSONObject obj = readJsonFromUrl(req_message);
+
+        JSONObject parse_setdesiredcapacityresponse = (JSONObject) obj.get("setdesiredcapacityresponse");
+
+        JSONObject parse_responsemetadata = (JSONObject) parse_setdesiredcapacityresponse.get("responsemetadata");
+        String result = "";
+
+        if (parse_responsemetadata.size() > 0) {
+            result = "목표 VM 수 변경 성공";
+        } else result = "목표 VM 수 변경 실패";
+
+        return result;
+    }
+
 }

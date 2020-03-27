@@ -56,22 +56,14 @@ public class APIcall_Messaging extends APIcall_main {
 
     /**
      * @throws ParseException
+     * @param message message 내용
+     * @param subject message 제목
+     * @param topicUrn message 발행 할 토픽 URN
      * @brief Messaging 기능에 해당하는, 토픽 및 구독 정보 출력을 위한 함수
      **/
-    public static void publishMessage() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException, ParseException {
+    public static void publishMessage(String topicUrn, String subject, String message) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException, ParseException {
 
         int button = 12;
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("메시지 발행 할 토픽 URN: ");
-        String topicUrn = sc.next();
-
-        System.out.print("제목(100 byte까지 작성 가능합니다.): ");
-        String subject = sc.next();
-
-        System.out.print("메시지(4KB까지 작성 가능합니다.): ");
-        String message = sc.next();
 
         TreeMap<String, String> request = new TreeMap<String, String>();
         request = generateRequire(button, request);
@@ -83,12 +75,11 @@ public class APIcall_Messaging extends APIcall_main {
         request.put("message", message);
 
         String req_message = generateReq(request);
-
-        System.out.println("Request Message is...");
-        System.out.println(req_message);
+//
+//        System.out.println("Request Message is...");
+//        System.out.println(req_message);
 
         readJsonFromUrl(req_message);
-
 
     }
 }

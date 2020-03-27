@@ -9,10 +9,15 @@ class LBData {
     private String name;
     private String zoneName;
     private int resId;
+    private String id;
 
     public LBData() {
 
     }
+
+    public String getId() { return id; }
+
+    public void setId(String id) { this.id = id; }
 
     public String getServer() { return server; }
 
