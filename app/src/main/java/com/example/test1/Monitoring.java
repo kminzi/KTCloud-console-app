@@ -79,31 +79,24 @@ public class Monitoring extends AppCompatActivity {
         final ArrayList<String> labels_memoryinternalfree = new ArrayList<String>();
 
 
-
         new Thread(new Runnable() {
             HashMap<String, String> list_networkin = new HashMap<String, String>();
             Set<String> xlist_networkin = new LinkedHashSet<>();
-            Iterator<String> iter_networkin = xlist_networkin.iterator();
 
             HashMap<String, String> list_networkout = new HashMap<String, String>();
             Set<String> xlist_networkout = new LinkedHashSet<>();
-            Iterator<String> iter_networkout = xlist_networkout.iterator();
 
             HashMap<String, String> list_cpuutil = new HashMap<String, String>();
             Set<String> xlist_cpuutil = new LinkedHashSet<>();
-            Iterator<String> iter_cpuutil = xlist_cpuutil.iterator();
 
             HashMap<String, String> list_diskreadbytes = new HashMap<String, String>();
             Set<String> xlist_diskreadbytes = new LinkedHashSet<>();
-            Iterator<String> iter_diskreadbytes = xlist_diskreadbytes.iterator();
 
             HashMap<String, String> list_diskwritebytes = new HashMap<String, String>();
             Set<String> xlist_diskwritebytes = new LinkedHashSet<>();
-            Iterator<String> iter_diskwritebytes = xlist_diskwritebytes.iterator();
 
             HashMap<String, String> list_memoryinternalfree = new HashMap<String, String>();
             Set<String> xlist_memoryinternalfree = new LinkedHashSet<>();
-            Iterator<String> iter_memoryinternalfree = xlist_memoryinternalfree.iterator();
 
             @Override
             public void run() {
@@ -131,7 +124,6 @@ public class Monitoring extends AppCompatActivity {
                     apIcall_watch.showMetric("MemoryInternalFree");
                     list_memoryinternalfree = apIcall_watch.getInfo("MemoryInternalFree");
                     xlist_memoryinternalfree = list_memoryinternalfree.keySet();
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InvalidKeyException e) {
@@ -167,6 +159,7 @@ public class Monitoring extends AppCompatActivity {
 
                         LineData data_networkin = new LineData(labels_networkin, dataset_networkin);
                         dataset_networkin.setColors(Collections.singletonList(0xFF94D1CA));
+                        dataset_networkin.setLineWidth(3.5f);
                         dataset_networkin.setDrawCubic(true); //선 둥글게 만들기
 
                         lineChart_networkin.setData(data_networkin);

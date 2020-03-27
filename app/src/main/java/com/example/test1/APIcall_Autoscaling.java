@@ -72,9 +72,6 @@ public class APIcall_Autoscaling extends APIcall_main {
             String desiredcapacity = String.valueOf(autoscalinggroup.get("desiredcapacity"));
             String activationNum = desiredcapacity;
 
-            if (String.valueOf(autoscalinggroup.get("status")).equals("Ready"))
-                activationNum = "N/A";
-            else desiredcapacity = "N/A";
 
             //이름, 상태, 위치, 현재 vm, 목표 vm, 최소 vm, 최대 vm
             list.add(new String[]{(String) autoscalinggroup.get("autoscalinggroupname"), (String) autoscalinggroup.get("status"),

@@ -2,18 +2,27 @@ package com.example.test1;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +33,8 @@ public class AutoScalingAdapter extends RecyclerView.Adapter {
     private SparseBooleanArray selectedItems = new SparseBooleanArray();
     // 직전에 클릭됐던 Item의 position
     private int prePosition = -1;
+    APIcall_Autoscaling apIcall_autoscaling = new APIcall_Autoscaling();
+    Handler handler = new Handler(Looper.getMainLooper());
 
     @NonNull
     @Override
@@ -35,11 +46,44 @@ public class AutoScalingAdapter extends RecyclerView.Adapter {
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
-
         messageViewHolder.onBind(listData.get(position), position);
 
+        Button ch = ((MessageViewHolder) holder).change;
+        final TextView tmpv = ((MessageViewHolder) holder).name;
+        ch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                final EditText tmp = (EditText) ((MessageViewHolder) holder).changevalue;
+                final String name = tmpv.getText().toString();
+                final String value = tmp.getText().toString();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            final String s = apIcall_autoscaling.updateDesiredCapacity(name, value);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(v.getContext(), s, Toast.LENGTH_LONG).show();
+                                    tmp.setText("");
+                                    //VM 수가 변경 되면 변경 해야됨 - Background Thread
+                                }
+                            });
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        } catch (NoSuchAlgorithmException ex) {
+                            ex.printStackTrace();
+                        } catch (InvalidKeyException ex) {
+                            ex.printStackTrace();
+                        } catch (ParseException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
     }
 
     @Override
@@ -64,6 +108,8 @@ public class AutoScalingAdapter extends RecyclerView.Adapter {
         private TextView minVM;
         private TextView maxVM;
         private AutoscalingData atData;
+        public EditText changevalue;
+        public Button change;
 
         // API 여부와 관계없이 고정된 뷰들
         private ConstraintLayout item;
@@ -83,12 +129,13 @@ public class AutoScalingAdapter extends RecyclerView.Adapter {
             minVM = view.findViewById(R.id.txt_service_auto_minVM);
             maxVM = view.findViewById(R.id.txt_service_auto_maxVM);
             item = view.findViewById(R.id.lay_service_auto_item);
+            changevalue = view.findViewById(R.id.txt_auto_tarVM_change);
+            change = view.findViewById(R.id.btn_auto_tarVM_change);
         }
 
         void onBind(AutoscalingData data, int position) {
             this.atData = data;
             this.position = position;
-
 
             imageView.setImageResource(data.getResId());
             name.setText(data.getName());

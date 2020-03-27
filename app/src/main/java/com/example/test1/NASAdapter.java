@@ -123,6 +123,7 @@ public class NASAdapter extends RecyclerView.Adapter {
             zoneName = view.findViewById(R.id.txt_service_nas_zone);
             tarSize = view.findViewById(R.id.txt_service_nas_tarSize);
             item = view.findViewById(R.id.lay_service_nas_item);
+
             button_update = view.findViewById(R.id.btn_nas_tarSize_change);
             data = view.findViewById(R.id.txt_nas_tarSize_change);
 
