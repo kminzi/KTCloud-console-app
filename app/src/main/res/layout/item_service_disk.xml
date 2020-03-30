@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lay_service_disk"
         android:layout_width="match_parent"
-        android:layout_height="41dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@color/colorAccent"
         android:gravity="center_vertical"
@@ -48,21 +48,15 @@
                 android:layout_marginLeft="12dp"
                 android:text="디스크 이름 받아오기 (클릭시 하단 관리창)"
                 android:textSize="17sp"
-                app:layout_constraintBottom_toBottomOf="@+id/img_service_disk"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/img_service_disk"
-                app:layout_constraintTop_toTopOf="@+id/img_service_disk" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:id="@+id/view6"
-        style="@style/Divider"
-        android:layout_width="wrap_content"
-        android:layout_height="2dp"
-        android:background="@color/colorPrimaryDark" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lay_service_disk_item"
