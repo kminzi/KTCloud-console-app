@@ -6,16 +6,13 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.simple.parser.ParseException;
 
@@ -25,8 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -36,8 +31,6 @@ public class Monitoring extends AppCompatActivity {
     APIcall_watch apIcall_watch = new APIcall_watch();
     final Handler handler = new Handler();
 
-    ArrayList<Integer> jsonList = new ArrayList<>(); // ArrayList 선언
-    ArrayList<String> labelList = new ArrayList<>(); // ArrayList 선언
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -302,18 +295,6 @@ public class Monitoring extends AppCompatActivity {
                         getApplicationContext(), // 현재 화면의 제어권자
                         Monitoring_alarm.class); // 다음 넘어갈 클래스 지정
                 intent.putExtra("btn_value", "안정");
-                startActivity(intent); // 다음 화면으로 넘어간다
-            }
-        });
-
-        Button met = (Button)findViewById(R.id.btn_moni_alarm_metric);
-        met.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(
-                        getApplicationContext(), // 현재 화면의 제어권자
-                        Monitoring_alarm.class); // 다음 넘어갈 클래스 지정
-                intent.putExtra("btn_value", "전체");
                 startActivity(intent); // 다음 화면으로 넘어간다
             }
         });

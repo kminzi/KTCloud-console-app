@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/server_lay"
     android:layout_width="412dp"
-    android:layout_height="40dp"
+    android:layout_height="48dp"
     android:layout_marginBottom="8dp"
     android:background="@color/회색"
     android:gravity="center_vertical"
@@ -30,7 +30,7 @@
             android:includeFontPadding="false"
             android:text="서버명 받아오기"
             android:textColor="@android:color/black"
-            android:textSize="11sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/img_server"
             app:layout_constraintTop_toTopOf="@+id/img_server" />
@@ -43,8 +43,8 @@
             android:layout_marginLeft="12dp"
             android:includeFontPadding="false"
             android:text="서버 개요 받아오기"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="8sp"
+            android:textColor="@color/진한회색"
+            android:textSize="11sp"
             app:layout_constraintStart_toEndOf="@+id/img_server"
             app:layout_constraintTop_toBottomOf="@+id/txt_server_title" />
 

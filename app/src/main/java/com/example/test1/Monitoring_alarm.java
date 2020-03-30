@@ -3,7 +3,6 @@ package com.example.test1;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -21,7 +25,11 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapter maAdapter;
     private List<MoniAlarmData> maData;
@@ -36,6 +44,25 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
 
         //액션바 배경색 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+
+        final LineChart lineChart_alarm1 = (LineChart) findViewById(R.id.chart_alarm1);
+        final LineChart lineChart_alarm2 = (LineChart) findViewById(R.id.chart_alarm2);
+        final LineChart lineChart_alarm3 = (LineChart) findViewById(R.id.chart_alarm3);
+
+        final ArrayList<Entry> entries_alarm1 = new ArrayList<>();
+        final ArrayList<Entry> entries_alarm1_1 = new ArrayList<>();
+        final ArrayList<LineDataSet> lineDataSets = new ArrayList<>();
+        final LineDataSet dataset_alarm1 = new LineDataSet(entries_alarm1, "values");
+        final LineDataSet dataset_alarm1_1 = new LineDataSet(entries_alarm1_1, "threshold");
+        final ArrayList<String> labels_alarm1 = new ArrayList<String>();
+
+        final ArrayList<Entry> entries_alarm2 = new ArrayList<>();
+        final LineDataSet dataset_alarm2 = new LineDataSet(entries_alarm2, "# of Calls");
+        final ArrayList<String> labels_alarm2 = new ArrayList<String>();
+
+        final ArrayList<Entry> entries_alarm3 = new ArrayList<>();
+        final LineDataSet dataset_alarm3 = new LineDataSet(entries_alarm3, "# of Calls");
+        final ArrayList<String> labels_alarm3 = new ArrayList<String>();
 
         init();
 
@@ -69,10 +96,31 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
         }
         new Thread(new Runnable() {
             ArrayList<String[]> list = new ArrayList<String[]>();//ALARM 정보를 받아올 ArrayList
+            ArrayList<String> list_name = new ArrayList<String>();//최근 ALARM 정보를 받아올 ArrayList
+
+            HashMap<String, String> list_alarm1 = new HashMap<String, String>();//최근 알람 1에 대한 정보를 위함
+            Set<String> xlist_alarm1 = new LinkedHashSet<>();
+            String thres_alarm1;
+
+            HashMap<String, String> list_alarm2 = new HashMap<String, String>();
+            Set<String> xlist_alarm2 = new LinkedHashSet<>();
+            String thres_alarm2;
+
+            HashMap<String, String> list_alarm3 = new HashMap<String, String>();
+            Set<String> xlist_alarm3 = new LinkedHashSet<>();
 
             @Override
             public void run() {
                 try {
+                    apIcall_watch.listAlarmHistory();
+                    list_name = apIcall_watch.getAlarmTitle();
+
+                    list_alarm1 = apIcall_watch.getAlarmMetricInfo(list_name.get(0));
+//                    list_alarm1 = apIcall_watch.getAlarmMetricInfo("apiServerAlarm");
+                    xlist_alarm1 = list_alarm1.keySet();
+                    thres_alarm1 = apIcall_watch.getAlarmThresholdInfo(list_name.get(0));
+
+
                     list = apIcall_watch.listAlarms(statevalue[0]);
                     list_size[0] = list.size();
                 } catch (IOException e) {
@@ -95,6 +143,34 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
                 handler.post(new Runnable() {
                     @Override
                     public void run() {//UI접근
+                        String xarr_alarm1[] = xlist_alarm1.toArray(new String[xlist_alarm1.size()]);
+
+                        for (int i = 0; i < 6; i++) {
+                            entries_alarm1.add(new Entry(Float.parseFloat(list_alarm1.get(xarr_alarm1[i])), i));
+                            entries_alarm1_1.add(new Entry(Float.parseFloat(thres_alarm1),i));
+                            labels_alarm1.add(xarr_alarm1[i]);
+                        }
+
+//                        LineData data_alarm1 = new LineData(labels_alarm1, dataset_alarm1);
+                        dataset_alarm1.setColors(Collections.singletonList(0xFF94D1CA)); //그래프 선 색상 변경
+                        dataset_alarm1.setLineWidth(3.5f); //그래프 선 굵기 변경
+                        dataset_alarm1.setDrawCubic(true); //선 둥글게 만들기
+
+//                        lineChart_alarm1.setData(data_alarm1);//데이터 입히기
+                        lineDataSets.add(dataset_alarm1);
+                        lineChart_alarm1.animateY(2000);//아래에서 올라오는 애니메이션 적용
+
+//                        LineData data_alarm1_1 = new LineData(labels_alarm1, dataset_alarm1_1);
+                        dataset_alarm1_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
+                        dataset_alarm1_1.setLineWidth(3.5f); //그래프 선 굵기 변경
+                        dataset_alarm1_1.setDrawCubic(true); //선 둥글게 만들기
+                        lineDataSets.add(dataset_alarm1_1);
+
+                        lineChart_alarm1.setData(new LineData(labels_alarm1,lineDataSets));
+//                        lineChart_alarm1.setData(data_alarm1_1);//데이터 입히기
+//                        lineChart_alarm1.animateY(2000);//아래에서 올라오는 애니메이션 적용
+
+
                         for (int i = 0; i < list.size(); i++) {
                             state[i] = list.get(i)[1];
                             condi[i] = list.get(i)[2];
