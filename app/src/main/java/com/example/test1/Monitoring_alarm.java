@@ -1,5 +1,6 @@
 package com.example.test1;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,17 +52,23 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
 
         final ArrayList<Entry> entries_alarm1 = new ArrayList<>();
         final ArrayList<Entry> entries_alarm1_1 = new ArrayList<>();
-        final ArrayList<LineDataSet> lineDataSets = new ArrayList<>();
+        final ArrayList<LineDataSet> lineDataSet_alarm1 = new ArrayList<>();
         final LineDataSet dataset_alarm1 = new LineDataSet(entries_alarm1, "values");
         final LineDataSet dataset_alarm1_1 = new LineDataSet(entries_alarm1_1, "threshold");
         final ArrayList<String> labels_alarm1 = new ArrayList<String>();
 
         final ArrayList<Entry> entries_alarm2 = new ArrayList<>();
-        final LineDataSet dataset_alarm2 = new LineDataSet(entries_alarm2, "# of Calls");
+        final ArrayList<Entry> entries_alarm2_1 = new ArrayList<>();
+        final ArrayList<LineDataSet> lineDataSet_alarm2 = new ArrayList<>();
+        final LineDataSet dataset_alarm2 = new LineDataSet(entries_alarm2, "values");
+        final LineDataSet dataset_alarm2_1 = new LineDataSet(entries_alarm2_1, "threshold");
         final ArrayList<String> labels_alarm2 = new ArrayList<String>();
 
         final ArrayList<Entry> entries_alarm3 = new ArrayList<>();
-        final LineDataSet dataset_alarm3 = new LineDataSet(entries_alarm3, "# of Calls");
+        final ArrayList<Entry> entries_alarm3_1 = new ArrayList<>();
+        final ArrayList<LineDataSet> lineDataSet_alarm3 = new ArrayList<>();
+        final LineDataSet dataset_alarm3 = new LineDataSet(entries_alarm3, "values");
+        final LineDataSet dataset_alarm3_1 = new LineDataSet(entries_alarm3_1, "threshold");
         final ArrayList<String> labels_alarm3 = new ArrayList<String>();
 
         init();
@@ -108,6 +115,7 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
 
             HashMap<String, String> list_alarm3 = new HashMap<String, String>();
             Set<String> xlist_alarm3 = new LinkedHashSet<>();
+            String thres_alarm3;
 
             @Override
             public void run() {
@@ -116,10 +124,16 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
                     list_name = apIcall_watch.getAlarmTitle();
 
                     list_alarm1 = apIcall_watch.getAlarmMetricInfo(list_name.get(0));
-//                    list_alarm1 = apIcall_watch.getAlarmMetricInfo("apiServerAlarm");
                     xlist_alarm1 = list_alarm1.keySet();
                     thres_alarm1 = apIcall_watch.getAlarmThresholdInfo(list_name.get(0));
 
+                    list_alarm2 = apIcall_watch.getAlarmMetricInfo(list_name.get(1));
+                    xlist_alarm2 = list_alarm2.keySet();
+                    thres_alarm2 = apIcall_watch.getAlarmThresholdInfo(list_name.get(1));
+
+                    list_alarm3 = apIcall_watch.getAlarmMetricInfo(list_name.get(2));
+                    xlist_alarm3 = list_alarm3.keySet();
+                    thres_alarm3 = apIcall_watch.getAlarmThresholdInfo(list_name.get(2));
 
                     list = apIcall_watch.listAlarms(statevalue[0]);
                     list_size[0] = list.size();
@@ -131,7 +145,7 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
                     e.printStackTrace();
                 } catch (ParseException e) {
                     e.printStackTrace();
-                } catch (Exception e){
+                } catch (Exception e){//list에러
                     e.printStackTrace();
                     handler.post(new Runnable() {
                         @Override
@@ -144,32 +158,63 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
                     @Override
                     public void run() {//UI접근
                         String xarr_alarm1[] = xlist_alarm1.toArray(new String[xlist_alarm1.size()]);
+                        String xarr_alarm2[] = xlist_alarm2.toArray(new String[xlist_alarm2.size()]);
+                        String xarr_alarm3[] = xlist_alarm3.toArray(new String[xlist_alarm3.size()]);
 
                         for (int i = 0; i < 6; i++) {
                             entries_alarm1.add(new Entry(Float.parseFloat(list_alarm1.get(xarr_alarm1[i])), i));
                             entries_alarm1_1.add(new Entry(Float.parseFloat(thres_alarm1),i));
                             labels_alarm1.add(xarr_alarm1[i]);
+
+                            entries_alarm2.add(new Entry(Float.parseFloat(list_alarm2.get(xarr_alarm2[i])), i));
+                            entries_alarm2_1.add(new Entry(Float.parseFloat(thres_alarm2),i));
+                            labels_alarm2.add(xarr_alarm2[i]);
+
+                            entries_alarm3.add(new Entry(Float.parseFloat(list_alarm3.get(xarr_alarm3[i])), i));
+                            entries_alarm3_1.add(new Entry(Float.parseFloat(thres_alarm3),i));
+                            labels_alarm3.add(xarr_alarm3[i]);
                         }
 
-//                        LineData data_alarm1 = new LineData(labels_alarm1, dataset_alarm1);
                         dataset_alarm1.setColors(Collections.singletonList(0xFF94D1CA)); //그래프 선 색상 변경
                         dataset_alarm1.setLineWidth(3.5f); //그래프 선 굵기 변경
                         dataset_alarm1.setDrawCubic(true); //선 둥글게 만들기
 
-//                        lineChart_alarm1.setData(data_alarm1);//데이터 입히기
-                        lineDataSets.add(dataset_alarm1);
+                        lineDataSet_alarm1.add(dataset_alarm1);
                         lineChart_alarm1.animateY(2000);//아래에서 올라오는 애니메이션 적용
 
-//                        LineData data_alarm1_1 = new LineData(labels_alarm1, dataset_alarm1_1);
                         dataset_alarm1_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
                         dataset_alarm1_1.setLineWidth(3.5f); //그래프 선 굵기 변경
                         dataset_alarm1_1.setDrawCubic(true); //선 둥글게 만들기
-                        lineDataSets.add(dataset_alarm1_1);
+                        lineDataSet_alarm1.add(dataset_alarm1_1);
+                        lineChart_alarm1.setData(new LineData(labels_alarm1,lineDataSet_alarm1));
 
-                        lineChart_alarm1.setData(new LineData(labels_alarm1,lineDataSets));
-//                        lineChart_alarm1.setData(data_alarm1_1);//데이터 입히기
-//                        lineChart_alarm1.animateY(2000);//아래에서 올라오는 애니메이션 적용
 
+                        dataset_alarm2.setColors(Collections.singletonList(0xFF94D1CA)); //그래프 선 색상 변경
+                        dataset_alarm2.setLineWidth(3.5f); //그래프 선 굵기 변경
+                        dataset_alarm2.setDrawCubic(true); //선 둥글게 만들기
+
+                        lineDataSet_alarm2.add(dataset_alarm2);
+                        lineChart_alarm2.animateY(2000);//아래에서 올라오는 애니메이션 적용
+
+                        dataset_alarm2_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
+                        dataset_alarm2_1.setLineWidth(3.5f); //그래프 선 굵기 변경
+                        dataset_alarm2_1.setDrawCubic(true); //선 둥글게 만들기
+                        lineDataSet_alarm2.add(dataset_alarm2_1);
+                        lineChart_alarm2.setData(new LineData(labels_alarm2,lineDataSet_alarm2));
+
+
+                        dataset_alarm3.setColors(Collections.singletonList(0xFF94D1CA)); //그래프 선 색상 변경
+                        dataset_alarm3.setLineWidth(3.5f); //그래프 선 굵기 변경
+                        dataset_alarm3.setDrawCubic(true); //선 둥글게 만들기
+
+                        lineDataSet_alarm3.add(dataset_alarm3);
+                        lineChart_alarm3.animateY(2000);//아래에서 올라오는 애니메이션 적용
+
+                        dataset_alarm3_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
+                        dataset_alarm3_1.setLineWidth(3.5f); //그래프 선 굵기 변경
+                        dataset_alarm3_1.setDrawCubic(true); //선 둥글게 만들기
+                        lineDataSet_alarm3.add(dataset_alarm3_1);
+                        lineChart_alarm3.setData(new LineData(labels_alarm3,lineDataSet_alarm3));
 
                         for (int i = 0; i < list.size(); i++) {
                             state[i] = list.get(i)[1];
@@ -275,6 +320,38 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
 
         // maAdapter의 값이 변경되었다는 것을 알려줍니다.
         maAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 하단바의 Dashboard 버튼 클릭 처리 함수
+     */
+    public void DashboardClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 하단바의 service 버튼 클릭 처리 함수
+     */
+    public void ServiceClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), service_main.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 하단바의 Monitoring 버튼 클릭 처리 함수
+     */
+    public void MonitoringClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), Monitoring.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 하단바의 Payment 버튼 클릭 처리 함수
+     */
+    public void PaymentClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), Payment.class);
+        startActivity(intent);
     }
 }
 

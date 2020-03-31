@@ -1,11 +1,13 @@
 package com.example.test1;
 
+
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -211,23 +214,27 @@ public class Monitoring_Metric extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-
     private void getData(String [] opt) {
         // 임의의 데이터입니다.
         List<String> listOpt = Arrays.asList(opt);
 
-        Integer [] tmp = new Integer[opt.length];
+        CheckBox [] tmp = new CheckBox[opt.length];
+        Boolean [] tmp_b = new Boolean[opt.length];
+
         for(int i = 0; i < tmp.length; i++) {
-            tmp[i] = R.id.cbtn_metric_opt;
+            tmp[i] = findViewById(R.id.cbtn_metric_opt);
+            tmp_b[i] = false;
         }
 
-        List<Integer> listResId = Arrays.asList(tmp);
+        List<Boolean> listBool = Arrays.asList(tmp_b);
+        List<CheckBox> listCheckBox = Arrays.asList(tmp);
 
         for (int i = 0; i < listOpt.size(); i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             MetricData maData = new MetricData();
             maData.setOpt(listOpt.get(i));
-            maData.setBtnId(listResId.get(i));
+            maData.setCbtn(listCheckBox.get(i));
+            maData.setChecked(listBool.get(i));
 
             // 각 값이 들어간 data를 adapter에 추가합니다.
             adapter.addItem(maData);
@@ -237,3 +244,4 @@ public class Monitoring_Metric extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 }
+

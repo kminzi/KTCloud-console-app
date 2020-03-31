@@ -2,12 +2,14 @@ package com.example.test1;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,6 +43,22 @@ public class MetricAdapter extends RecyclerView.Adapter {
 
         messageViewHolder.onBind(listData.get(position), position);
 
+
+
+        //in some cases, it will prevent unwanted situations
+        final MetricData objIncome = listData.get(position);
+        ((MessageViewHolder) holder).cbtn.setOnCheckedChangeListener(null);
+
+        //if true, your checkbox will be selected, else unselected
+        ((MessageViewHolder) holder).cbtn.setChecked(objIncome.checked);
+
+        ((MessageViewHolder) holder).cbtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //set your object's last status
+                objIncome.setSelected();
+            }
+        });
     }
 
     @Override
@@ -60,8 +78,8 @@ public class MetricAdapter extends RecyclerView.Adapter {
     private class MessageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // API로 받아올 값들
-        private CheckBox cbtn;
         private TextView opt;
+        public CheckBox cbtn;
         private MetricData maData;
 
         // 포지션
@@ -81,8 +99,6 @@ public class MetricAdapter extends RecyclerView.Adapter {
             opt.setText(data.getOpt());
 
             changeVisibility(selectedItems.get(position));
-
-            cbtn.setOnClickListener(this);
             opt.setOnClickListener(this);
         }
 
