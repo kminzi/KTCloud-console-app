@@ -81,6 +81,10 @@ public class APIcall_watch extends APIcall_main {
     }
 
 
+    public static void setStatistics(String s){
+        statistics = s;
+    }
+
     /**
      * @brief section 값을 구간으로, 현재 시간 및 통계 시작 시간을 설정하기 위한 함수
      **/
@@ -88,6 +92,14 @@ public class APIcall_watch extends APIcall_main {
         ZonedDateTime currDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         endtime = currDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
         starttime = currDateTime.minusHours(section).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+    }
+
+    /**
+     * @brief 각 상세 그래프의 주기를 설정하기 위한 함수
+     * @param s 주기
+     */
+    private static void setPeriod(String s){
+        period = s;
     }
 
 

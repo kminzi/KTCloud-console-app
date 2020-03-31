@@ -1,6 +1,7 @@
 package com.example.test1;
 
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,8 +28,6 @@ public class Monitoring_Metric extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.moni_watch_metric);
 
-        //액션바 타이틀 변경하기
-        getSupportActionBar().setTitle("KT Cloud");
         //액션바 배경색 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
@@ -41,14 +39,17 @@ public class Monitoring_Metric extends AppCompatActivity {
 
         // 메트릭 그래프 옵션 선택
 
-        final String[] serverName = {"테스트 서버 이름 1", "테스트 서버 이름 2", "테스트 서버 이름 3"};
+        final String[] serverName =  new String[100];
         final String[] opt = {"CPUUtilization", "MemoryTarget", "MemoryInternalFree", "DiskReadBytes", "DiksWriteBytes", "NetworkIn", "NetworkOut"};
         final String[] metricOpt = new String[serverName.length * 7];
+
+
+
 
         int tmp = 0;
         for (int i = 0; i < serverName.length; i++) {
             for (int j  = 0; j < opt.length; j++) {
-                metricOpt[tmp++] = serverName[i] + " " + opt[j];
+                metricOpt[tmp++] = serverName[i] + " - " + opt[j];
             }
         }
 
@@ -67,9 +68,7 @@ public class Monitoring_Metric extends AppCompatActivity {
                 }
             }
         });
-
         menu_btn();
-
     }
 
 
@@ -242,6 +241,38 @@ public class Monitoring_Metric extends AppCompatActivity {
 
         // adapter의 값이 변경되었다는 것을 알려줍니다.
         adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 하단바의 Dashboard 버튼 클릭 처리 함수
+     */
+    public void DashboardClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 하단바의 service 버튼 클릭 처리 함수
+     */
+    public void ServiceClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), service_main.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 하단바의 Monitoring 버튼 클릭 처리 함수
+     */
+    public void MonitoringClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), Monitoring.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 하단바의 Payment 버튼 클릭 처리 함수
+     */
+    public void PaymentClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), Payment.class);
+        startActivity(intent);
     }
 }
 
