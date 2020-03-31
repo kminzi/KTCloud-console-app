@@ -34,7 +34,6 @@ import java.util.Set;
 
 public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapter maAdapter;
     private List<MoniAlarmData> maData;
-    APIcall_main API = (APIcall_main) getApplication();
     APIcall_watch apIcall_watch = new APIcall_watch();
     final int[] list_size = new int[1];
 

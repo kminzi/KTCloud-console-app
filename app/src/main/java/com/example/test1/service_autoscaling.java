@@ -32,7 +32,6 @@ public class service_autoscaling extends AppCompatActivity implements View.OnCli
     private EditText txt_zone;
 
 
-    APIcall_main API = (APIcall_main) getApplication();
     APIcall_Autoscaling apIcall_autoscaling = new APIcall_Autoscaling();
 
     final int[] list_size = new int[1];
@@ -63,7 +62,7 @@ public class service_autoscaling extends AppCompatActivity implements View.OnCli
         txt_zone = (EditText) findViewById(R.id.txt_auto_zone_search);
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
-        txt_zone.setText(API.getZone());
+        txt_zone.setText(apIcall_autoscaling.getZone());
 
         new Thread(new Runnable() {
             ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
@@ -72,7 +71,7 @@ public class service_autoscaling extends AppCompatActivity implements View.OnCli
             public void run() {
                 try {
 //                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
-                    API.setState("all");//default 값 설정 - 추후 UI변경 시 수정
+                    apIcall_autoscaling.setState("all");//default 값 설정 - 추후 UI변경 시 수정
                     list = apIcall_autoscaling.listAutoscaling();//이름, 상태, 위치, 현재 vm, 목표 vm, 최소 vm, 최대 vm
                     list_size[0] = list.size();
                 } catch (IOException e) {
@@ -125,7 +124,7 @@ public class service_autoscaling extends AppCompatActivity implements View.OnCli
                         public void onClick(DialogInterface dialog, int which) {
                             txt_zone = (EditText) findViewById(R.id.txt_auto_zone_search);
                             txt_zone.setText(zoneItem[which]);
-                            API.setZone((String) zoneItem[which]);
+                            apIcall_autoscaling.setZone((String) zoneItem[which]);
                             Intent intent = getIntent();
                             finish();
                             startActivity(intent);

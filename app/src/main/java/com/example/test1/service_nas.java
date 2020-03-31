@@ -31,7 +31,6 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
     private Button btn_zone;
     private EditText txt_zone;
 
-    APIcall_main API = (APIcall_main) getApplication();
     APIcall_NAS api_nas = new APIcall_NAS();
 
     final int[] list_size = new int[1];
@@ -60,14 +59,14 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
 
-        txt_zone.setText(API.getZone());
+        txt_zone.setText(api_nas.getZone());
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
 //                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
-                    API.setState("all");//default 값 설정 - 추후 UI변경 시 수정
+                    api_nas.setState("all");//default 값 설정 - 추후 UI변경 시 수정
                     list[0] = api_nas.listNas();//이름, 위치, 신청용량, 현재 사용량, 프로토콜
                     list_size[0] = list[0].size();
                 } catch (IOException e) {
@@ -126,7 +125,7 @@ public class service_nas extends AppCompatActivity implements View.OnClickListen
                         public void onClick(DialogInterface dialog, int which) {
                             EditText tmp = (EditText) findViewById(R.id.txt_nas_zone_search);
                             tmp.setText(zoneItem[which]);
-                            API.setZone((String) zoneItem[which]);
+                            api_nas.setZone((String) zoneItem[which]);
                             Intent intent = getIntent();
                             finish();
                             startActivity(intent);

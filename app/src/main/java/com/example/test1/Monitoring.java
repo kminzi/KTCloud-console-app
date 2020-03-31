@@ -27,7 +27,6 @@ import java.util.Set;
 
 public class Monitoring extends AppCompatActivity {
 
-    APIcall_main API = (APIcall_main) getApplication();
     APIcall_watch apIcall_watch = new APIcall_watch();
     final Handler handler = new Handler();
 

@@ -4,6 +4,7 @@ package com.example.test1;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,21 +13,31 @@ import android.widget.CheckBox;
 import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Monitoring_Metric extends AppCompatActivity {
     private MetricAdapter adapter;
+    APIcall_watch apIcall_watch = new APIcall_watch();
+    final int[] server_num = new int[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.moni_watch_metric);
+        final Handler handler = new Handler();
 
         //액션바 배경색 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
@@ -43,15 +54,40 @@ public class Monitoring_Metric extends AppCompatActivity {
         final String[] opt = {"CPUUtilization", "MemoryTarget", "MemoryInternalFree", "DiskReadBytes", "DiksWriteBytes", "NetworkIn", "NetworkOut"};
         final String[] metricOpt = new String[serverName.length * 7];
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+                try {
+                    list = apIcall_watch.listServerAt("Seoul-M");//default - m존, running상태
+                    server_num[0] = list.size();
+                    for (int i = 0; i < server_num[0]; i++) serverName[i] = list.get(i)[0];
 
-
-
-        int tmp = 0;
-        for (int i = 0; i < serverName.length; i++) {
-            for (int j  = 0; j < opt.length; j++) {
-                metricOpt[tmp++] = serverName[i] + " - " + opt[j];
+                    int tmp = 0;
+                    for (int i = 0; i < server_num[0]; i++) {
+                        for (int j  = 0; j < opt.length; j++) {
+                            metricOpt[tmp++] = serverName[i] + " - " + opt[j];
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "조회할 서버가 없습니다", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
-        }
+        }).start();
 
 
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -59,10 +95,10 @@ public class Monitoring_Metric extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 if (all.isChecked()) {
                     adapter.rmItem();
-                    getData(opt);
+                    getData(opt, 7);
                 } else if (per.isChecked()) {
                     adapter.rmItem();
-                    getData(metricOpt);
+                    getData(metricOpt, server_num[0]*7);
                 } else {
                     adapter.rmItem();
                 }
@@ -70,7 +106,6 @@ public class Monitoring_Metric extends AppCompatActivity {
         });
         menu_btn();
     }
-
 
     public void menu_btn() {
         // 메트릭 그래프 추가 옵션(주기, 통계 등) 선택
@@ -213,12 +248,12 @@ public class Monitoring_Metric extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private void getData(String [] opt) {
+    private void getData(String [] opt, int num) {
         // 임의의 데이터입니다.
         List<String> listOpt = Arrays.asList(opt);
 
-        CheckBox [] tmp = new CheckBox[opt.length];
-        Boolean [] tmp_b = new Boolean[opt.length];
+        CheckBox [] tmp = new CheckBox[num];
+        Boolean [] tmp_b = new Boolean[num];
 
         for(int i = 0; i < tmp.length; i++) {
             tmp[i] = findViewById(R.id.cbtn_metric_opt);
@@ -228,7 +263,7 @@ public class Monitoring_Metric extends AppCompatActivity {
         List<Boolean> listBool = Arrays.asList(tmp_b);
         List<CheckBox> listCheckBox = Arrays.asList(tmp);
 
-        for (int i = 0; i < listOpt.size(); i++) {
+        for (int i = 0; i < num; i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             MetricData maData = new MetricData();
             maData.setOpt(listOpt.get(i));

@@ -39,24 +39,20 @@ public class APIcall_watch extends APIcall_main {
     // key에는 발생한 알람명이 들어가고, value에는  threshold가 들어간다.
     private static HashMap<String, String> alarmThreshold;
 
-
     public static HashMap<String, String> getInfo(String metricname) {
         HashMap<String, String> tmp = new HashMap<String, String>();
         tmp = metricList.get(metricname);
         return tmp;
     }
 
-
     /**
      * @param alarmname 조회를 원하는 알람이름
      * @return
      * @brief 알람 이름에 따른 매트릭을 가진 hashmap을 리턴, UX과정에서 사용
      */
-    public static HashMap<String, String> getAlarmMetricInfo(String alarmname) {
+    public HashMap<String, String> getAlarmMetricInfo(String alarmname) {
         HashMap<String, String> tmp = new HashMap<String, String>();
         tmp = alarmMetricList.get(alarmname);
-//        System.out.println(alarmname);
-//        System.out.println(tmp);
         System.out.println(alarmMetricList);
         return tmp;
     }
@@ -66,7 +62,7 @@ public class APIcall_watch extends APIcall_main {
      * @return
      * @brief 알람 이름에 따른 Threshold를 리턴
      */
-    public static String getAlarmThresholdInfo(String alarmname) {
+    public String getAlarmThresholdInfo(String alarmname) {
         String tmp;
         tmp = alarmThreshold.get(alarmname);
         return tmp;
@@ -76,19 +72,19 @@ public class APIcall_watch extends APIcall_main {
      * @return
      * @brief 최근 알람3개의 이름을 가진 list 리턴
      */
-    public static ArrayList<String> getAlarmTitle() {
+    public ArrayList<String> getAlarmTitle() {
         return alarmList;
     }
 
 
-    public static void setStatistics(String s){
+    public void setStatistics(String s){
         statistics = s;
     }
 
     /**
      * @brief section 값을 구간으로, 현재 시간 및 통계 시작 시간을 설정하기 위한 함수
      **/
-    private static void setTime(int section) {
+    private void setTime(int section) {
         ZonedDateTime currDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         endtime = currDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
         starttime = currDateTime.minusHours(section).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
@@ -98,7 +94,7 @@ public class APIcall_watch extends APIcall_main {
      * @brief 각 상세 그래프의 주기를 설정하기 위한 함수
      * @param s 주기
      */
-    private static void setPeriod(String s){
+    private void setPeriod(String s){
         period = s;
     }
 
@@ -106,7 +102,7 @@ public class APIcall_watch extends APIcall_main {
     /**
      * @brief 각 상세 그래프에서, 통계, 구간, 주기에 대한 사용자 지정 값을 입력받기 위한 함수
      **/
-    private static void setValue() {
+    private void setValue() {
         Scanner sc = new Scanner(System.in);
 
         System.out.print("통계(Average, Sum, SampleCount, Maximum, Minimum): ");
@@ -124,7 +120,7 @@ public class APIcall_watch extends APIcall_main {
     /**
      * @brief CPU Utilization 및 네트워크 관련 값을 제외한 각 상세 그래프에서, 단위에 대한 사용자 지정 값을 입력받기 위한 함수
      **/
-    public static void setUnit() {
+    public void setUnit() {
         Scanner sc = new Scanner(System.in);
 
         System.out.print("단위(Bytes, Kilobytes, Megabytes, Gigabytes): ");
@@ -135,7 +131,7 @@ public class APIcall_watch extends APIcall_main {
     /**
      * @brief 네트워크 관련 상세 그래프에서, 단위에 대한 사용자 지정 값을 입력받기 위한 함수
      **/
-    public static void setUnitForNetwork() {
+    public void setUnitForNetwork() {
         Scanner sc = new Scanner(System.in);
 
         System.out.print("단위(Bits/Second, Kilobits/Second, Megabits/Second, Gigabits/Second, Bytes/Second, Kilobytes/Second, Megabytes/Second, Gigabytes/Second): ");
@@ -152,7 +148,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 서버의 displayname으로 zoneid를 받아오는 함수
      **/
-    public static String getZoneByDisplayname(String displayname) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public String getZoneByDisplayname(String displayname) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         String zoneid = "";
         int button = 2;
 
@@ -240,7 +236,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 서버의 zondid와 displayname으로 name(hostname)을 받아오는 함수
      **/
-    public static String getNameByDisplayname(String zoneid, String displayname) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public String getNameByDisplayname(String zoneid, String displayname) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         String name = "";
         int button = 2;
 
@@ -298,7 +294,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 서버의 zoneid와 displayname으로 id을 받아오는 함수
      **/
-    public static String getIdByDisplayname(String zoneid, String displayname) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public String getIdByDisplayname(String zoneid, String displayname) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         String id = "";
         int button = 2;
 
@@ -354,48 +350,37 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 특정 서버 메트릭 조회 시 필요한, 각 zone별 사용중인 서버 리스트 출력 함수
      **/
-    private static void listServerAt(String z) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public ArrayList<String[]> listServerAt(String z) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
 
         int button = 2;
 
-
         setState("running");
-
         setZone(z);
-
         TreeMap<String, String> request = new TreeMap<String, String>();
         request = generateRequire(button, request);
 
         request.put("response", "json");
         request.put("apiKey", getApikey());
 
-
         String req_message = generateReq(request);
-
-        System.out.println("Request Message is...");
-        System.out.println(req_message);
-
         JSONObject obj = readJsonFromUrl(req_message);
 
         JSONObject parse_listvirtualmachinesresponse = (JSONObject) obj.get("listvirtualmachinesresponse");
 
+        ArrayList<String[]> list = new ArrayList<String[]>();
         // 조회된 서버가 하나 이상일 경우에만 출력, 메트릭 조회 가능
         if (parse_listvirtualmachinesresponse.size() > 0) {
 
             JSONArray parse_virtualmachine = (JSONArray) parse_listvirtualmachinesresponse.get("virtualmachine");
-
             JSONObject virtualmachine;
 
             for (int i = 0; i < parse_virtualmachine.size(); i++) {
                 virtualmachine = (JSONObject) parse_virtualmachine.get(i);
-
-                System.out.println("서버명 : " + virtualmachine.get("displayname"));
-                System.out.println("서버 id : " + virtualmachine.get("id"));
-                System.out.println("zone id : " + virtualmachine.get("zoneid"));
-                System.out.println();
+                list.add(new String[]{(String) virtualmachine.get("displayname"), (String) virtualmachine.get("id"),
+                        (String) virtualmachine.get("zoneid")});
             }
         }
-
+        return list;
     }
 
 
@@ -406,7 +391,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws InvalidKeyException
      * @brief 특정 서버 메트릭 조회 시 선택 가능한, 모든 위치의 서버 리스트 출력 함수
      **/
-    public static void listAllServer() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public void listAllServer() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
 
         listServerAt("Central-A");
         listServerAt("Central-B");
@@ -421,7 +406,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief Watch 기능에 해당하는, 조회가능한 metricname 출력을 위한 함수
      **/
-    public static void listMetrics() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void listMetrics() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 1;
 
@@ -457,7 +442,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief Watch 기능에 해당하는, 전체 서버에 대한 지정 메트릭 통계를 위한 함수
      **/
-    public static void showMetric(String metricname) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void showMetric(String metricname) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 6;
 
@@ -519,10 +504,9 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 특정 서버의 지정 메트릭 통계를 위한 함수
      **/
-    public static void showMetric(String metricname, String displayname) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void showMetric(String metricname, String displayname) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 6;
-
 
         // 먼저 displayname에 해당하는 name과 value값을 받아옴
 
@@ -591,7 +575,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws InvalidKeyException
      * @brief 개별 서버 메트릭 조회 시, 선택된 서버별 메트릭 조회를 위한 함수
      **/
-    public static void showSpecificServerMetric() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public void showSpecificServerMetric() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
 
         Scanner sc = new Scanner(System.in);
 
@@ -638,7 +622,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief Watch 기능에 해당하는, 6가지 항목에 대한 통계 요약을 위한 함수
      **/
-    public static void showMonitoring() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void showMonitoring() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         setTime(3);
 
@@ -660,7 +644,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 메트릭에 대해 사용자 정의 알람 리스트 출력을 위한 함수
      **/
-    public static ArrayList<String[]> listAlarms(String statevalue) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public ArrayList<String[]> listAlarms(String statevalue) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 7;
 
         //ALL, INSUFFICIENT_DATA, OK, ALARM
@@ -803,7 +787,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 메트릭에 대한 알람 현황(갯수) 출력
      **/
-    public static int[] listAlarmStatus() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public int[] listAlarmStatus() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 7;
 
         TreeMap<String, String> request = new TreeMap<String, String>();
@@ -851,7 +835,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief (대시보드용) 발생 알람 출력을 위한 함수
      **/
-    public static ArrayList<String> listAlarmsForDashboard() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public ArrayList<String> listAlarmsForDashboard() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 7;
 
         TreeMap<String, String> request = new TreeMap<String, String>();
@@ -908,7 +892,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief Watch 기능에 해당하는, 전체 서버에 대한 지정 메트릭 통계를 위한 함수
      **/
-    public static void showAlarmMetric(String alarmname, String metricname, LocalDateTime timestamp, HashMap<String, HashMap<String, String>> alarmMetricList) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void showAlarmMetric(String alarmname, String metricname, LocalDateTime timestamp, HashMap<String, HashMap<String, String>> alarmMetricList) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 6;
 
@@ -1001,7 +985,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 발생 알람에 대한 특정 서버의 지정 메트릭 통계를 위한 함수
      **/
-    public static void showAlarmMetric(String alarmname, String metricname, String value, LocalDateTime timestamp, HashMap<String, HashMap<String, String>> alarmMetricList) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void showAlarmMetric(String alarmname, String metricname, String value, LocalDateTime timestamp, HashMap<String, HashMap<String, String>> alarmMetricList) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
         int button = 6;
 
         HashMap<String, String> points = new HashMap<String, String>();
@@ -1095,7 +1079,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 알람 발생 시, 알람이 발생한 메트릭 출력. StateUpdate 중에서도 from OK/INSUFFICIENT_DATA to ALARM 인 경우에만 알람 출력.
      **/
-    public static void listAlarmHistory() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public void listAlarmHistory() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 8;
 
         alarmMetricList = new HashMap<String, HashMap<String, String>>();

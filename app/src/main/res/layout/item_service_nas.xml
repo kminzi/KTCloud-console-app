@@ -229,7 +229,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginBottom="8dp"
-            android:text="* 일반존 : 최대 10000GB, Seoul - M2존 1132GB 최대"
+            android:text="* 일반존 : 최대 10000GB / Seoul-M2존 : 최대 1132GB"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

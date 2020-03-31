@@ -59,7 +59,9 @@ public class ServerAdapter extends RecyclerView.Adapter {
         Button bs = ((MessageViewHolder) holder).buttonStop;
         Button bst = ((MessageViewHolder) holder).buttonStart;
         Button brs = ((MessageViewHolder) holder).buttonRestart;
+
         final String id=((MessageViewHolder) holder).id;
+
 
         bs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +100,7 @@ public class ServerAdapter extends RecyclerView.Adapter {
                     @Override
                     public void run() {
                         try {
-                            if(!state.equals("Running")) api_server.startServer(position);
+                            if(!state.equals("Running")) api_server.startServer(id);
                             else {
                                 handler.post(new Runnable() {
                                     @Override
@@ -127,7 +129,7 @@ public class ServerAdapter extends RecyclerView.Adapter {
                     @Override
                     public void run() {
                         try {
-                            api_server.rebootServer(position);
+                            api_server.rebootServer(id);
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (InvalidKeyException e) {
@@ -154,7 +156,6 @@ public class ServerAdapter extends RecyclerView.Adapter {
     }
 
     private class MessageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
         // API로 받아올 값들
         private ImageView imageView;
         private TextView name;

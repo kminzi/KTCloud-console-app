@@ -12,11 +12,16 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 public class APIcall_Autoscaling extends APIcall_main {
+
+    public APIcall_Autoscaling(){
+        baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v2/client/api?";
+    }
+
     /**
      * @throws ParseException
      * @brief 매니지먼트 기능에 해당하는, AutoScaling 출력을 위한 함수
      **/
-    public static ArrayList<String[]> listAutoscaling() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public ArrayList<String[]> listAutoscaling() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 13;
 
@@ -88,7 +93,7 @@ public class APIcall_Autoscaling extends APIcall_main {
      * @throws ParseException
      * @brief 매니지먼트 기능에 해당하는, 오토 스케일링 그룹의 목표 VM 수 조절을 위한 함수
      **/
-    public static String updateDesiredCapacity(String autoScalingGroupName, String desiredCapacity) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public String updateDesiredCapacity(String autoScalingGroupName, String desiredCapacity) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 14;
 

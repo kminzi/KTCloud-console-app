@@ -22,7 +22,7 @@ public class APIcall_LB extends APIcall_main{
      * @param id displayname을 알기를 원하는 서버의 id
      * @return zoneid와 id이 일치하는 서버의 displayname, 찾지못했을 경우 null 반환
      **/
-    public static String getDisplaynameById(String zoneid, String id) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public String getDisplaynameById(String zoneid, String id) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         String displayName = "";
         int button = 2;
 
@@ -68,7 +68,7 @@ public class APIcall_LB extends APIcall_main{
      * @brief Networking 기능에 해당하는, LB 리스트 출력을 위한 함수
      * @return 각 LoadBalancer의 LB이름, 옵션, 타입, 위치, IP, Port를 가진 리스트
      **/
-    public static ArrayList<String[]> listLB() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public ArrayList<String[]> listLB() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 16;
 
         TreeMap<String, String> request = new TreeMap<String, String>();
@@ -109,7 +109,7 @@ public class APIcall_LB extends APIcall_main{
      * @param zone 조회할 LB가 위치한 zone의 이름
      * @brief 각 LB에 등록된 웹 서버의 정보 조희를 위한 함수
      **/
-    public static ArrayList<String[]> listLBWebServers(String loadbalancerid, String zone) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public ArrayList<String[]> listLBWebServers(String loadbalancerid, String zone) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 17;
         String zoneid = Seoul_M_zoneid;
 

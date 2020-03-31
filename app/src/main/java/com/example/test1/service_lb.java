@@ -35,7 +35,6 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
     private EditText txt_zone;
 
     final int[] list_size = new int[1];
-    APIcall_main API = (APIcall_main) getApplication();
     APIcall_LB apicall_lb = new APIcall_LB();
 
     @Override
@@ -63,7 +62,7 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
         txt_zone = (EditText)findViewById(R.id.txt_lb_zone_search);
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
-        txt_zone.setText(API.getZone());
+        txt_zone.setText(apicall_lb.getZone());
 
         //사용자가 입력한 위치, 상태에 따른 서버 목록 가져오기
         new Thread(new Runnable() {
@@ -73,7 +72,7 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
             public void run() {
                 try {
 //                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
-                    API.setState("all");//default 값 설정 - 추후 UI변경 시 수정
+                    apicall_lb.setState("all");//default 값 설정 - 추후 UI변경 시 수정
                     list = apicall_lb.listLB();//LB이름, 위치, 옵션, 타입, IP, Port, id
                     list_size[0] = list.size();
                 } catch (IOException e) {
@@ -127,7 +126,7 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
                         public void onClick(DialogInterface dialog, int which) {
                             EditText tmp = (EditText)findViewById(R.id.txt_lb_zone_search);
                             tmp.setText(zoneItem[which]);
-                            API.setZone((String) zoneItem[which]);
+                            apicall_lb.setZone((String) zoneItem[which]);
                             Intent intent = getIntent();
                             finish();
                             startActivity(intent);

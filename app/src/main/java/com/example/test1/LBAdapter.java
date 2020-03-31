@@ -221,7 +221,6 @@ public class LBAdapter extends RecyclerView.Adapter {
 
         /**
          * 클릭된 Item의 상태 변경
-         *
          * @param isExpanded Item을 펼칠 것인지 여부
          */
         private void changeVisibility(final boolean isExpanded) {

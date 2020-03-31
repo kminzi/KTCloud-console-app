@@ -41,9 +41,6 @@ public class MetricAdapter extends RecyclerView.Adapter {
 
         messageViewHolder.onBind(listData.get(position), position);
 
-
-
-        //in some cases, it will prevent unwanted situations
         final MetricData objIncome = listData.get(position);
         ((MessageViewHolder) holder).cbtn.setOnCheckedChangeListener(null);
 

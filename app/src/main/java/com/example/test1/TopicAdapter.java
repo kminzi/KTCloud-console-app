@@ -35,7 +35,6 @@ public class TopicAdapter extends RecyclerView.Adapter {
         return new MessageViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);

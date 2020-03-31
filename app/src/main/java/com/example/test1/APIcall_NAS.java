@@ -17,7 +17,7 @@ public class APIcall_NAS extends APIcall_main {
      * @throws ParseException
      * @brief NAS 기능에 해당하는, 생성된 NAS 출력을 위한 함수
      **/
-    public static ArrayList<String[]> listNas() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public ArrayList<String[]> listNas() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 18;
 
@@ -75,7 +75,7 @@ public class APIcall_NAS extends APIcall_main {
      * @throws ParseException
      * @brief NAS 기능에 해당하는, NAS volume 사이즈 변경을 위한 함수
      **/
-    public static String updateVolume(String id, String size) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public String updateVolume(String id, String size) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 19;
         String s = null;

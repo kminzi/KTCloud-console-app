@@ -27,7 +27,6 @@ import java.util.List;
 public class Monitoring_Messaging extends AppCompatActivity {
     private TopicAdapter tpAdapter;
     private List<TopicData> tpData;
-    APIcall_main API = (APIcall_main) getApplication();
     APIcall_Messaging apIcall_messaging = new APIcall_Messaging();
     final int[] list_size = new int[1];
 

@@ -20,7 +20,7 @@ public class APIcall_server extends APIcall_main {
      * @brief Server 기능에 해당하는, 생성된 VM 정보 출력을 위한 함수
      * @return 각 서버의 서버명, 스펙, 상태, 생성일시, 운영체제를 가지고 있는 list
      */
-    public static ArrayList<String[]> listServers() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public ArrayList<String[]> listServers() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 2;
 
@@ -62,7 +62,7 @@ public class APIcall_server extends APIcall_main {
      * @return 현재 정지시킨 서버의 상태
      * @param id 정지시키고자 하는 서버의 id
      **/
-    public static void stopServer(String id) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void stopServer(String id) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 3;
 
@@ -89,58 +89,32 @@ public class APIcall_server extends APIcall_main {
     /**
      * @throws ParseException
      * @brief Server 기능에 해당하는, 정지 상태인 VM을 시작하기 위한 함수
-     * @param num 정지시키고자 하는 서버의 view내 상대적 위치
+     * @param id 정지시키고자 하는 서버의 view id
      **/
-    public static void startServer(int num) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void startServer(String id) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 4;
 
         List<Integer> vm = new ArrayList<Integer>();
 
-        vm.add(num);
         TreeMap<String, String> request = new TreeMap<String, String>();
 
-        // 먼저 서버 조회해서 입력된 순서에 해당하는 vm id값을 받아옴
-        request = generateRequire(2, request);
+        request = generateRequire(button, request);
 
         request.put("response", "json");
         request.put("apiKey", getApikey());
+        request.put("id", id);
 
         String req_message = generateReq(request);
-        System.out.println();
-
-        JSONObject obj = readJsonFromUrl(req_message);
-        JSONObject parse_listvirtualmachinesresponse = (JSONObject) obj.get("listvirtualmachinesresponse");
-        JSONArray parse_virtualmachine = (JSONArray) parse_listvirtualmachinesresponse.get("virtualmachine");
-
-        JSONObject virtualmachine;
-
-
-        // startVirtualMachine api url 생성 시작
-        request.remove("command");
-        request = generateRequire(button, request);
-
-        // 각 id에 따라 startVirtualMachine request url 생성 및 호출
-        for (int i = 0; i < vm.size(); i++) {
-
-            virtualmachine = (JSONObject) parse_virtualmachine.get(vm.get(i));
-
-            request.put("id", (String) virtualmachine.get("id"));
 //
-//            System.out.println("###########################");
-//            System.out.println("시작할 vm의 id: " + virtualmachine.get("id"));
-//            System.out.println();
-
-            req_message = generateReq(request);
+//        System.out.println("Request Message is...");
+//        System.out.println(req_message);
 //
-//            System.out.println("Request Message is...");
-//            System.out.println(req_message);
-//            System.out.println();
+//        System.out.println();
 
-            readJsonFromUrl(req_message);
-            System.out.println("SUCCESS to START " + virtualmachine.get("displayname"));
-            request.remove("id");
-        }
+        readJsonFromUrl(req_message);
+
+        System.out.println( "SUCCESS to START " + id);
     }
 
     /**
@@ -148,60 +122,31 @@ public class APIcall_server extends APIcall_main {
      * @brief Server 기능에 해당하는, VM을 재시작하기 위한 함수
      * @param num 정지시키고자 하는 서버의 view내 상대적 위치
      **/
-    public static void rebootServer(int num) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void rebootServer(String id) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 5;
 
         List<Integer> vm = new ArrayList<Integer>();
-        vm.add(num);
 
         TreeMap<String, String> request = new TreeMap<String, String>();
 
-        // 먼저 서버 조회해서 입력된 순서에 해당하는 vm id값을 받아옴
-        request = generateRequire(2, request);
+        request = generateRequire(button, request);
 
         request.put("response", "json");
         request.put("apiKey", getApikey());
+        request.put("id", id);
 
         String req_message = generateReq(request);
-        System.out.println();
-
-        JSONObject obj = readJsonFromUrl(req_message);
-        JSONObject parse_listvirtualmachinesresponse = (JSONObject) obj.get("listvirtualmachinesresponse");
-        JSONArray parse_virtualmachine = (JSONArray) parse_listvirtualmachinesresponse.get("virtualmachine");
-
-        JSONObject virtualmachine;
-
-
-        // rebootVirtualMachine api url 생성 시작
-        request.remove("command");
-        request = generateRequire(button, request);
-
-        // 각 id에 따라 rebootVirtualMachine request url 생성 및 호출
-        for (int i = 0; i < vm.size(); i++) {
-
-            virtualmachine = (JSONObject) parse_virtualmachine.get(vm.get(i));
-
-            request.put("id", (String) virtualmachine.get("id"));
-
-//            System.out.println("###########################");
-//            System.out.println("재시작할 vm의 id: " + virtualmachine.get("id"));
-//            System.out.println();
-
-            req_message = generateReq(request);
 //
-//            System.out.println("Request Message is...");
-//            System.out.println(req_message);
-//            System.out.println();
+//        System.out.println("Request Message is...");
+//        System.out.println(req_message);
+//
+//        System.out.println();
 
 
-            readJsonFromUrl(req_message);
+        readJsonFromUrl(req_message);
 
-            System.out.println("SUCCESS to REBOOT " + virtualmachine.get("displayname"));
-
-            request.remove("id");
-        }
-
+        System.out.println( "SUCCESS to REBOOT " + id);
 
     }
 }

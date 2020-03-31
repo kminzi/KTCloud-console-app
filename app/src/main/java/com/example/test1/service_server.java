@@ -30,13 +30,11 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
     public static Context mContext;
     Handler handler = new Handler();
     private ServerAdapter svAdpater;
-    private List<ServerData> sData;
     private Button btn_zone;
     private EditText txt_zone;
 
     int list_size;
 
-    APIcall_main API = (APIcall_main) getApplication();
     APIcall_server api_server = new APIcall_server();
 
     @Override
@@ -61,12 +59,10 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
         btn_zone = (Button)findViewById(R.id.btn_server_zone_search);
         btn_zone.setOnClickListener(this);
 
-
         txt_zone = (EditText)findViewById(R.id.txt_server_zone_search);
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
-        txt_zone.setText(API.getZone());
-
+        txt_zone.setText("Seoul-M");
 
         //사용자가 입력한 위치, 상태에 따른 서버 목록 가져오기
         new Thread(new Runnable() {
@@ -74,7 +70,8 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
             @Override
             public void run() {
                 try {
-                    API.setState("all");
+                    api_server.setZone("Seoul-M");
+                    api_server.setState("all");
                     list = api_server.listServers();
                     list_size = list.size();
                 } catch (IOException e) {
@@ -101,7 +98,7 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
                             state[i] = list.get(i)[2];
                             created[i] = list.get(i)[3] ;
                             name[i] = list.get(i)[0];
-                            zonename[i] = API.getZone();
+                            zonename[i] = api_server.getZone();
                             osname[i] = list.get(i)[4];
                             id[i] = list.get(i)[5];
                         }
@@ -169,8 +166,9 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
     }
 
 
-    public void onButtonClicked_home(View v) {
-        Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+    public void onButtonClicked_refresh(View v) {
+        Intent intent = getIntent();
+        finish();
         startActivity(intent);
     }
 
@@ -220,7 +218,7 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
                         public void onClick(DialogInterface dialog, int which) {
                             EditText tmp = (EditText)findViewById(R.id.txt_server_zone_search);
                             tmp.setText(zoneItem[which]);
-                            API.setZone((String) zoneItem[which]);
+                            api_server.setZone((String) zoneItem[which]);
                             Intent intent = getIntent();
                             finish();
                             startActivity(intent);

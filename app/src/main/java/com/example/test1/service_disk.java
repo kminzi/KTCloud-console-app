@@ -31,8 +31,6 @@ public class service_disk extends AppCompatActivity implements View.OnClickListe
     private List<DiskData> dData;
     private Button btn_zone;
     private EditText txt_zone;
-
-    APIcall_main API = (APIcall_main) getApplication();
     APIcall_Disk api_disk = new APIcall_Disk();
 
     final int[] list_size = new int[1];
@@ -64,7 +62,7 @@ public class service_disk extends AppCompatActivity implements View.OnClickListe
         txt_zone = (EditText) findViewById(R.id.txt_disk_zone_search);
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
-        txt_zone.setText(API.getZone());
+        txt_zone.setText(api_disk.getZone());
 
 
         //사용자가 입력한 위치, 상태에 따른 디스크 목록 가져오기
@@ -75,7 +73,7 @@ public class service_disk extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 try {
 //                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
-                    API.setState("all");//default 값 설정 - 추후 UI변경 시 수정
+                    api_disk.setState("all");//default 값 설정 - 추후 UI변경 시 수정
                     list = api_disk.listDisk();//disk명, 용량, 구분, 위치, 상태, 적용 서버, 타입, 생성일자
                     list_size[0] = list.size();
                 } catch (IOException e) {
@@ -102,7 +100,7 @@ public class service_disk extends AppCompatActivity implements View.OnClickListe
                             state[i] = list.get(i)[4];
                             created[i] = list.get(i)[7];
                             name[i] = list.get(i)[0];
-                            zonename[i] = API.getZone();
+                            zonename[i] = api_disk.getZone();
                             server[i] = list.get(i)[5];
                             size[i] = list.get(i)[1];
                         }
@@ -127,7 +125,7 @@ public class service_disk extends AppCompatActivity implements View.OnClickListe
                         public void onClick(DialogInterface dialog, int which) {
                             EditText tmp = (EditText) findViewById(R.id.txt_disk_zone_search);
                             tmp.setText(zoneItem[which]);
-                            API.setZone((String) zoneItem[which]);
+                            api_disk.setZone((String) zoneItem[which]);
                             Intent intent = getIntent();
                             finish();
                             startActivity(intent);

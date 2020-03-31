@@ -95,9 +95,9 @@ public class MainActivity extends AppCompatActivity {
 
     class BackgroundThread extends Thread {
         public void run() {
+            System.out.println(apikey);
             API.setApikey(apikey);
             API.setSecretKey(secretKey);
-            API.setBaseurl("");
         }
     }
 

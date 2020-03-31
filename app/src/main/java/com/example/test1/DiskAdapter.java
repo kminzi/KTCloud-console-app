@@ -37,7 +37,6 @@ public class DiskAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
-
         messageViewHolder.onBind(listData.get(position), position);
 
     }

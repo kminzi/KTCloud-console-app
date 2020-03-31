@@ -83,17 +83,78 @@ public class Dashboard extends AppCompatActivity {
         //dashboard 목록 가져오기
         new Thread(new Runnable() {
             ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+            @Override
+            public void run() {
+                try {
+                    api_server.setZone("Seoul-M");//default 값 설정
+                    api_server.setState("all");
+                    list = api_server.listServers();
+                    list_size = list.size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {//UI접근
+                        server_num.setText(list.size() + "개 사용 중");
+                        for (int i = 0; i < list.size(); i++) {
+                            title_s[i] = list.get(i)[0];
+                            content_s[i] = "스펙 : " + list.get(i)[1] + " 상태 : " + list.get(i)[2];
+                            os_s[i] = list.get(i)[4];
+                        }
+                        getData_s(title_s, content_s, os_s);
+                    }
+                });
+            }
+        }).start();
+
+        //dashboard 목록 가져오기
+        new Thread(new Runnable() {
             ArrayList<String[]> list_m = new ArrayList<String[]>();//DB 정보를 받아올 ArrayList
+            @Override
+            public void run() {
+                try {
+                    api_db.setZone("Seoul-M");//default 값 설정
+                    api_db.setState("all");
+                    list_m = api_db.listMysqlDB();
+                    list_size_m = list_m.size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {//UI접근
+                        db_num.setText(list_m.size() + "개 사용 중");
+                        for (int i = 0; i < list_m.size(); i++) {
+                            title_m[i] = list_m.get(i)[0];
+                            content_m[i] = "용량 : " + list_m.get(i)[3] + " 상태 : " + list_m.get(i)[1];
+                        }
+                        getData_m(title_m, content_m);
+                    }
+                });
+            }
+        }).start();
+
+        //dashboard 목록 가져오기
+        new Thread(new Runnable() {
             ArrayList<String> list_a = new ArrayList<String>();//alarm 정보를 받아올 ArrayList
             @Override
             public void run() {
                 try {
-                    API.setZone("Seoul-M");//default 값 설정
-                    API.setState("all");
-                    list = api_server.listServers();
-                    list_size = list.size();
-                    list_m = api_db.listMysqlDB();
-                    list_size_m = list_m.size();
+                    apIcall_watch.setZone("Seoul-M");//default 값 설정
+                    apIcall_watch.setState("all");
                     list_a = apIcall_watch.listAlarmsForDashboard();
                     list_size_a = list_a.size();
                 } catch (IOException e) {
@@ -108,27 +169,12 @@ public class Dashboard extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {//UI접근
-                        server_num.setText(list.size() + "개 사용 중");
-                        db_num.setText(list_m.size() + "개 사용 중");
-                        for (int i = 0; i < list.size(); i++) {
-                            title_s[i] = list.get(i)[0];
-                            content_s[i] = "스펙 : " + list.get(i)[1] + " 상태 : " + list.get(i)[2];
-                            os_s[i] = list.get(i)[4];
-                        }
-                        getData_s(title_s, content_s, os_s);
-
-                        for (int i = 0; i < list_m.size(); i++) {
-                            title_m[i] = list_m.get(i)[0];
-                            content_m[i] = "용량 : " + list_m.get(i)[3] + " 상태 : " + list_m.get(i)[1];
-                        }
-                        getData_m(title_m, content_m);
-
                         for(int i=0;i<list_a.size();i++){
                             String tmp = list_a.get(i);
                             title_a[i] = tmp.substring(0,tmp.lastIndexOf("생")+1);
                             content_a[i] = tmp.substring(tmp.lastIndexOf("생")+1);
                         }
-                        getData_a(title_a, content_a); // 모니터링용
+                        getData_a(title_a, content_a);
                     }
                 });
             }

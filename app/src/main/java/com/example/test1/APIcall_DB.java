@@ -12,7 +12,6 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 public class APIcall_DB extends APIcall_main {
-
     /**
      * @brief DB 인스턴스의 zone과 인스턴스 id로 Displayname을 받아오는 함수
      * @param zonename displayname을 알기를 원하는 DB 인스턴스의 zone 이름
@@ -23,11 +22,10 @@ public class APIcall_DB extends APIcall_main {
      * @throws IOException
      * @throws ParseException
      **/
-    private static String getDisplaynameById(String zonename, String id) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    private String getDisplaynameById(String zonename, String id) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         String displayname = "알수없음";
 
         int button = 20;
-
 
         TreeMap<String, String> request = new TreeMap<String, String>();
 
@@ -40,11 +38,6 @@ public class APIcall_DB extends APIcall_main {
         request.put("instanceids", id);
 
         String req_message = generateReq(request);
-
-		/*
-		System.out.println("Request Message is...");
-		System.out.println(req_message);
-		 */
 
         JSONObject obj =  readJsonFromUrl(req_message);
 
@@ -60,20 +53,16 @@ public class APIcall_DB extends APIcall_main {
             JSONObject instance =  (JSONObject) parse_instance.get(0);
 
             displayname = String.valueOf(instance.get("instancename"));
-
-
         }
 
-
         return displayname;
-
     }
     /**
      * @throws ParseException
      * @return Database의 이름, 상태, DB상태(보류), 용량, 생성일, 종속장치, 위치를 가지는 arraylist
      * @brief Database 기능에 해당하는, 생성된 mysql DB 정보 출력을 위한 함수
      **/
-    public static ArrayList<String[]> listMysqlDB() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public ArrayList<String[]> listMysqlDB() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 20;
 
@@ -118,7 +107,7 @@ public class APIcall_DB extends APIcall_main {
      * @throws ParseException
      * @brief Database 기능에 해당하는, DB의 HA 그룹 정보 출력을 위한 함수
      **/
-    public static void listHaGroups() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void listHaGroups() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 21;
 
@@ -188,7 +177,7 @@ public class APIcall_DB extends APIcall_main {
      * @brief Database 기능에 해당하는, 복제 그룹의 슬레이브의 수를 변경하기 위한 함수
      **/
 
-    public static void updateHaGroupSlaveCount() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void updateHaGroupSlaveCount() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 22;
 

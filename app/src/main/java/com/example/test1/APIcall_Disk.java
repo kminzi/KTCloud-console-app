@@ -19,7 +19,7 @@ public class APIcall_Disk extends APIcall_main {
      * @throws ParseException
      * @brief Server 기능에 해당하는, 사용자가 보유하고있는 Disk 리스트 출력을 위한 함수
      **/
-    public static ArrayList<String[]> listDisk() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public ArrayList<String[]> listDisk() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 15;
 
         TreeMap<String, String> request = new TreeMap<String, String>();

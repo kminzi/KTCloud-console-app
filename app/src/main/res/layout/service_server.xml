@@ -53,7 +53,6 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/search"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +63,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
-        android:layout_marginLeft="2dp"
         android:ems="6"
         android:gravity="center"
         android:inputType="textPersonName"
@@ -164,5 +162,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_dashboard"
         app:srcCompat="@drawable/service_2" />
+
+    <Button
+        android:id="@+id/btn_service_server_refresh"
+        android:layout_width="24dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="18dp"
+        android:background="@drawable/recycle"
+        android:onClick="onButtonClicked_refresh"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_server_zone_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_server_zone_search" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
