@@ -15,7 +15,6 @@ public class APIcall_Autoscaling extends APIcall_main {
 
     public APIcall_Autoscaling(){
         this.baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v2/client/api?";
-        this.zone = "Seoul-M";
     }
 
     /**
@@ -47,7 +46,7 @@ public class APIcall_Autoscaling extends APIcall_main {
         JSONObject autoscalinggroup;
 
         ArrayList<String[]> list = new ArrayList<String[]>();
-        String zone = null;
+        String zoneid = null;
         for (int i = 0; i < parse_autoscalinggroups.size(); i++) {
 
             autoscalinggroup = (JSONObject) parse_autoscalinggroups.get(i);
@@ -55,14 +54,15 @@ public class APIcall_Autoscaling extends APIcall_main {
             JSONArray availabilityzones = (JSONArray) autoscalinggroup.get("availabilityzones");
 
             for (int j = 0; j < availabilityzones.size(); j++) {
-                zone = String.valueOf(availabilityzones.get(j));
+                zoneid = String.valueOf(availabilityzones.get(j));
 
-                if (zone.equals(Seoul_M_zoneid)) zone = "KOR-Seoul M";
-                else if (zone.equals(Seoul_M2_zoneid)) zone = "KOR-Seoul M2";
-                else if (zone.equals(CentralB_zoneid)) zone = "KOR-Central B";
-                else if (zone.equals(CentralA_zoneid)) zone = "KOR-Central A";
-                else if (zone.equals(HA_zoneid)) zone = "KOR-HA";
-                else if (zone.equals(West_zoneid)) zone = "US-West";
+                if (zoneid.equals(Seoul_M_zoneid)) zone = "Seoul-M";
+                else if (zoneid.equals(Seoul_M2_zoneid)) zone = "Seoul-M2";
+                else if (zoneid.equals(CentralB_zoneid)) zone = "Central-B";
+                else if (zoneid.equals(CentralA_zoneid)) zone = "Central-A";
+                else if (zoneid.equals(HA_zoneid)) zone = "HA";
+                else if (zoneid.equals(West_zoneid)) zone = "US-West";
+
 
                 System.out.println(" " + zone);
             }

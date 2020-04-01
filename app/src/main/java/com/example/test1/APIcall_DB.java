@@ -19,7 +19,6 @@ public class APIcall_DB extends APIcall_main {
      **/
     public APIcall_DB(){
         this.baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
-        this.zone = "Seoul-M";
     }
 
     /**
@@ -44,7 +43,7 @@ public class APIcall_DB extends APIcall_main {
 
         TreeMap<String, String> request = new TreeMap<String, String>();
 
-        if(zonename.equals("kr-1")) zone = "Seoul-M2";
+        if(zonename.equals("kr-1")) super.zone = "Seoul-M2";
 
         request = generateRequire(button, request);
 

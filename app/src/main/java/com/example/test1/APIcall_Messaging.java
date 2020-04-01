@@ -17,7 +17,6 @@ public class APIcall_Messaging extends APIcall_main {
      **/
     public APIcall_Messaging(){
         this.baseurl =  "https://api.ucloudbiz.olleh.com/messaging/v1/client/api?";
-        this.zone = "Seoul-M";
     }
 
     /**

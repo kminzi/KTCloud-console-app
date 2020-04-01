@@ -17,7 +17,6 @@ public class APIcall_NAS extends APIcall_main {
      **/
     public APIcall_NAS(){
         this.baseurl =  "https://api.ucloudbiz.olleh.com/nas/v1/client/api?";
-        this.zone = "Seoul-M";
     }
 
     /**
@@ -54,19 +53,19 @@ public class APIcall_NAS extends APIcall_main {
         for (int i = 0; i < parse_response.size(); i++) {
             response = (JSONObject) parse_response.get(i);
 
-            String zone = String.valueOf(response.get("zoneid"));
-            if (zone.equals(Seoul_M_zoneid)) zone = "KOR-Seoul M";
-            else if (zone.equals(Seoul_M2_zoneid)) zone = "KOR-Seoul M2";
-            else if (zone.equals(CentralB_zoneid)) zone = "KOR-Central B";
-            else if (zone.equals(CentralA_zoneid)) zone = "KOR-Central A";
-            else if (zone.equals(HA_zoneid)) zone = "KOR-HA";
-            else if (zone.equals(West_zoneid)) zone = "US-West";
+            String zoneid = String.valueOf(response.get("zoneid"));
+            if (zoneid.equals(Seoul_M_zoneid)) zone = "Seoul-M";
+            else if (zoneid.equals(Seoul_M2_zoneid)) zone = "Seoul-M2";
+            else if (zoneid.equals(CentralB_zoneid)) zone = "Central-B";
+            else if (zoneid.equals(CentralA_zoneid)) zone = "Central-A";
+            else if (zoneid.equals(HA_zoneid)) zone = "HA";
+            else if (zoneid.equals(West_zoneid)) zone = "US-West";
 
             int totalsize = ((int) (((long) response.get("totalsize")) / Math.pow(10, 11))) * 100;
             int usedsize = (int) ((((long) response.get("usedsize")) / Math.pow(10, 9)));
 
             String id = "";
-            if(!zone.equals("KOR-Seoul M2"))id = String.valueOf(response.get("id"));
+            if(!zone.equals("Seoul-M2"))id = String.valueOf(response.get("id"));
             else id=(String)response.get("id");
 
             //이름, 위치, 신청용량, 현재 사용량, 프로토콜

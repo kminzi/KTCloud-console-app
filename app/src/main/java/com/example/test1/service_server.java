@@ -65,7 +65,7 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
         txt_zone = (EditText)findViewById(R.id.txt_server_zone_search);
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
-        txt_zone.setText(API.getZone());
+        txt_zone.setText(api_server.getZone());
 
         //사용자가 입력한 위치, 상태에 따른 서버 목록 가져오기
         new Thread(new Runnable() {

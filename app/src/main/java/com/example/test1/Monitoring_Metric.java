@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
 import org.json.simple.parser.ParseException;
@@ -31,7 +32,11 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Monitoring_Metric extends AppCompatActivity {
     private MetricAdapter adapter;
@@ -39,7 +44,10 @@ public class Monitoring_Metric extends AppCompatActivity {
     final int[] server_num = new int[1];
     String statistic, cycle;
     final Handler handler = new Handler();
+    static ArrayList<String> list_a = new ArrayList<String>();//메트릭 리스트 ArrayList
+    ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList- name, id
     int period;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +72,6 @@ public class Monitoring_Metric extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
                 try {
                     list = apIcall_watch.listServerAt("Seoul-M");//default - m존, running상태
                     server_num[0] = list.size();
@@ -334,28 +341,110 @@ public class Monitoring_Metric extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    /**
-     * @brief 속성 선택 후 메트릭을 그리기 위한 함수, SHOW 버튼 클릭 처리 함수
-     */
-    public void ShowClicked(View v) {
-        final String metricname="";
-        final LineChart lineChart_metric = (LineChart) findViewById(R.id.chart_metric);
+    public static void getList(String s){
+        list_a.add(s);
+        System.out.println(list_a);
+    }
 
-        final String vmname=null, vmid = null;
+    LineChart lineChart_metric;
+
+    public void firstClicked(View v){
+        lineChart_metric = (LineChart) findViewById(R.id.chart_metric);
+        lineChart_metric.invalidate();
+        lineChart_metric.clear();
+        apIcall_watch.setTime(period);//시간 설정
+        apIcall_watch.setPeriod(cycle);
+        apIcall_watch.setStatistics(statistic);
+
+        for(int i=0;i<list_a.size();i++){
+            if(list_a.get(i).contains("-")){
+
+            }else{
+                ShowAllClicked(list_a.get(i));
+            }
+        }
+
+    }
+
+    /**
+     * @brief 속성 선택 후 메트릭을 그리기 위한 함수 - 개별 서버 메트릭
+     */
+//    public void ShowSpecificClicked(View v) {
+//        final String metricname="";
+//        final String vmname=null, vmid = null;
+//
+//        final ArrayList<Entry> entries_metric = new ArrayList<>();
+//        final LineDataSet dataset_metric = new LineDataSet(entries_metric, metricname);
+//        final ArrayList<String> labels_metric = new ArrayList<String>();
+//
+//        new Thread(new Runnable() {
+//            HashMap<String, String> list_metric = new HashMap<String, String>();
+//            Set<String> xlist_metric = new LinkedHashSet<>();
+//            @Override
+//            public void run() {
+//                ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+//                try {
+//                    apIcall_watch.showSpecificServerMetric(vmname, vmid, metricname, statistic, cycle);//메트릭 api호출
+//                    list_metric = apIcall_watch.getInfo(metricname);//그래프 가져오기
+//                    xlist_metric = list_metric.keySet();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } catch (InvalidKeyException e) {
+//                    e.printStackTrace();
+//                } catch (NoSuchAlgorithmException e) {
+//                    e.printStackTrace();
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    handler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Toast.makeText(getApplicationContext(), "그래프를 그릴 수 없습니다", Toast.LENGTH_LONG).show();
+//                        }
+//                    });
+//                }handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {//UI접근
+//                       String xarr_networkin[] = xlist_networkin.toArray(new String[xlist_networkin.size()]);
+//                       for (int i = 0; i < 6; i++) {
+//                            entries_networkin.add(new Entry(Float.parseFloat(list_networkin.get(xarr_networkin[i])), i));
+//                            labels_networkin.add(xarr_networkin[i]);
+//                        }
+//
+//                        LineData data_networkin = new LineData(labels_networkin, dataset_networkin);
+//                        dataset_networkin.setColors(Collections.singletonList(0xFF94D1CA));
+//                        dataset_networkin.setLineWidth(3.5f);
+//                        dataset_networkin.setDrawCubic(true); //선 둥글게 만들기
+//
+//                        lineChart_networkin.setData(data_networkin);
+//                        lineChart_networkin.animateY(2000);
+//
+//                    }
+//                });
+//            }
+//        }).start();
+//    }
+
+
+    /**
+     * @brief 속성 선택 후 메트릭을 그리기 위한 함수 - 모든 서버 메트릭
+     */
+    public void ShowAllClicked(final String metricname) {
         final ArrayList<Entry> entries_metric = new ArrayList<>();
         final LineDataSet dataset_metric = new LineDataSet(entries_metric, metricname);
         final ArrayList<String> labels_metric = new ArrayList<String>();
 
         new Thread(new Runnable() {
+            HashMap<String, String> list_metric = new HashMap<String, String>();
+            Set<String> xlist_metric = new LinkedHashSet<>();
             @Override
             public void run() {
                 ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
                 try {
-                    apIcall_watch.setTime(period);
-                    apIcall_watch.showSpecificServerMetric(vmname, vmid, metricname, statistic, cycle);
-                    list = apIcall_watch.listServerAt("Seoul-M");//default - m존, running상태
-                    server_num[0] = list.size();
-
+                    apIcall_watch.showMetric(metricname);
+                    list_metric = apIcall_watch.getInfo(metricname);
+                    xlist_metric = list_metric.keySet();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InvalidKeyException e) {
@@ -372,11 +461,28 @@ public class Monitoring_Metric extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "그래프를 그릴 수 없습니다", Toast.LENGTH_LONG).show();
                         }
                     });
-                }
+                }handler.post(new Runnable() {
+                    @Override
+                    public void run() {//UI접근
+                        String xarr_metric[] = xlist_metric.toArray(new String[xlist_metric.size()]);
+                        for (int i = 0; i < 6; i++) {
+                            entries_metric.add(new Entry(Float.parseFloat(list_metric.get(xarr_metric[i])), i));
+                            labels_metric.add(xarr_metric[i]);
+                        }
+
+                        LineData data_networkin = new LineData(labels_metric, dataset_metric);
+                        dataset_metric.setColors(Collections.singletonList(0xFF94D1CA));
+                        dataset_metric.setLineWidth(3.5f);
+                        dataset_metric.setDrawCubic(true); //선 둥글게 만들기
+
+                        lineChart_metric.setData(data_networkin);
+                        lineChart_metric.animateY(2000);
+
+                    }
+                });
             }
         }).start();
     }
-
     /**
      * 하단바의 Dashboard 버튼 클릭 처리 함수
      */

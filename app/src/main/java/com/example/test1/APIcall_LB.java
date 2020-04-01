@@ -17,7 +17,6 @@ public class APIcall_LB extends APIcall_main{
      **/
     public APIcall_LB(){
         this.baseurl = "https://api.ucloudbiz.olleh.com/loadbalancer/v1/client/api?";
-        this.zone = "Seoul-M";
     }
 
     /**

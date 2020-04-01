@@ -17,7 +17,6 @@ public class APIcall_Disk extends APIcall_main {
      **/
     public APIcall_Disk(){
         this.baseurl = "https://api.ucloudbiz.olleh.com/server/v1/client/api?";
-        this.zone = "Seoul-M";
     }
     /**
      * @return Disk 이름, 용량, 구분, 위치 등 정보들을 담고 있는 arraylist 출력

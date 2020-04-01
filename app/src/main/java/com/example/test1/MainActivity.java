@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
-    private String apikey = "";
-    private String secretKey = "";
+    private String apikey = "JOS9hA86nxPWylAp9_4ocn22_jMGE2KvvNCbAsaItdxr0c2BgZUnMXDm258b5LB1hAtwGxr8VC7mCd3rKHV-RQ";
+    private String secretKey = "LAoepJDlYXyVUvq9EqXnh2gZjoJcqhq8UQCZA7Pa-sKIrowywzKaygPH_3F0kK0pWGVw_2OrcA7X5yrFapUZQg";
 
     TextView apikeyText, secretkeyText;//사용자가 입력한 값 받아오기위한 변수
     CheckBox checkbox;
@@ -37,29 +37,31 @@ public class MainActivity extends AppCompatActivity {
         //액션바 배경색 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
-        appData = getSharedPreferences("appData", MODE_PRIVATE);
-        load();
-
-        apikeyText = (TextView) findViewById(R.id.txt_user_apikey);
-        secretkeyText = (TextView) findViewById(R.id.txt_user_secretkey);
-        checkbox = (CheckBox) findViewById(R.id.checkbox_auto_login);
+//        appData = getSharedPreferences("appData", MODE_PRIVATE);
+//        load();
+//
+//        apikeyText = (TextView) findViewById(R.id.txt_user_apikey);
+//        secretkeyText = (TextView) findViewById(R.id.txt_user_secretkey);
+//        checkbox = (CheckBox) findViewById(R.id.checkbox_auto_login);
         Button login = (Button) findViewById(R.id.btn_login);
 
-        if (saveLogin) {//자동로그인 선택시
-            apikeyText.setText(apikey);
-            secretkeyText.setText(secretKey);
-            checkbox.setChecked(saveLogin);
-        }
+//        if (saveLogin) {//자동로그인 선택시 - 시연 시 로그인은 생략
+//            apikeyText.setText(apikey);
+//            secretkeyText.setText(secretKey);
+//            checkbox.setChecked(saveLogin);
+//        }
 
         login.setOnClickListener(new View.OnClickListener() {//로그인 버튼 클릭시 처리
             @Override
             public void onClick(View v) {
-                check_key();
+                //check_key();
                 if (login_check == true) {
                     Toast.makeText(getApplicationContext(), "로그인 성공", Toast.LENGTH_LONG).show();
-                    save();
+                    //save();
 //                    apikey = apikeyText.getText().toString().trim();
 //                    secretKey = secretkeyText.getText().toString().trim();
+                    API.setApikey(apikey);
+                    API.setSecretKey(secretKey);
                     Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                     startActivity(intent);
                 } else {

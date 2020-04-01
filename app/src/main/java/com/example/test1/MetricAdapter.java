@@ -36,7 +36,7 @@ public class MetricAdapter extends RecyclerView.Adapter {
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         MessageViewHolder messageViewHolder = ((MessageViewHolder) holder);
 
         messageViewHolder.onBind(listData.get(position), position);
@@ -51,7 +51,11 @@ public class MetricAdapter extends RecyclerView.Adapter {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //set your object's last status
+                TextView name = ((MessageViewHolder) holder).opt;
+                final String name_s = name.getText().toString();
                 objIncome.setSelected();
+                System.out.println(name_s);
+                Monitoring_Metric.getList(name_s);
             }
         });
     }

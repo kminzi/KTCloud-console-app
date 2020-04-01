@@ -25,7 +25,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class APIcall_main extends Application {
 
-    protected String baseurl, zone = null, state = "all";
+    protected String baseurl, state = "all";
+    protected static String zone = "Seoul-M";
     private static String apikey, secretKey;
 
     private static final String TAG = "";//테스트를 위한 변수
@@ -76,7 +77,7 @@ public class APIcall_main extends Application {
      * @brief 사용자의 APIKEY를 리턴하는 함수
      **/
     protected String getZone(){
-        return  this.zone;
+        return  zone;
     }
 
     /**
@@ -85,7 +86,7 @@ public class APIcall_main extends Application {
      **/
     protected void setZone(String z){
 //        if(this.zone.equals(null))this.zone = "Seoul-M";
-        this.zone = z;
+        zone = z;
     }
 
     /**
@@ -312,6 +313,7 @@ public class APIcall_main extends Application {
             case 18: // NAS 조회
                 if(zone.equals("Seoul-M2")) this.baseurl = "https://api.ucloudbiz.olleh.com/nas/v2/client/api?";
                 else this.baseurl = "https://api.ucloudbiz.olleh.com/nas/v1/client/api?";
+
                 request.put("command", "listVolumes" );
                 break;
 
@@ -324,12 +326,14 @@ public class APIcall_main extends Application {
             case 20: // DB 조회
                 if(zone.equals("Seoul-M2")) this.baseurl = "https://api.ucloudbiz.olleh.com/db/v2/client/api?";
                 else this.baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
+
                 request.put("command", "listInstances" );
                 break;
 
             case 21: // DB HA그룹 조회
                 if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/db/v2/client/api?";
                 else baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
+
                 request.put("command", "listHaGroups" );
                 break;
 

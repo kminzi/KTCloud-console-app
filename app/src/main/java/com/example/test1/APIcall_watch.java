@@ -31,11 +31,13 @@ public class APIcall_watch extends APIcall_main {
      **/
     public APIcall_watch() {
         this.baseurl = "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
-        this.zone = "Seoul-M";
     }
-
-    private static HashMap<String, HashMap<String, String>> metricList;
     // metricList의 key에는 "CPUUtilization", "NetworkIn" 등의 Metric명이 들어가고, value에는  각 Metric별 points<timestamp, value>가 들어간다.
+    private static HashMap<String, HashMap<String, String>> metricList;
+
+    // serverMetricList의 key에는 서버 이름이 들어가고, value에는 metricList가 들어간다.
+    private static HashMap<String, HashMap<String, HashMap<String, String>>> serverMetricList;
+
 
     // 알람 발생 시, 해당 알람에 대한 메트릭을 저장하기 위한 map
     // alarmMetricList의 key에는 발생한 알람명이 들어가고, value에는  알람 발생 전후의 points<timestamp, value>가 들어간다.
@@ -102,7 +104,7 @@ public class APIcall_watch extends APIcall_main {
      * @param s 주기
      * @brief 각 상세 그래프의 주기를 설정하기 위한 함수
      */
-    private void setPeriod(String s) {
+    public void setPeriod(String s) {
         period = s;
     }
 
@@ -523,8 +525,11 @@ public class APIcall_watch extends APIcall_main {
         TreeMap<String, String> request = new TreeMap<String, String>();
 
         metricList = new HashMap<String, HashMap<String, String>>();
+        serverMetricList = new  HashMap<String, HashMap<String, HashMap<String, String>>> ();
+
         HashMap<String, String> points = new HashMap<String, String>();
 
+        String serverName = value.substring(0, value.indexOf("("));
 
         request = generateRequire(button, request);
 
@@ -574,6 +579,8 @@ public class APIcall_watch extends APIcall_main {
         }
 
         metricList.put(metricname, points);
+        serverMetricList.put(serverName, metricList);
+
 
     }
 
@@ -678,6 +685,8 @@ public class APIcall_watch extends APIcall_main {
         for (int i = 0; i < parse_alarm.size(); i++) {
             alarm = (JSONObject) parse_alarm.get(i);
 
+            String alarmName = "";
+
 //            System.out.println("#########################################");
 //            System.out.println("알람명: "+  alarm.get("alarmname"));
 
@@ -707,10 +716,15 @@ public class APIcall_watch extends APIcall_main {
             } else {
                 JSONObject dimensionOb = (JSONObject) dimension.get(0);
                 String dimensionName = String.valueOf(dimensionOb.get("name"));
+
                 if (dimensionName.equals("templatename")) namespace = "서버:운영체제별통합";
                 else if (dimensionName.equals("name")) {
                     if (namespace.equals("ucloud/vr")) namespace = "ucloud/vr:name";
-                    else if (namespace.equals("ucloud/server")) namespace = "서버:개별서버메트릭";
+                    else if (namespace.equals("ucloud/server")) {
+                        String dimensionValue = String.valueOf(dimensionOb.get("value"));
+                        alarmName = dimensionValue.substring(0, dimensionValue.indexOf("("));
+                        namespace = "서버:개별서버메트릭";
+                    }
                 } else if (dimensionName.equals("serviceofferingname")) namespace = "서버:스펙별통합";
                 else if (dimensionName.equals("LB")) namespace = "CloudLB:LB";
             }
@@ -772,7 +786,10 @@ public class APIcall_watch extends APIcall_main {
             }
 
             //이름, 상태, 알람 발생 조건, 액션 수행 여부, 수행 액션, 구분
-            list.add(new String[]{(String) alarm.get("alarmname"), state, sr, sy, s, namespace});
+            if(namespace.equals("서버:개별서버메트릭")) list.add(new String[]{(String) alarm.get("alarmname"), state, alarmName+"의 "+sr, sy, s, namespace});
+            else list.add(new String[]{(String) alarm.get("alarmname"), state, sr, sy, s, namespace});
+
+
         }
         return list;
     }

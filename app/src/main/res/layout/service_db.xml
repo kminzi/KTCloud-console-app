@@ -12,14 +12,12 @@
         android:id="@+id/btn_service_at_refresh"
         android:layout_width="24dp"
         android:layout_height="28dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="18dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/recycle"
         android:onClick="onButtonClicked_refresh"
         app:layout_constraintBottom_toBottomOf="@+id/txt_db_zone_search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_auto_zone_search" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/imageView36"
