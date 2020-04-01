@@ -3,6 +3,7 @@ package com.example.test1;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -19,6 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineDataSet;
+
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -32,12 +37,14 @@ public class Monitoring_Metric extends AppCompatActivity {
     private MetricAdapter adapter;
     APIcall_watch apIcall_watch = new APIcall_watch();
     final int[] server_num = new int[1];
+    String statistic, cycle;
+    final Handler handler = new Handler();
+    int period;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.moni_watch_metric);
-        final Handler handler = new Handler();
 
         //액션바 배경색 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
@@ -114,7 +121,6 @@ public class Monitoring_Metric extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 PopupMenu popup = new PopupMenu(getApplicationContext(), v);//v는 클릭된 뷰를 의미
-
                 getMenuInflater().inflate(R.menu.metric_status_menu, popup.getMenu());
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -122,21 +128,27 @@ public class Monitoring_Metric extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.sum:
                                 btn_status.setText("합");
+                                statistic = "Sum";
                                 break;
                             case R.id.max:
                                 btn_status.setText("최대");
+                                statistic = "Maximum";
                                 break;
                             case R.id.min:
                                 btn_status.setText("최소");
+                                statistic = "Minimum";
                                 break;
                             case R.id.sample:
                                 btn_status.setText("샘플 수");
+                                statistic = "SampleCount";
                                 break;
                             case R.id.avg:
                                 btn_status.setText("평균");
+                                statistic = "Average";
                                 break;
                             default:
                                 btn_status.setText("합");
+                                statistic = "Sum";
                                 break;
                         }
                         return false;
@@ -145,6 +157,7 @@ public class Monitoring_Metric extends AppCompatActivity {
                 popup.show();
             }
         });
+
 
         final Button btn_period = (Button) findViewById(R.id.btn_moni_metric_period);
         btn_period.setOnClickListener(new View.OnClickListener() {
@@ -159,27 +172,35 @@ public class Monitoring_Metric extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.m5:
                                 btn_period.setText("5분");
+                                cycle = "5";
                                 break;
                             case R.id.m15:
                                 btn_period.setText("15분");
+                                cycle = "15";
                                 break;
                             case R.id.m30:
                                 btn_period.setText("30분");
+                                cycle = "30";
                                 break;
                             case R.id.h1:
                                 btn_period.setText("1시간");
+                                cycle = "60";
                                 break;
                             case R.id.h6:
                                 btn_period.setText("6시간");
+                                cycle = "360";
                                 break;
                             case R.id.h12:
                                 btn_period.setText("12시간");
+                                cycle = "720";
                                 break;
                             case R.id.d1:
                                 btn_period.setText("1일");
+                                cycle = "1440";
                                 break;
                             default:
                                 btn_period.setText("5분");
+                                cycle = "5";
                                 break;
                         }
                         return false;
@@ -188,6 +209,7 @@ public class Monitoring_Metric extends AppCompatActivity {
                 popup.show();
             }
         });
+
 
         final Button btn_cycle = (Button) findViewById(R.id.btn__moni_metric_cycle);
         btn_cycle.setOnClickListener(new View.OnClickListener() {
@@ -202,24 +224,31 @@ public class Monitoring_Metric extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.h1:
                                 btn_cycle.setText("1시간");
+                                period = 1;
                                 break;
                             case R.id.h3:
                                 btn_cycle.setText("3시간");
+                                period = 3;
                                 break;
                             case R.id.h6:
                                 btn_cycle.setText("6시간");
+                                period = 6;
                                 break;
                             case R.id.h12:
                                 btn_cycle.setText("12시간");
+                                period = 12;
                                 break;
                             case R.id.d1:
                                 btn_cycle.setText("1일");
+                                period = 24;
                                 break;
                             case R.id.w1:
                                 btn_cycle.setText("1주일");
+                                period = 168;
                                 break;
                             default:
                                 btn_cycle.setText("1시간");
+                                period = 1;
                                 break;
                         }
                         return false;
@@ -230,13 +259,31 @@ public class Monitoring_Metric extends AppCompatActivity {
         });
     }
 
-//    //액션버튼 메뉴 액션바에 집어 넣기
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu, menu);
-//        return true;
-//    }
 
+    //액션버튼 메뉴 액션바에 집어 넣기
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.techcenter, menu);
+
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.web:
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://cloud.kt.com/portal/portal.notice.html?type="));//문의하기 웹으로 전환
+                startActivity(intent);
+                break;
+            case R.id.tel:
+                String num ="080-2580-005";
+                Intent intent2 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num));//자동 전화하기 화면으로 전환
+                startActivity(intent2);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
     private void init() {
         // recyclerView = server list
         RecyclerView recyclerView = findViewById(R.id.recyclerView_topic_list);
@@ -246,6 +293,15 @@ public class Monitoring_Metric extends AppCompatActivity {
 
         adapter = new MetricAdapter();
         recyclerView.setAdapter(adapter);
+
+        //Average, Sum, SampleCount, Maximum, Minimum
+        statistic = "Sum";
+        //구간 설정(시간단위- 1, 3, 6, 12, 24, 168)
+        period = 1;
+//        apIcall_watch.setTime(period);
+
+        //주기(분단위- 5, 15, 30, 60, 360, 720, 1440)
+        cycle = "5";
     }
 
     private void getData(String [] opt, int num) {
@@ -276,6 +332,49 @@ public class Monitoring_Metric extends AppCompatActivity {
 
         // adapter의 값이 변경되었다는 것을 알려줍니다.
         adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * @brief 속성 선택 후 메트릭을 그리기 위한 함수, SHOW 버튼 클릭 처리 함수
+     */
+    public void ShowClicked(View v) {
+        final String metricname="";
+        final LineChart lineChart_metric = (LineChart) findViewById(R.id.chart_metric);
+
+        final String vmname=null, vmid = null;
+        final ArrayList<Entry> entries_metric = new ArrayList<>();
+        final LineDataSet dataset_metric = new LineDataSet(entries_metric, metricname);
+        final ArrayList<String> labels_metric = new ArrayList<String>();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+                try {
+                    apIcall_watch.setTime(period);
+                    apIcall_watch.showSpecificServerMetric(vmname, vmid, metricname, statistic, cycle);
+                    list = apIcall_watch.listServerAt("Seoul-M");//default - m존, running상태
+                    server_num[0] = list.size();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "그래프를 그릴 수 없습니다", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
     /**

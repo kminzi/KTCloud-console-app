@@ -31,6 +31,7 @@
         android:ems="10"
         android:hint="Enter API Key"
         android:inputType="textWebPassword"
+        android:text="JOS9hA86nxPWylAp9_4ocn22_jMGE2KvvNCbAsaItdxr0c2BgZUnMXDm258b5LB1hAtwGxr8VC7mCd3rKHV-RQ"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +45,7 @@
         android:ems="10"
         android:hint="Enter Secret Key"
         android:inputType="textPassword"
+        android:text="LAoepJDlYXyVUvq9EqXnh2gZjoJcqhq8UQCZA7Pa-sKIrowywzKaygPH_3F0kK0pWGVw_2OrcA7X5yrFapUZQg"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="@+id/txt_user_apikey"
         app:layout_constraintTop_toBottomOf="@+id/txt_user_apikey" />
@@ -85,8 +87,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="209dp"
-        android:layout_marginRight="209dp"
         android:text="자동로그인"
+        android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_user_secretkey" />
 

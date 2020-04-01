@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 public class APIcall_DB extends APIcall_main {
     /**
@@ -20,10 +21,10 @@ public class APIcall_DB extends APIcall_main {
         this.baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
         this.zone = "Seoul-M";
     }
+
     /**
      * @brief DB 인스턴스의 zone과 인스턴스 id로 Displayname을 받아오는 함수
      * @param zonename displayname을 알기를 원하는 DB 인스턴스의 zone 이름
-     * @param id displayname을 알기를 원하는 DB 인스턴스의 id
      * @return zonename과 id이 일치하는 DB 인스턴스의 displayname, 찾지못했을 경우 "" 반환
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
@@ -31,6 +32,12 @@ public class APIcall_DB extends APIcall_main {
      * @throws ParseException
      **/
     private String getDisplaynameById(String zonename, String instanceids) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+        try{
+            TimeUnit.MILLISECONDS.sleep(500);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         String displayname = "";
 
         int button = 20;

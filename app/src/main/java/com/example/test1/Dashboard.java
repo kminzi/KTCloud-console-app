@@ -181,44 +181,30 @@ public class Dashboard extends AppCompatActivity {
         }).start();
     }
 
-    /**
-     * 상단바 techcenter아이콘 클릭 처리 함수
-     * @param v
-     */
-    @SuppressLint("RestrictedApi")
-    public void TechcenterClicked(View v) {
-        MenuBuilder menuBuilder =new MenuBuilder(this);
-        MenuInflater inflater = new MenuInflater(this);
-        inflater.inflate(R.menu.techcenter, menuBuilder);
-        Context wrapper = new ContextThemeWrapper(this, R.style.popupTheme1);
-        MenuPopupHelper optionsMenu = new MenuPopupHelper(wrapper, menuBuilder, v);
-        optionsMenu.setForceShowIcon(true);
 
-        menuBuilder.setCallback(new MenuBuilder.Callback() {
-            @Override
-            public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.web:
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://cloud.kt.com/portal/portal.notice.html?type="));//문의하기 웹으로 전환
-                        startActivity(intent);
-                        break;
-                    case R.id.tel:
-                        String num ="080-2580-005";
-                        Intent intent2 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num));//자동 전화하기 화면으로 전환
-                        startActivity(intent2);
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-            }
+    //액션버튼 메뉴 액션바에 집어 넣기
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.techcenter, menu);
 
-            @Override
-            public void onMenuModeChange(MenuBuilder menu) {
+        return true;
+    }
 
-            }
-        });
-        optionsMenu.show();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.web:
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://cloud.kt.com/portal/portal.notice.html?type="));//문의하기 웹으로 전환
+                startActivity(intent);
+                break;
+            case R.id.tel:
+                String num ="080-2580-005";
+                Intent intent2 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num));//자동 전화하기 화면으로 전환
+                startActivity(intent2);
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     /**

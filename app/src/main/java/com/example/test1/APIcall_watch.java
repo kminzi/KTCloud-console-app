@@ -26,12 +26,11 @@ public class APIcall_watch extends APIcall_main {
     private static String unit = "Bytes";
 //    private static String statevalue = "ALL"; // 출력할 알람 상태 저장 변수
 
-
     /**
      * @brief APIcall_watch 클래스의 생성자
      **/
-    public APIcall_watch(){
-        this.baseurl =  "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
+    public APIcall_watch() {
+        this.baseurl = "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
         this.zone = "Seoul-M";
     }
 
@@ -86,24 +85,24 @@ public class APIcall_watch extends APIcall_main {
     }
 
 
-    public void setStatistics(String s){
+    public void setStatistics(String s) {
         statistics = s;
     }
 
     /**
      * @brief section 값을 구간으로, 현재 시간 및 통계 시작 시간을 설정하기 위한 함수
      **/
-    private void setTime(int section) {
+    public void setTime(int section) {
         ZonedDateTime currDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         endtime = currDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
         starttime = currDateTime.minusHours(section).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
     }
 
     /**
-     * @brief 각 상세 그래프의 주기를 설정하기 위한 함수
      * @param s 주기
+     * @brief 각 상세 그래프의 주기를 설정하기 위한 함수
      */
-    private void setPeriod(String s){
+    private void setPeriod(String s) {
         period = s;
     }
 
@@ -508,26 +507,20 @@ public class APIcall_watch extends APIcall_main {
     }
 
     /**
-     * @param metricname  조회하길 원하는 metricname
-     * @param displayname 조회하길 원하는 특정 서버의 displayname
+     * @param metricname 특정 서버에 대해 조회하길 원하는 metricname
+     * @param value      조회하길 원하는 특정 서버의 displayname(id) 값
      * @throws ParseException
      * @brief 특정 서버의 지정 메트릭 통계를 위한 함수
      **/
-    public void showMetric(String metricname, String displayname) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public void showMetric(String metricname, String value) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 6;
 
-        // 먼저 displayname에 해당하는 name과 value값을 받아옴
+        // 먼저 displayname에 해당하는 value값을 받아옴
 
         setValue();
 
         TreeMap<String, String> request = new TreeMap<String, String>();
-        String zoneid = getZoneByDisplayname(displayname);
-        String value = displayname + "(" + getIdByDisplayname(zoneid, displayname) + ")";
-
-        request.clear();
-
-        // displayname에 해당하는 getMetricStatistics api url 생성 시작
 
         metricList = new HashMap<String, HashMap<String, String>>();
         HashMap<String, String> points = new HashMap<String, String>();
@@ -544,7 +537,7 @@ public class APIcall_watch extends APIcall_main {
         request.put("endtime", endtime);
         request.put("starttime", starttime);
         request.put("period", period);
-        request.put("unit", "Percent");
+
         if (metricname.equals("CPUUtilization")) request.put("unit", "Percent");
         else request.put("unit", "Bytes");
 
@@ -571,6 +564,13 @@ public class APIcall_watch extends APIcall_main {
             metric = (JSONObject) parse_metricstatistics.get(i);
 
             points.put(String.valueOf(metric.get("timestamp")).substring(5, 16).replaceAll("T", " "), String.valueOf(metric.get(statistics.toLowerCase())));
+
+            System.out.println("##############################");
+
+            System.out.println("timestamp: " + String.valueOf(metric.get("timestamp")).substring(5, 16).replaceAll("T", " "));
+            System.out.println(statistics + ": " + metric.get(statistics.toLowerCase()));
+            System.out.println("unit: " + metric.get("unit"));
+
         }
 
         metricList.put(metricname, points);
@@ -584,47 +584,35 @@ public class APIcall_watch extends APIcall_main {
      * @throws InvalidKeyException
      * @brief 개별 서버 메트릭 조회 시, 선택된 서버별 메트릭 조회를 위한 함수
      **/
-    public void showSpecificServerMetric() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public void showSpecificServerMetric(String displayname, String id, String metric, String parm1, String parm2) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
 
-        Scanner sc = new Scanner(System.in);
+        statistics = parm1;
+        period = parm2;
 
-        System.out.print("메트릭 조회할 vm 이름 입력: ");
-
-        String displayname = sc.next();
-
-        while (displayname != "9999") { // 9999 입력 시 종료
-
-
-            System.out.print(displayname + " 조회할 메트릭(CPUUtilization, NetworkIn, NetworkOut, DiskReadBytes, DiskWriteBytes, MemoryInternalFree, MemoryTarget): ");
-            String metric = sc.next();
-
-            switch (metric) {
-                case "CPUUtilization":
-                    showMetric("CPUUtilization", displayname);
-                    break;
-                case "NetworkIn":
-                    showMetric("NetworkIn", displayname);
-                    break;
-                case "NetworkOut":
-                    showMetric("NetworkOut", displayname);
-                    break;
-                case "DiskReadBytes":
-                    showMetric("DiskReadBytes", displayname);
-                    break;
-                case "DiskWriteBytes":
-                    showMetric("DiskWriteBytes", displayname);
-                    break;
-                case "MemoryInternalFree":
-                    showMetric("MemoryInternalFree", displayname);
-                    break;
-                case "MemoryTarget":
-                    showMetric("MemoryTarget", displayname);
-                    break;
-            }
-
-            displayname = sc.next();
+        String value = displayname + "(" + id + ")";
+        switch (metric) {
+            case "CPUUtilization":
+                showMetric("CPUUtilization", value);
+                break;
+            case "NetworkIn":
+                showMetric("NetworkIn", value);
+                break;
+            case "NetworkOut":
+                showMetric("NetworkOut", value);
+                break;
+            case "DiskReadBytes":
+                showMetric("DiskReadBytes", value);
+                break;
+            case "DiskWriteBytes":
+                showMetric("DiskWriteBytes", value);
+                break;
+            case "MemoryInternalFree":
+                showMetric("MemoryInternalFree", value);
+                break;
+            case "MemoryTarget":
+                showMetric("MemoryTarget", value);
+                break;
         }
-
     }
 
     /**
@@ -742,45 +730,45 @@ public class APIcall_watch extends APIcall_main {
 
             String s = "";
 //            System.out.print("액션 종류: " );
-            for(int k=0; k < alarmaction.size(); k++) {
+            for (int k = 0; k < alarmaction.size(); k++) {
                 String alarmactionStr = String.valueOf(alarmaction.get(k));
                 String endpoint = "";
 
-                if(alarmactionStr.substring(0,3).contains("010")) endpoint="sms";
-                else if(alarmactionStr.contains("@"))  endpoint="email";
-                else if(alarmactionStr.contains("urn"))  endpoint="messaging";
+                if (alarmactionStr.substring(0, 3).contains("010")) endpoint = "sms";
+                else if (alarmactionStr.contains("@")) endpoint = "email";
+                else if (alarmactionStr.contains("urn")) endpoint = "messaging";
 
-                s = "[알람 발생] "+ "[" + endpoint + "]" + " [" + alarmactionStr + "]";
+                s = "[알람 발생] " + "[" + endpoint + "]" + " [" + alarmactionStr + "]";
             }
 
             insufficientdataactions = (JSONObject) alarm.get("insufficientdataactions");
             insufficientdataaction = (JSONArray) insufficientdataactions.get("insufficientdataaction");
 
 
-            for(int k=0; k < insufficientdataaction.size(); k++) {
+            for (int k = 0; k < insufficientdataaction.size(); k++) {
                 String alarmactionStr = String.valueOf(insufficientdataaction.get(k));
                 String endpoint = "";
 
-                if(alarmactionStr.substring(0,3).contains("010")) endpoint="sms";
-                else if(alarmactionStr.contains("@"))  endpoint="email";
-                else if(alarmactionStr.contains("urn"))  endpoint="messaging";
+                if (alarmactionStr.substring(0, 3).contains("010")) endpoint = "sms";
+                else if (alarmactionStr.contains("@")) endpoint = "email";
+                else if (alarmactionStr.contains("urn")) endpoint = "messaging";
 
-                s = "[데이터 부족] "+ "[" + endpoint + "]" + " [" + alarmactionStr + "]";
+                s = "[데이터 부족] " + "[" + endpoint + "]" + " [" + alarmactionStr + "]";
             }
 
             okactions = (JSONObject) alarm.get("okactions");
             okaction = (JSONArray) okactions.get("okaction");
 
 
-            for(int k=0; k < okaction.size(); k++) {
+            for (int k = 0; k < okaction.size(); k++) {
                 String alarmactionStr = String.valueOf(okaction.get(k));
                 String endpoint = "";
 
-                if(alarmactionStr.substring(0,3).contains("010")) endpoint="sms";
-                else if(alarmactionStr.contains("@"))  endpoint="email";
-                else if(alarmactionStr.contains("urn"))  endpoint="messaging";
+                if (alarmactionStr.substring(0, 3).contains("010")) endpoint = "sms";
+                else if (alarmactionStr.contains("@")) endpoint = "email";
+                else if (alarmactionStr.contains("urn")) endpoint = "messaging";
 
-                s= "[안정] "+ "[" + endpoint + "]" + " [" + alarmactionStr + "]";
+                s = "[안정] " + "[" + endpoint + "]" + " [" + alarmactionStr + "]";
             }
 
             //이름, 상태, 알람 발생 조건, 액션 수행 여부, 수행 액션, 구분
@@ -870,7 +858,7 @@ public class APIcall_watch extends APIcall_main {
         JSONObject alarm;
 
         for (int i = 0; i < parse_alarm.size(); i++) {
-            String tmp ="";
+            String tmp = "";
             alarm = (JSONObject) parse_alarm.get(i);
 
             String state = String.valueOf(alarm.get("statevalue"));

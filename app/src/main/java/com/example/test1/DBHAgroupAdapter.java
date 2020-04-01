@@ -55,13 +55,14 @@ public class DBHAgroupAdapter extends RecyclerView.Adapter {
         final String slaveid = ((MessageViewHolder) holder).slaveid;
         final String groupid = ((MessageViewHolder) holder).groupid;
         final String masterstatus = ((MessageViewHolder) holder).masterstatus;
-        String slavestatus = ((MessageViewHolder) holder).slavestatus;
+        final String slavestatus = ((MessageViewHolder) holder).slavestatus;
         final String[] sec_id = new String[1];
+
 
         prom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-
+                System.out.println(masterstatus + "   " + slavestatus);
                 if(masterstatus.equals("secondary")) sec_id[0] =masterid;
                 else sec_id[0] =slaveid;
 
@@ -175,8 +176,8 @@ public class DBHAgroupAdapter extends RecyclerView.Adapter {
             groupid = data.getHagroupId();
             slaveid = data.getSlaveId();
             masterid = data.getMasterId();
-            slavestatus = data.getSlaveStatus();
-            masterstatus = data.getMasterStatus();
+            slavestatus = data.getSlaveFebricStatus();
+            masterstatus = data.getMasterFebricStatus();
 
             changeVisibility(selectedItems.get(position));
 

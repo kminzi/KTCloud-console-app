@@ -19,7 +19,6 @@ public class APIcall_server extends APIcall_main {
      **/
     public APIcall_server(){
         this.baseurl =  "https://api.ucloudbiz.olleh.com/server/v1/client/api?";
-        this.zone = "Seoul-M";
     }
 
 

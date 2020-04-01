@@ -14,6 +14,7 @@
         android:layout_height="28dp"
         android:layout_marginEnd="18dp"
         android:background="@drawable/recycle"
+        android:onClick="onButtonClicked_refresh"
         app:layout_constraintBottom_toBottomOf="@+id/btn_auto_zone_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_auto_zone_search" />

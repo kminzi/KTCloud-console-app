@@ -176,6 +176,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="디스크 현재 상태 받아오기"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="@+id/txt_disk_state_back"
             app:layout_constraintStart_toEndOf="@+id/txt_disk_state_back"
             app:layout_constraintTop_toTopOf="@+id/txt_disk_state_back" />
@@ -185,6 +186,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(EX) 20GB"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="@+id/txt_disk_size_back"
             app:layout_constraintStart_toEndOf="@+id/txt_disk_size_back"
             app:layout_constraintTop_toBottomOf="@+id/txt_disk_state_back" />
@@ -194,6 +196,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="YYYY-MM-DD 받아오기"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="@+id/txt_disk_date_back"
             app:layout_constraintStart_toEndOf="@+id/txt_disk_date_back"
             app:layout_constraintTop_toTopOf="@+id/txt_disk_date_back" />
@@ -203,6 +206,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="적용서버명 받아오기"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="@+id/txt_disk_server_back"
             app:layout_constraintStart_toEndOf="@+id/txt_disk_server_back"
             app:layout_constraintTop_toTopOf="@+id/txt_disk_server_back" />
@@ -212,6 +216,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="디스크 구분 받아오기"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="@+id/txt_disk_type_back"
             app:layout_constraintStart_toEndOf="@+id/txt_disk_type_back"
             app:layout_constraintTop_toTopOf="@+id/txt_disk_type_back" />
@@ -221,6 +226,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Zone 위치 받아오기"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="@+id/txt_disk_zone_back"
             app:layout_constraintStart_toEndOf="@+id/txt_disk_zone_back"
             app:layout_constraintTop_toTopOf="@+id/txt_disk_zone_back" />

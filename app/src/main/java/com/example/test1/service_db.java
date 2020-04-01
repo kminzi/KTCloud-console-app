@@ -8,9 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -385,6 +387,30 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
         DBHAgroupAdapter.notifyDataSetChanged();
     }
 
+    //액션버튼 메뉴 액션바에 집어 넣기
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.techcenter, menu);
+
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.web:
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://cloud.kt.com/portal/portal.notice.html?type="));//문의하기 웹으로 전환
+                startActivity(intent);
+                break;
+            case R.id.tel:
+                String num ="080-2580-005";
+                Intent intent2 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num));//자동 전화하기 화면으로 전환
+                startActivity(intent2);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
     /**
      * @brief 새로고침 버튼 클릭 처리 함수
      * @param v

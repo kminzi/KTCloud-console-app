@@ -25,7 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class APIcall_main extends Application {
 
-    protected String baseurl, zone = "", state = "all";
+    protected String baseurl, zone = null, state = "all";
     private static String apikey, secretKey;
 
     private static final String TAG = "";//테스트를 위한 변수
@@ -84,6 +84,7 @@ public class APIcall_main extends Application {
      * @param z 설정하길 원하는 zone 문자열
      **/
     protected void setZone(String z){
+//        if(this.zone.equals(null))this.zone = "Seoul-M";
         this.zone = z;
     }
 
