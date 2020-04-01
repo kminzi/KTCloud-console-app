@@ -327,15 +327,21 @@ public class APIcall_main extends Application {
                 break;
 
             case 21: // DB HA그룹 조회
-                if(zone.equals("Seoul-M2")) this.baseurl = "https://api.ucloudbiz.olleh.com/db/v2/client/api?";
-                else this.baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/db/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
                 request.put("command", "listHaGroups" );
                 break;
 
-            case 22: // 복제 그룹의 슬레이브의 수를 변경
-                if(zone.equals("Seoul-M2")) this.baseurl = "https://api.ucloudbiz.olleh.com/db/v2/client/api?";
-                else this.baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
-                request.put("command", "updateHaGroupSlaveCount" );
+            case 22: // DB 이중화 프로모션
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/db/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
+                request.put("command", "updateHaPromote" );
+                break;
+
+            case 23: // 오토 스케일링 그룹 메트릭의 수집을 중지 (Autoscaling 목표 vm 수 조절에 선행되어야함????)
+                if(zone.equals("Seoul-M2")) baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v2/client/api?";
+                else baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v1/client/api?";
+                request.put("command", "disableMetricsCollection" );
                 break;
 
             default:

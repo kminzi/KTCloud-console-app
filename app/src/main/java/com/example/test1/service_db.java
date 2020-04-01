@@ -33,7 +33,6 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
     private DBHAgroupAdapter DBHAgroupAdapter;
     RecyclerView recyclerView;
 
-
     private List<DBData> dbData;
     private List<DBHAgroupData> dbHAgroupData;
 
@@ -43,9 +42,7 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
     private RadioGroup Rgroup_category;
     private RadioButton Rbnt_all, Rbnt_hagroup;
 
-    //   APIcall_main API = (APIcall_main) getApplication();
     APIcall_DB api_db = new APIcall_DB();
-
     final int[] list_size = new int[2];
 
     @Override
@@ -198,6 +195,9 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
                         final String []slaveName = new String[100];
                         final String []slaveStatus = new String[100];
                         final String []slaveFebricStatus = new String[100];
+                        final String []slaveid = new String[100];
+                        final String []masterid = new String[100];
+                        final String []groupid = new String[100];
 
 
                         new Thread(new Runnable() {
@@ -231,6 +231,7 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
                                     public void run() {//UI접근
                                         for (int i = 0; i < list_ha.size(); i++) {//이름, 아이디, slave 갯수, 위치, master이름, master 상태, slave 이름, slave 상태
                                             hagroupname[i] = list_ha.get(i)[0];
+                                            groupid[i] = list_ha.get(i)[1];
                                             slavecount[i] = list_ha.get(i)[2];
                                             zone[i] = list_ha.get(i)[3];
                                             masterName[i] = list_ha.get(i)[4];
@@ -239,9 +240,11 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
                                             slaveName[i] = list_ha.get(i)[6] ;
                                             slaveStatus[i] = list_ha.get(i)[7];
                                             slaveFebricStatus[i] = list_ha.get(i)[9];
+                                            masterid[i] = list_ha.get(i)[10];
+                                            slaveid[i] = list_ha.get(i)[11];
                                         }
 
-                                        getData_service_db_hagroup(hagroupname, slavecount, zone, masterName, masterStatus, masterFebricStatus, slaveName, slaveStatus, slaveFebricStatus);
+                                        getData_service_db_hagroup(hagroupname, slavecount, zone, masterName, masterStatus, masterFebricStatus, slaveName, slaveStatus, slaveFebricStatus,groupid,masterid,slaveid);
                                     }
                                 });
                             }
@@ -331,7 +334,10 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
     }
 
 
-    private void getData_service_db_hagroup(String[] hagroupname, String[] slavecount, String[] zone, String[] masterName, String[] masterStatus, String[] masterFebricStatus, String[] slaveName, String[] slaveStatus, String[] slaveFebricStatus) {
+    private void getData_service_db_hagroup(String[] hagroupname, String[] slavecount, String[] zone, String[] masterName,
+                                            String[] masterStatus, String[] masterFebricStatus, String[] slaveName,
+                                            String[] slaveStatus, String[] slaveFebricStatus, String[] groupid,
+                                            String[] masterid, String[] slaveid) {
         // 임의의 데이터입니다.
 
         List<String> listHAgroupName = Arrays.asList(hagroupname);
@@ -343,6 +349,9 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
         List<String> listSlaveName = Arrays.asList(slaveName);
         List<String> listSlaveStatus = Arrays.asList(slaveStatus);
         List<String> listSlaveFebricStatus = Arrays.asList(slaveFebricStatus);
+        List<String> listgroupid = Arrays.asList(groupid);
+        List<String> listmasterid = Arrays.asList(masterid);
+        List<String> listslaveid = Arrays.asList(slaveid);
 
         Integer [] tmp = new Integer[list_size[1]];
         for(int i = 0; i < tmp.length; i++) {
@@ -364,6 +373,9 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
             dbHAgroupData.setSlaveName(listSlaveName.get(i));
             dbHAgroupData.setSlaveStatus(listSlaveStatus.get(i));
             dbHAgroupData.setSlaveFebricStatus(listSlaveFebricStatus.get(i));
+            dbHAgroupData.setHagroupId(listgroupid.get(i));
+            dbHAgroupData.setMasterId(listmasterid.get(i));
+            dbHAgroupData.setSlaveId(listslaveid.get(i));
 
             // 각 값이 들어간 data를 adapter에 추가합니다.
             DBHAgroupAdapter.addItem(dbHAgroupData);

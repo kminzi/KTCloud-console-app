@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -19,33 +20,39 @@ public class APIcall_DB extends APIcall_main {
         this.baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
         this.zone = "Seoul-M";
     }
-
     /**
      * @brief DB 인스턴스의 zone과 인스턴스 id로 Displayname을 받아오는 함수
      * @param zonename displayname을 알기를 원하는 DB 인스턴스의 zone 이름
      * @param id displayname을 알기를 원하는 DB 인스턴스의 id
-     * @return zonename과 id이 일치하는 DB 인스턴스의 displayname, 찾지못했을 경우 "알수없음" 반환
+     * @return zonename과 id이 일치하는 DB 인스턴스의 displayname, 찾지못했을 경우 "" 반환
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      * @throws IOException
      * @throws ParseException
      **/
-    private String getDisplaynameById(String zonename, String id) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
-        String displayname = "알수없음";
+    private String getDisplaynameById(String zonename, String instanceids) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+        String displayname = "";
 
         int button = 20;
 
         TreeMap<String, String> request = new TreeMap<String, String>();
 
-        if(zonename.equals("kr-1")) setZone("Seoul-M2");
+        if(zonename.equals("kr-1")) zone = "Seoul-M2";
 
         request = generateRequire(button, request);
 
         request.put("response", "json");
         request.put("apiKey", getApikey());
-        request.put("instanceids", id);
+        request.put("instanceids", instanceids);
 
         String req_message = generateReq(request);
+
+        String[] instanceidArr = instanceids.split(",");
+
+		/*
+		System.out.println("Request Message is...");
+		System.out.println(req_message);
+		 */
 
         JSONObject obj =  readJsonFromUrl(req_message);
 
@@ -53,13 +60,33 @@ public class APIcall_DB extends APIcall_main {
 
         // 조회된 DB 인스턴스가 존재할 경우에만 검색
         if(parse_listinstancesresponse.size() > 0 ) {
+
             JSONObject parse_listinstancelist= (JSONObject) parse_listinstancesresponse.get("instancelist");
+
             JSONArray parse_instance = (JSONArray) parse_listinstancelist.get("instance");
-            JSONObject instance =  (JSONObject) parse_instance.get(0);
-            displayname = String.valueOf(instance.get("instancename"));
+
+            JSONObject instance;
+
+            for(int i=0; i < instanceidArr.length; i++) {
+
+                for(int j=0; j < parse_instance.size(); j++) {
+                    instance = (JSONObject) parse_instance.get(j);
+
+                    if(instanceidArr[i].equals(instance.get("instanceid"))) {
+
+                        if(i != 0) displayname =  displayname + "," + String.valueOf(instance.get("instancename"));
+                        else displayname += String.valueOf(instance.get("instancename"));
+                    }
+                }
+            }
+
         }
+
+
         return displayname;
+
     }
+
     /**
      * @throws ParseException
      * @return Database의 이름, 상태, DB상태(보류), 용량, 생성일, 종속장치, 위치를 가지는 arraylist
@@ -135,14 +162,18 @@ public class APIcall_DB extends APIcall_main {
         JSONObject parse_hagrouplist= (JSONObject) parse_listhagroupsresponse.get("hagrouplist");
 
         JSONArray parse_hagroup = (JSONArray) parse_hagrouplist.get("hagroup");
+        ArrayList<String[]> list = new ArrayList<String[]>();
 
         JSONObject hagroup;
         JSONObject master;
 
-        ArrayList<String[]> list = new ArrayList<String[]>();
-
         for(int i = 0 ; i < parse_hagroup.size(); i++) {
             hagroup = (JSONObject) parse_hagroup.get(i);
+
+            // HA 그룹 내의 마스터, 슬레이브 정보 저장
+            String[] instanceStatusArr = new String[ Integer.parseInt(String.valueOf(hagroup.get("slavecount")))+1 ];
+            String[] instanceFebricStatusArr = new String[ Integer.parseInt(String.valueOf(hagroup.get("slavecount")))+1 ];
+            List<String> instanceId = new ArrayList<String>();
 
             System.out.println("HA 그룹명: "+ hagroup.get("hagroupname"));
             System.out.println("HA 그룹 id: "+ hagroup.get("hagroupid"));
@@ -154,32 +185,44 @@ public class APIcall_DB extends APIcall_main {
             String HAzone = String.valueOf(master.get("zone"));
             System.out.println("위치: "+ HAzone);
 
-            String mastername = getDisplaynameById(HAzone, String.valueOf(master.get("instanceid")));
-
-            System.out.println("마스터명: "+ mastername);
-            System.out.println("마스터 상태: "+ master.get("instancestatus"));
+            instanceStatusArr[0] = String.valueOf(master.get("instancestatus"));
+            instanceFebricStatusArr[0] = String.valueOf(master.get("instancefabricstatus"));
+            instanceId.add(String.valueOf(master.get("instanceid")));
 
             JSONObject parse_slavelist = (JSONObject) hagroup.get("slavelist");
             JSONArray parse_slave = (JSONArray) parse_slavelist.get("slave");
-            JSONObject slave = null;
-            String slavename = "";
+            JSONObject slave;
 
             for(int j = 0 ; j < parse_slavelist.size(); j++) {
                 slave = (JSONObject) parse_slave.get(j);
 
-                slavename =  getDisplaynameById(HAzone, String.valueOf(slave.get("instanceid")));
-
-                System.out.println((j+1) + "번 째 슬레이브명: "+ slavename);
-                System.out.println((j+1) + "번 째 슬레이브 상태: "+ slave.get("instancestatus"));
+                instanceStatusArr[j+1] = String.valueOf(slave.get("instancestatus"));
+                instanceFebricStatusArr[j+1] = String.valueOf(slave.get("instancefabricstatus"));
+                instanceId.add(String.valueOf(slave.get("instanceid")));
 
             }
-            //이름, 아이디, slave 갯수, 위치, master이름, master 상태, slave 이름, slave 상태
+            // 마스터, 슬레이브 위치 및 id를 통해 인스턴스 이름을 받아와서 배열에 저장
+            String[] instanceArr = getDisplaynameById(HAzone, String.join(",", instanceId)).split(",");
+
+            System.out.println("master 이름: "+ instanceArr[0]);
+            System.out.println("master id: "+ instanceId.get(0));
+            System.out.println("master 상태: "+ instanceStatusArr[0]);
+            System.out.println("master Febric Status 상태: "+ instanceFebricStatusArr[0]);
+
+            for(int j=1; j<instanceArr.length; j++) {
+                System.out.println(j + "번 째 slave 이름: "+ instanceArr[j]);
+                System.out.println(j + "번 째 slave id: "+ instanceId.get(j));
+                System.out.println(j + "번  slave 상태: "+ instanceStatusArr[j]);
+                System.out.println(j + "번  slave Febric Status 상태: "+ instanceFebricStatusArr[j]);
+            }
+
+            System.out.println();
+            //이름, 아이디, slave 갯수, 위치, master이름, master 상태, slave 이름, slave 상태, master-모드, slave-모드 ,masterid, slaveid
             list.add(new String[]{(String) hagroup.get("hagroupname"),(String)hagroup.get("hagroupid"),
-                    (String)hagroup.get("slavecount"), HAzone, mastername, (String)master.get("instancestatus"),
-                    slavename, (String)slave.get("instancestatus"), (String)master.get("instancefabricstatus"),
-                    (String)slave.get("instancefabricstatus")});
+                    (String)hagroup.get("slavecount"), HAzone, instanceArr[0], instanceStatusArr[0],
+                    instanceArr[1], instanceStatusArr[1], instanceFebricStatusArr[0],
+                    instanceFebricStatusArr[1],instanceId.get(0),instanceId.get(1)});
         }
-//        System.out.println();
         return list;
     }
 

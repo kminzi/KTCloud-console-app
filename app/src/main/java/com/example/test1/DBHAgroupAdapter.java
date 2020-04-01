@@ -73,7 +73,7 @@ public class DBHAgroupAdapter extends RecyclerView.Adapter {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(v.getContext(), s, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(v.getContext(), "적용 성공", Toast.LENGTH_LONG).show();
                                 }
                             });
                         } catch (IOException e) {
