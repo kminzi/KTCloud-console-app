@@ -13,6 +13,14 @@ import java.util.TreeMap;
 
 public class APIcall_NAS extends APIcall_main {
     /**
+     * @brief APIcall_NAS 클래스의 생성자
+     **/
+    public APIcall_NAS(){
+        this.baseurl =  "https://api.ucloudbiz.olleh.com/nas/v1/client/api?";
+        this.zone = "Seoul-M";
+    }
+
+    /**
      * @return 각 NAS의 이름, 위치, 신청용량, 현재 사용량, 프로토콜, id를 담은 ArrayList
      * @throws ParseException
      * @brief NAS 기능에 해당하는, 생성된 NAS 출력을 위한 함수

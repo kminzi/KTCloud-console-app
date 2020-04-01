@@ -72,7 +72,7 @@
         <ImageView
             android:id="@+id/img_service_db_item_back"
             android:layout_width="396dp"
-            android:layout_height="220dp"
+            android:layout_height="180dp"
             android:layout_marginTop="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -219,43 +219,6 @@
             app:layout_constraintStart_toEndOf="@+id/txt_db_zone_back"
             app:layout_constraintTop_toTopOf="@+id/txt_db_zone_back" />
 
-        <TextView
-            android:id="@+id/txt_db_dup_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@null"
-            android:ems="8"
-            android:inputType="textPersonName"
-            android:text="신청용량(GB) 변경 : "
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/txt_db_zone_back"
-            app:layout_constraintTop_toBottomOf="@+id/txt_db_zone_back" />
-
-        <EditText
-            android:id="@+id/txt_db_dup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="9"
-            android:gravity="center"
-            android:inputType="number"
-            android:hint="신청 복제 DB 개수 입력"
-            android:textColor="@color/검회색글자"
-            android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_db_dup_back"
-            app:layout_constraintStart_toEndOf="@+id/txt_db_dup_back"
-            app:layout_constraintTop_toTopOf="@+id/txt_db_dup_back"
-            app:layout_constraintVertical_bias="0.647" />
-
-        <Button
-            android:id="@+id/btn_db_dup"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="@drawable/check"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_db_dup"
-            app:layout_constraintStart_toEndOf="@+id/txt_db_dup"
-            app:layout_constraintTop_toTopOf="@+id/txt_db_dup" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

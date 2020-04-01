@@ -15,6 +15,15 @@ import java.util.TreeMap;
 public class APIcall_server extends APIcall_main {
 
     /**
+     * @brief APIcall_server 클래스의 생성자
+     **/
+    public APIcall_server(){
+        this.baseurl =  "https://api.ucloudbiz.olleh.com/server/v1/client/api?";
+        this.zone = "Seoul-M";
+    }
+
+
+    /**
      * @return
      * @throws ParseException
      * @brief Server 기능에 해당하는, 생성된 VM 정보 출력을 위한 함수

@@ -166,6 +166,10 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
     }
 
 
+    /**
+     * @brief 새로고침 버튼 클릭 처리 함수
+     * @param v
+     */
     public void onButtonClicked_refresh(View v) {
         Intent intent = getIntent();
         finish();

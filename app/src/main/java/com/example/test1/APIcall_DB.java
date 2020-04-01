@@ -13,6 +13,14 @@ import java.util.TreeMap;
 
 public class APIcall_DB extends APIcall_main {
     /**
+     * @brief APIcall_DB 클래스의 생성자
+     **/
+    public APIcall_DB(){
+        this.baseurl = "https://api.ucloudbiz.olleh.com/db/v1/client/api?";
+        this.zone = "Seoul-M";
+    }
+
+    /**
      * @brief DB 인스턴스의 zone과 인스턴스 id로 Displayname을 받아오는 함수
      * @param zonename displayname을 알기를 원하는 DB 인스턴스의 zone 이름
      * @param id displayname을 알기를 원하는 DB 인스턴스의 id
@@ -45,16 +53,11 @@ public class APIcall_DB extends APIcall_main {
 
         // 조회된 DB 인스턴스가 존재할 경우에만 검색
         if(parse_listinstancesresponse.size() > 0 ) {
-
             JSONObject parse_listinstancelist= (JSONObject) parse_listinstancesresponse.get("instancelist");
-
             JSONArray parse_instance = (JSONArray) parse_listinstancelist.get("instance");
-
             JSONObject instance =  (JSONObject) parse_instance.get(0);
-
             displayname = String.valueOf(instance.get("instancename"));
         }
-
         return displayname;
     }
     /**
@@ -107,7 +110,7 @@ public class APIcall_DB extends APIcall_main {
      * @throws ParseException
      * @brief Database 기능에 해당하는, DB의 HA 그룹 정보 출력을 위한 함수
      **/
-    public void listHaGroups() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public ArrayList<String[]> listHaGroups() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 21;
 
@@ -136,6 +139,8 @@ public class APIcall_DB extends APIcall_main {
         JSONObject hagroup;
         JSONObject master;
 
+        ArrayList<String[]> list = new ArrayList<String[]>();
+
         for(int i = 0 ; i < parse_hagroup.size(); i++) {
             hagroup = (JSONObject) parse_hagroup.get(i);
 
@@ -156,20 +161,26 @@ public class APIcall_DB extends APIcall_main {
 
             JSONObject parse_slavelist = (JSONObject) hagroup.get("slavelist");
             JSONArray parse_slave = (JSONArray) parse_slavelist.get("slave");
-            JSONObject slave;
+            JSONObject slave = null;
+            String slavename = "";
 
             for(int j = 0 ; j < parse_slavelist.size(); j++) {
                 slave = (JSONObject) parse_slave.get(j);
 
-                String slavename =  getDisplaynameById(HAzone, String.valueOf(slave.get("instanceid")));
+                slavename =  getDisplaynameById(HAzone, String.valueOf(slave.get("instanceid")));
 
                 System.out.println((j+1) + "번 째 슬레이브명: "+ slavename);
                 System.out.println((j+1) + "번 째 슬레이브 상태: "+ slave.get("instancestatus"));
 
             }
-            System.out.println();
+            //이름, 아이디, slave 갯수, 위치, master이름, master 상태, slave 이름, slave 상태
+            list.add(new String[]{(String) hagroup.get("hagroupname"),(String)hagroup.get("hagroupid"),
+                    (String)hagroup.get("slavecount"), HAzone, mastername, (String)master.get("instancestatus"),
+                    slavename, (String)slave.get("instancestatus"), (String)master.get("instancefabricstatus"),
+                    (String)slave.get("instancefabricstatus")});
         }
-        System.out.println();
+//        System.out.println();
+        return list;
     }
 
     /**
@@ -177,18 +188,9 @@ public class APIcall_DB extends APIcall_main {
      * @brief Database 기능에 해당하는, 복제 그룹의 슬레이브의 수를 변경하기 위한 함수
      **/
 
-    public void updateHaGroupSlaveCount() throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
+    public String updateHaGroupSlaveCount(String hagroupid, String instanceid) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
         int button = 22;
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("슬레이브 수를 변경할 HA 그룹 id 입력: ");
-        String hagroupid = sc.next();
-
-        System.out.print("슬레이브 수 입력(1~2): ");
-        String slavecount = sc.next();
-
 
         TreeMap<String, String> request = new TreeMap<String, String>();
         request = generateRequire(button, request);
@@ -196,7 +198,7 @@ public class APIcall_DB extends APIcall_main {
         request.put("response", "json");
         request.put("apiKey", getApikey());
         request.put("hagroupid", hagroupid);
-        request.put("slavecount", slavecount);
+        request.put("instanceid", instanceid);
 
         String req_message = generateReq(request);
 
@@ -205,20 +207,11 @@ public class APIcall_DB extends APIcall_main {
 
         JSONObject obj =  readJsonFromUrl(req_message);
 
-        JSONObject parse_listinstancesresponse = (JSONObject) obj.get("listinstancesresponse");
+        JSONObject parse_updatehagrouppromoteresponse = (JSONObject) obj.get("updatehagrouppromoteresponse");
 
-        JSONObject parse_listinstancelist= (JSONObject) parse_listinstancesresponse.get("instancelist");
+        String hapromotestatus = String.valueOf(parse_updatehagrouppromoteresponse.get("hapromotestatus"));
 
-        JSONArray parse_instance = (JSONArray) parse_listinstancelist.get("instance");
-
-        JSONObject instance;
-
-        for(int i = 0 ; i < parse_instance.size(); i++) {
-            instance = (JSONObject) parse_instance.get(i);
-
-
-            System.out.println();
-        }
-
+        System.out.print("HA promote status: "+ hapromotestatus);
+        return hapromotestatus;
     }
 }

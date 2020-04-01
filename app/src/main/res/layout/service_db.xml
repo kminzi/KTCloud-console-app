@@ -8,6 +8,19 @@
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/btn_service_at_refresh"
+        android:layout_width="24dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/recycle"
+        android:onClick="onButtonClicked_refresh"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_db_zone_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_auto_zone_search" />
+
     <ImageView
         android:id="@+id/imageView36"
         android:layout_width="412dp"
@@ -60,6 +73,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <RadioGroup
+        android:id="@+id/rgroup_db_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="55dp"
+        android:checkedButton="@id/rbnt_db_all"
+        android:orientation="horizontal"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/rbnt_db_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:text="전체"
+            app:layout_constraintEnd_toStartOf="@+id/rbnt_db_hagroup"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioButton
+            android:id="@+id/rbnt_db_hagroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:text="HA그룹별"
+            app:layout_constraintEnd_toStartOf="@+id/btn_service_at_refresh"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </RadioGroup>
+
     <EditText
         android:id="@+id/txt_db_zone_search"
         android:layout_width="wrap_content"
@@ -73,6 +120,7 @@
         android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@+id/btn_db_zone_search"
         app:layout_constraintTop_toTopOf="@+id/btn_db_zone_search" />
+
     <TextView
         android:id="@+id/txt_monitoring"
         android:layout_width="wrap_content"
@@ -163,7 +211,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_dashboard"
         app:srcCompat="@drawable/service_2" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

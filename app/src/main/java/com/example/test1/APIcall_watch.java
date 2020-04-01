@@ -26,6 +26,15 @@ public class APIcall_watch extends APIcall_main {
     private static String unit = "Bytes";
 //    private static String statevalue = "ALL"; // 출력할 알람 상태 저장 변수
 
+
+    /**
+     * @brief APIcall_watch 클래스의 생성자
+     **/
+    public APIcall_watch(){
+        this.baseurl =  "https://api.ucloudbiz.olleh.com/watch/v1/client/api?";
+        this.zone = "Seoul-M";
+    }
+
     private static HashMap<String, HashMap<String, String>> metricList;
     // metricList의 key에는 "CPUUtilization", "NetworkIn" 등의 Metric명이 들어가고, value에는  각 Metric별 points<timestamp, value>가 들어간다.
 

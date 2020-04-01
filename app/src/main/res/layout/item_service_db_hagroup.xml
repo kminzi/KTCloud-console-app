@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/service_db_hagroup_lay"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@color/colorAccent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lay_service_db_hagroup"
+        android:layout_width="match_parent"
+        android:layout_height="41dp"
+        android:layout_weight="1"
+        android:background="@color/colorAccent"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lay_service_db_hagroup2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_service_db_hagroup"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/db" />
+
+            <TextView
+                android:id="@+id/txt_db_service_hagroupname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginLeft="12dp"
+                android:text="HA그룹 이름 받아오기 (클릭시 하단 관리창)"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toBottomOf="@+id/img_service_db_hagroup"
+                app:layout_constraintStart_toEndOf="@+id/img_service_db_hagroup"
+                app:layout_constraintTop_toTopOf="@+id/img_service_db_hagroup" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/view6"
+        style="@style/Divider"
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryDark" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lay_service_db_hagroup_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/colorAccent"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <ImageView
+            android:id="@+id/img_service_db_hagroup_item_back"
+            android:layout_width="396dp"
+            android:layout_height="220dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@color/회색" />
+
+        <TextView
+            android:id="@+id/txt_db_hagroup_slave_num_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_marginLeft="9dp"
+            android:layout_marginTop="12dp"
+            android:background="@null"
+            android:ems="5"
+            android:inputType="textPersonName"
+            android:text="slave 갯수 : "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/img_service_db_hagroup_item_back"
+            app:layout_constraintTop_toTopOf="@+id/img_service_db_hagroup_item_back" />
+
+        <TextView
+            android:id="@+id/txt_db_hagroup_zone_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@null"
+            android:ems="5"
+            android:inputType="textPersonName"
+            android:text="위치(Zone) : "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/txt_db_hagroup_slave_num_back"
+            app:layout_constraintTop_toBottomOf="@+id/txt_db_hagroup_slave_num_back" />
+
+        <TextView
+            android:id="@+id/txt_service_db_hagroup_slave_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HAgroup의 slave 수 받아오기"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_db_hagroup_slave_num_back"
+            app:layout_constraintStart_toEndOf="@+id/txt_db_hagroup_slave_num_back"
+            app:layout_constraintTop_toTopOf="@+id/txt_db_hagroup_slave_num_back" />
+
+        <TextView
+            android:id="@+id/txt_service_db_hagroup_zone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HAgroup의 위치 받아오기"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_db_hagroup_zone_back"
+            app:layout_constraintStart_toEndOf="@+id/txt_db_hagroup_zone_back"
+            app:layout_constraintTop_toTopOf="@+id/txt_db_hagroup_zone_back" />
+
+
+        <TableLayout
+            android:id="@+id/service_db_hagroup_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+
+            android:background="@color/colorPrimary"
+            android:orientation="vertical"
+            android:padding="4dp"
+            android:stretchColumns="1,2"
+            app:layout_constraintTop_toTopOf="@id/txt_service_db_hagroup_zone">
+
+            <TableRow
+                android:baselineAligned="false"
+                android:fadingEdge="horizontal">
+
+                <TextView
+                    android:layout_margin="3dip"
+                    android:background="@color/colorPrimary"
+                    android:gravity="center"
+                    android:text="  " />
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_master"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="Master" />
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_slave"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="Slave" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_name"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="left"
+                    android:text="이름" />
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_master_name"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="master 이름" />
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_slave1_name"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="slave 이름" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_state"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="left"
+                    android:text="상태" />
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_master_state"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="Master 상태" />
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_slave1_state"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="Slave 상태" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_febricstatus"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="left"
+                    android:text="모드" />
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_master_febricstatus"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="Master 모드" />
+
+                <TextView
+                    android:id="@+id/service_db_hagroup_table_slave1_febricstatus"
+                    android:layout_margin="3dip"
+                    android:background="#FFFFFF"
+                    android:gravity="center"
+                    android:text="Slave 모드" />
+            </TableRow>
+
+            <Button
+                android:id="@+id/service_db_hagroup_table_slave1_promotion"
+                android:layout_width="15dp"
+                android:layout_height="40dp"
+                android:layout_margin="2dip"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:text="promotion" />
+
+        </TableLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>

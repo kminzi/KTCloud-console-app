@@ -6,9 +6,27 @@ class AutoscalingData {
     private String zoneName;
     private String curVM;
     private String tarVM;
+    private String down; // 쿨다운
+    private String time; // 헬스체크 유예시간
     private String minVm;
     private String maxVm;
     private int resId;
+
+    public String getDown() {
+        return down;
+    }
+
+    public void setDown(String down) {
+        this.down = down;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getName() {
         return name;

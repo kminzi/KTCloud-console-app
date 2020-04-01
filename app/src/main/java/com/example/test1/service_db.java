@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import org.json.simple.parser.ParseException;
@@ -28,14 +30,23 @@ import java.util.List;
 public class service_db extends AppCompatActivity implements View.OnClickListener {
 
     private DBAdapter DBAdapter;
+    private DBHAgroupAdapter DBHAgroupAdapter;
+    RecyclerView recyclerView;
+
+
     private List<DBData> dbData;
+    private List<DBHAgroupData> dbHAgroupData;
+
     private Button btn_zone;
     private EditText txt_zone;
 
-    APIcall_main API = (APIcall_main) getApplication();
+    private RadioGroup Rgroup_category;
+    private RadioButton Rbnt_all, Rbnt_hagroup;
+
+    //   APIcall_main API = (APIcall_main) getApplication();
     APIcall_DB api_db = new APIcall_DB();
 
-    final int[] list_size = new int[1];
+    final int[] list_size = new int[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +60,14 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
 
         init();
 
+        btn_zone = (Button)findViewById(R.id.btn_db_zone_search);
+        btn_zone.setOnClickListener(this);
+
+        txt_zone = (EditText)findViewById(R.id.txt_db_zone_search);
+        txt_zone.setFocusable(false);
+        txt_zone.setOnClickListener(this);
+        txt_zone.setText(api_db.getZone());
+
         final String []state = new String[100];
         final String []created = new String[100];
         final String []name = new String[100];
@@ -57,22 +76,12 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
         final String []size = new String[100];
         final String []DBstate = new String[100];
 
-        btn_zone = (Button)findViewById(R.id.btn_db_zone_search);
-        btn_zone.setOnClickListener(this);
-
-        txt_zone = (EditText)findViewById(R.id.txt_db_zone_search);
-        txt_zone.setFocusable(false);
-        txt_zone.setOnClickListener(this);
-        txt_zone.setText(API.getZone());
-
         new Thread(new Runnable() {
             ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
-
             @Override
             public void run() {
                 try {
-//                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
-                    API.setState("all");//default 값 설정 - 추후 UI변경 시 수정
+                    api_db.setState("all");//default 값 설정 - 추후 UI변경 시 수정
                     list = api_db.listMysqlDB();//이름, 상태, DB상태(보류), 용량, 생성일, 종속장치, 위치
                     list_size[0] = list.size();
                 } catch (IOException e) {
@@ -95,6 +104,8 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
                 handler.post(new Runnable() {
                     @Override
                     public void run() {//UI접근
+
+                        System.out.println(list.get(1)[0]);
                         for (int i = 0; i < list.size(); i++) {
                             state[i] = list.get(i)[1];
                             DBstate[i] = list.get(i)[2];
@@ -111,7 +122,138 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
             }
         }).start();
 
+
+
+        Rgroup_category = (RadioGroup) findViewById(R.id.rgroup_db_category);
+        Rbnt_all = (RadioButton) findViewById(R.id.rbnt_db_all);
+        Rbnt_hagroup = (RadioButton) findViewById(R.id.rbnt_db_hagroup);
+
+        Rgroup_category.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+
+            public void onCheckedChanged(RadioGroup rgroup, int rbnt) {
+                // TODO Auto-generated method stub
+                switch (rbnt) {
+                    case R.id.rbnt_db_all:
+                        DBAdapter = new DBAdapter();
+                        recyclerView.setAdapter(DBAdapter);
+
+                        new Thread(new Runnable() {
+                            ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+                            @Override
+                            public void run() {
+                                try {
+//                    API.setZone(zone);//default 값 설정 - UI변경되고 수정해야 함 - 수정 완료
+                                    api_db.setState("all");//default 값 설정 - 추후 UI변경 시 수정
+                                    list = api_db.listMysqlDB();//이름, 상태, DB상태(보류), 용량, 생성일, 종속장치, 위치
+                                    list_size[0] = list.size();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (InvalidKeyException e) {
+                                    e.printStackTrace();
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(), "해당 존에 DB가 없습니다", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {//UI접근
+
+                                        for (int i = 0; i < list.size(); i++) {
+                                            state[i] = list.get(i)[1];
+                                            DBstate[i] = list.get(i)[2];
+                                            created[i] = list.get(i)[4];
+                                            name[i] = list.get(i)[0];
+                                            zoneName[i] = list.get(i)[6];
+                                            dev[i] = list.get(i)[5];
+                                            size[i] = list.get(i)[3];
+                                        }
+
+                                        getData_service_db(state, created, name, zoneName, dev, size, DBstate);
+                                    }
+                                });
+                            }
+                        }).start();
+
+                        break;
+
+                    case R.id.rbnt_db_hagroup:
+                        DBHAgroupAdapter = new DBHAgroupAdapter();
+                        recyclerView.setAdapter(DBHAgroupAdapter);
+
+                        final String []hagroupname = new String[100];
+                        final String []slavecount = new String[100];
+                        final String []zone = new String[100];
+                        final String []masterName = new String[100];
+                        final String []masterStatus = new String[100];
+                        final String []masterFebricStatus = new String[100];
+                        final String []slaveName = new String[100];
+                        final String []slaveStatus = new String[100];
+                        final String []slaveFebricStatus = new String[100];
+
+
+                        new Thread(new Runnable() {
+                            ArrayList<String[]> list_ha = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
+
+                            @Override
+                            public void run() {
+                                try {
+                                    api_db.setState("all");//default 값 설정 - 추후 UI변경 시 수정
+                                    list_ha = api_db.listHaGroups();
+                                    list_size[1] = list_ha.size();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (InvalidKeyException e) {
+                                    e.printStackTrace();
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(), "해당 존에 DB HA가 없습니다", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {//UI접근
+                                        for (int i = 0; i < list_ha.size(); i++) {//이름, 아이디, slave 갯수, 위치, master이름, master 상태, slave 이름, slave 상태
+                                            hagroupname[i] = list_ha.get(i)[0];
+                                            slavecount[i] = list_ha.get(i)[2];
+                                            zone[i] = list_ha.get(i)[3];
+                                            masterName[i] = list_ha.get(i)[4];
+                                            masterStatus[i] = list_ha.get(i)[5];
+                                            masterFebricStatus[i] = list_ha.get(i)[8];
+                                            slaveName[i] = list_ha.get(i)[6] ;
+                                            slaveStatus[i] = list_ha.get(i)[7];
+                                            slaveFebricStatus[i] = list_ha.get(i)[9];
+                                        }
+
+                                        getData_service_db_hagroup(hagroupname, slavecount, zone, masterName, masterStatus, masterFebricStatus, slaveName, slaveStatus, slaveFebricStatus);
+                                    }
+                                });
+                            }
+                        }).start();
+                        break;
+                }
+            }
+        });
+
     }
+
+
     @Override
     public void onClick(View v) {
         if (v == btn_zone || v == txt_zone) {
@@ -124,7 +266,7 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
                         public void onClick(DialogInterface dialog, int which) {
                             EditText tmp = (EditText)findViewById(R.id.txt_db_zone_search);
                             tmp.setText(zoneItem[which]);
-                            API.setZone((String) zoneItem[which]);
+                            api_db.setZone((String) zoneItem[which]);
                             Intent intent = getIntent();
                             finish();
                             startActivity(intent);
@@ -134,18 +276,21 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
                     .show();
         }
 
+
+
     }
 
 
     private void init() {
         // recyclerView = db list
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_service_db);
+        recyclerView = findViewById(R.id.recyclerView_service_db);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         DBAdapter = new DBAdapter();
         recyclerView.setAdapter(DBAdapter);
+
     }
 
 
@@ -185,6 +330,59 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
         DBAdapter.notifyDataSetChanged();
     }
 
+
+    private void getData_service_db_hagroup(String[] hagroupname, String[] slavecount, String[] zone, String[] masterName, String[] masterStatus, String[] masterFebricStatus, String[] slaveName, String[] slaveStatus, String[] slaveFebricStatus) {
+        // 임의의 데이터입니다.
+
+        List<String> listHAgroupName = Arrays.asList(hagroupname);
+        List<String> listSlaveCount = Arrays.asList(slavecount);
+        List<String> listZone = Arrays.asList(zone);
+        List<String> listMasterName = Arrays.asList(masterName);
+        List<String> listMasterStatus = Arrays.asList(masterStatus);
+        List<String> listMasterFebricStatus = Arrays.asList(masterFebricStatus);
+        List<String> listSlaveName = Arrays.asList(slaveName);
+        List<String> listSlaveStatus = Arrays.asList(slaveStatus);
+        List<String> listSlaveFebricStatus = Arrays.asList(slaveFebricStatus);
+
+        Integer [] tmp = new Integer[list_size[1]];
+        for(int i = 0; i < tmp.length; i++) {
+            tmp[i] = R.drawable.db;
+        }
+
+        List<Integer> listResId = Arrays.asList(tmp);
+
+        for (int i = 0; i < list_size[1]; i++) {
+            // 각 List의 값들을 data 객체에 set 해줍니다.
+            DBHAgroupData dbHAgroupData = new DBHAgroupData();
+            dbHAgroupData.setResId(listResId.get(i));
+            dbHAgroupData.setHagroupname(listHAgroupName.get(i));
+            dbHAgroupData.setSlavecount(listSlaveCount.get(i));
+            dbHAgroupData.setZone(listZone.get(i));
+            dbHAgroupData.setMasterName(listMasterName.get(i));
+            dbHAgroupData.setMasterStatus(listMasterStatus.get(i));
+            dbHAgroupData.setMasterFebricStatus(listMasterFebricStatus.get(i));
+            dbHAgroupData.setSlaveName(listSlaveName.get(i));
+            dbHAgroupData.setSlaveStatus(listSlaveStatus.get(i));
+            dbHAgroupData.setSlaveFebricStatus(listSlaveFebricStatus.get(i));
+
+            // 각 값이 들어간 data를 adapter에 추가합니다.
+            DBHAgroupAdapter.addItem(dbHAgroupData);
+        }
+
+        // adapter의 값이 변경되었다는 것을 알려줍니다.
+        DBHAgroupAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * @brief 새로고침 버튼 클릭 처리 함수
+     * @param v
+     */
+    public void onButtonClicked_refresh(View v) {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
+
     /**
      * 하단바의 Dashboard 버튼 클릭 처리 함수
      */
@@ -216,5 +414,14 @@ public class service_db extends AppCompatActivity implements View.OnClickListene
         Intent intent = new Intent(getApplicationContext(), Payment.class);
         startActivity(intent);
     }
+
+    /**
+     * 라디오버튼 클릭 처리 함수
+     */
+    public void RbntClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), this.getClass());
+        startActivity(intent);
+    }
+
 
 }

@@ -13,6 +13,14 @@ import java.util.TreeMap;
 
 public class APIcall_Messaging extends APIcall_main {
     /**
+     * @brief APIcall_Messaging 클래스의 생성자
+     **/
+    public APIcall_Messaging(){
+        this.baseurl =  "https://api.ucloudbiz.olleh.com/messaging/v1/client/api?";
+        this.zone = "Seoul-M";
+    }
+
+    /**
      * @throws ParseException
      * @return 토픽의 토픽 URN, 구독URN, 프로토콜, 설명, 수신처를 담은 arraylist
      * @brief Messaging 기능에 해당하는, 토픽 및 구독 정보 출력을 위한 함수

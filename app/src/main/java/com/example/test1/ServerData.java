@@ -7,6 +7,9 @@ class ServerData {
     private String Zonename;
     private String Osname;
     private String id;
+    private String addr; // 내부주소
+    private String cpu; // CPU/메모리
+    private String disk; // 디스크 용량
     private int resId;
 
     public ServerData() {
@@ -19,6 +22,29 @@ class ServerData {
         this.Name = Name;
         this.Osname = Osname;
         this.Zonename = Zonename;
+    }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
+    }
+    public String getCpu() {
+        return cpu;
+    }
+
+    public void setCpu(String cpu) {
+        this.cpu = cpu;
+    }
+
+    public String getDisk() {
+        return disk;
+    }
+
+    public void setDisk(String disk) {
+        this.disk = disk;
     }
 
     public String getState() {

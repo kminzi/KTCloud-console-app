@@ -32,10 +32,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapter maAdapter;
+public class Monitoring_alarm extends AppCompatActivity {
+    private MoniAlarmAdapter maAdapter;
     private List<MoniAlarmData> maData;
     APIcall_watch apIcall_watch = new APIcall_watch();
     final int[] list_size = new int[1];
+
+    ArrayList<String[]> list = new ArrayList<String[]>();//ALARM 정보를 받아올 ArrayList
+    final String[] state = new String[200];
+    final String[] name =  new String[200];
+    final String[] condi =  new String[200];
+    final String[] onoff =  new String[200];
+    final String[] act =  new String[200];
+    final String[] type =  new String[200];
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,13 +82,6 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
 
         init();
 
-        final String[] state = new String[200];
-        final String[] name =  new String[200];
-        final String[] condi =  new String[200];
-        final String[] onoff =  new String[200];
-        final String[] act =  new String[200];
-        final String[] type =  new String[200];
-
         final String[] statevalue = new String[1];
 
         menu_btn();
@@ -101,7 +104,6 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
             case "데이터 부족" : statevalue[0] = "INSUFFICIENT_DATA"; break;
         }
         new Thread(new Runnable() {
-            ArrayList<String[]> list = new ArrayList<String[]>();//ALARM 정보를 받아올 ArrayList
             ArrayList<String> list_name = new ArrayList<String>();//최근 ALARM 정보를 받아올 ArrayList
 
             HashMap<String, String> list_alarm1 = new HashMap<String, String>();//최근 알람 1에 대한 정보를 위함
@@ -248,6 +250,17 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
         recyclerView.setAdapter(maAdapter);
     }
 
+    public void valInit() {
+        for(int i = 0; i < state.length; i++) {
+            state[i] = null;
+            condi[i] = null;
+            name[i] = null;
+            onoff[i] = null;
+            act[i] = null;
+            type[i] = null;
+        }
+    }
+
     public void menu_btn() {
         // 메트릭 그래프 추가 옵션(주기, 통계 등) 선택
         final Button btn_status = (Button) findViewById(R.id.btn_moni_alarm_status_sel);
@@ -260,19 +273,86 @@ public class Monitoring_alarm extends AppCompatActivity {private MoniAlarmAdapte
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        int idx = 0;
                         switch (item.getItemId()) {
                             case R.id.occ:
+                                //maAdapter.notifyItemRangeRemoved(0, list.size());
+                                maAdapter.rmItem();
+                                valInit();
+                                for (int i = 0; i < list.size(); i++) {
+                                    if(list.get(i)[1].equals("알람 발생")) {
+                                        state[idx] = list.get(i)[1];
+                                        condi[idx] = list.get(i)[2];
+                                        name[idx] = list.get(i)[0];
+                                        onoff[idx] = list.get(i)[3];
+                                        act[idx] = list.get(i)[4];
+                                        type[idx++] = list.get(i)[5];
+                                    }
+                                }
+                                getData(name, state, condi, onoff,act, type);
+                                idx = 0;
+
                                 btn_status.setText("발생");
                                 break;
+
                             case R.id.nor:
+
+                                maAdapter.rmItem();
+                                valInit();
+                                for (int i = 0; i < list.size(); i++) {
+                                    if(list.get(i)[1].equals("안정")) {
+                                        state[idx] = list.get(i)[1];
+                                        condi[idx] = list.get(i)[2];
+                                        name[idx] = list.get(i)[0];
+                                        onoff[idx] = list.get(i)[3];
+                                        act[idx] = list.get(i)[4];
+                                        type[idx++] = list.get(i)[5];
+                                    }
+                                }
+                                getData(name, state, condi, onoff,act, type);
+                                idx = 0;
+
                                 btn_status.setText("안정");
                                 break;
+
                             case R.id.data:
+
+                                maAdapter.rmItem();
+                                valInit();
+                                for (int i = 0; i < list.size(); i++) {
+                                    if(list.get(i)[1].equals("데이터 부족")) {
+                                        state[idx] = list.get(i)[1];
+                                        condi[idx] = list.get(i)[2];
+                                        name[idx] = list.get(i)[0];
+                                        onoff[idx] = list.get(i)[3];
+                                        act[idx] = list.get(i)[4];
+                                        type[idx++] = list.get(i)[5];
+                                    }
+                                }
+                                getData(name, state, condi, onoff,act, type);
+                                idx = 0;
+
                                 btn_status.setText("데이터 부족");
                                 break;
+
                             case R.id.all:
+
+                                maAdapter.rmItem();
+                                valInit();
+                                for (int i = 0; i < list.size(); i++) {
+                                    state[idx] = list.get(i)[1];
+                                    condi[idx] = list.get(i)[2];
+                                    name[idx] = list.get(i)[0];
+                                    onoff[idx] = list.get(i)[3];
+                                    act[idx] = list.get(i)[4];
+                                    type[idx++] = list.get(i)[5];
+                                }
+                                getData(name, state, condi, onoff,act, type);
+                                idx = 0;
+
                                 btn_status.setText("전체");
                                 break;
+
                             default:
                                 btn_status.setText("전체");
                                 break;

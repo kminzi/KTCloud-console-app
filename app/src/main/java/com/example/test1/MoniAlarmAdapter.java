@@ -1,5 +1,6 @@
 package com.example.test1;
 
+
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.SparseBooleanArray;
@@ -52,6 +53,11 @@ public class MoniAlarmAdapter extends RecyclerView.Adapter {
         listData.add(data);
     }
 
+
+    void rmItem() {
+        listData.clear();
+    }
+
     private class MessageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // API로 받아올 값들
@@ -70,7 +76,6 @@ public class MoniAlarmAdapter extends RecyclerView.Adapter {
 
         // 포지션
         private int position;
-
 
         public MessageViewHolder(View view) {
             super(view);
@@ -94,6 +99,7 @@ public class MoniAlarmAdapter extends RecyclerView.Adapter {
             state.setText(data.getState());
             onoff.setText(data.getOnoff());
             condi.setText(data.getCondi());
+            condi.setSelected(true);
             act.setText(data.getAct());
             type.setText(data.getType());
 
@@ -136,7 +142,7 @@ public class MoniAlarmAdapter extends RecyclerView.Adapter {
          */
         private void changeVisibility(final boolean isExpanded) {
             // height 값을 dp로 지정해서 넣고싶으면 아래 소스를 이용
-            int dpValue = 148;
+            int dpValue = 164;
             float d = mContext.getResources().getDisplayMetrics().density;
             int height = (int) (dpValue * d);
 

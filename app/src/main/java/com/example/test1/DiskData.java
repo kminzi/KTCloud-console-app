@@ -4,6 +4,7 @@ class DiskData {
     private String State;
     private String Created;
     private String Name;
+    private String type; // 구분명
     private String Zonename;
     private String Server;
     private String Size;
@@ -12,7 +13,13 @@ class DiskData {
     public DiskData() {
 
     }
+    public String getType() {
+        return type;
+    }
 
+    public void setType(String type) {
+        this.type = type;
+    }
     public String getState() {
         return State;
     }

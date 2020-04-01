@@ -14,7 +14,8 @@ import java.util.TreeMap;
 public class APIcall_Autoscaling extends APIcall_main {
 
     public APIcall_Autoscaling(){
-        baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v2/client/api?";
+        this.baseurl = "https://api.ucloudbiz.olleh.com/autoscaling/v2/client/api?";
+        this.zone = "Seoul-M";
     }
 
     /**
