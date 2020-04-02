@@ -384,7 +384,7 @@ public class Monitoring_Metric extends AppCompatActivity {
 //            public void run() {
 //                ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
 //                try {
-//                    apIcall_watch.showSpecificServerMetric(vmname, vmid, metricname, statistic, cycle);//메트릭 api호출
+//                    apIcall_watch.showSpecificServerMetric(vmname, vmid, metricname);//메트릭 api호출
 //                    list_metric = apIcall_watch.getInfo(metricname);//그래프 가져오기
 //                    xlist_metric = list_metric.keySet();
 //                } catch (IOException e) {

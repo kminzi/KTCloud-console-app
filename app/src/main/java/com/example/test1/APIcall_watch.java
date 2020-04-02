@@ -49,6 +49,24 @@ public class APIcall_watch extends APIcall_main {
     // key에는 발생한 알람명이 들어가고, value에는  threshold가 들어간다.
     private static HashMap<String, String> alarmThreshold;
 
+    /**
+     * @brief 원하는 metricname의 그래프를 그리기 위한 정보 리턴
+     * @param metricname
+     * @return
+     */
+    public static HashMap<String, String> getSpecInfo(String servercname, String metricname) {
+        HashMap<String, HashMap<String, String>> tmp_a = new HashMap<String, HashMap<String, String>>();
+        tmp_a = serverMetricList.get(servercname);
+        HashMap<String, String> tmp = new HashMap<String, String>();
+        tmp = tmp_a.get(metricname);
+        return tmp;
+    }
+
+    /**
+     * @brief 원하는 metricname의 그래프를 그리기 위한 정보 리턴
+     * @param metricname
+     * @return
+     */
     public static HashMap<String, String> getInfo(String metricname) {
         HashMap<String, String> tmp = new HashMap<String, String>();
         tmp = metricList.get(metricname);
@@ -347,9 +365,7 @@ public class APIcall_watch extends APIcall_main {
 
             }
         }
-
         return id;
-
     }
 
     /**
@@ -591,11 +607,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws InvalidKeyException
      * @brief 개별 서버 메트릭 조회 시, 선택된 서버별 메트릭 조회를 위한 함수
      **/
-    public void showSpecificServerMetric(String displayname, String id, String metric, String parm1, String parm2) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
-
-        statistics = parm1;
-        period = parm2;
-
+    public void showSpecificServerMetric(String displayname, String id, String metric) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         String value = displayname + "(" + id + ")";
         switch (metric) {
             case "CPUUtilization":
@@ -636,7 +648,6 @@ public class APIcall_watch extends APIcall_main {
         showMetric("DiskReadBytes");
         showMetric("DiskWriteBytes");
         showMetric("MemoryInternalFree");
-
     }
 
     /**
