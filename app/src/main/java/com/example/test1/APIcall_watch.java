@@ -35,8 +35,8 @@ public class APIcall_watch extends APIcall_main {
     // metricList의 key에는 "CPUUtilization", "NetworkIn" 등의 Metric명이 들어가고, value에는  각 Metric별 points<timestamp, value>가 들어간다.
     private static HashMap<String, HashMap<String, String>> metricList;
 
-    // serverMetricList의 key에는 서버 이름이 들어가고, value에는 metricList가 들어간다.
-    private static HashMap<String, HashMap<String, HashMap<String, String>>> serverMetricList;
+    // specificServerMetricList key에는 개별 서버 이름이 들어가고, value에는 metricList가 들어간다.
+    private static HashMap<String, HashMap<String, HashMap<String, String>>> specificServerMetricList;
 
 
     // 알람 발생 시, 해당 알람에 대한 메트릭을 저장하기 위한 map
@@ -56,7 +56,7 @@ public class APIcall_watch extends APIcall_main {
      */
     public static HashMap<String, String> getSpecInfo(String servercname, String metricname) {
         HashMap<String, HashMap<String, String>> tmp_a = new HashMap<String, HashMap<String, String>>();
-        tmp_a = serverMetricList.get(servercname);
+        tmp_a = specificServerMetricList.get(servercname);
         HashMap<String, String> tmp = new HashMap<String, String>();
         tmp = tmp_a.get(metricname);
         return tmp;
@@ -540,8 +540,8 @@ public class APIcall_watch extends APIcall_main {
 
         TreeMap<String, String> request = new TreeMap<String, String>();
 
-        metricList = new HashMap<String, HashMap<String, String>>();
-        serverMetricList = new  HashMap<String, HashMap<String, HashMap<String, String>>> ();
+        HashMap<String, HashMap<String, String>> serverMetricList  = new HashMap<String, HashMap<String, String>>();
+        specificServerMetricList = new  HashMap<String, HashMap<String, HashMap<String, String>>> ();
 
         HashMap<String, String> points = new HashMap<String, String>();
 
@@ -594,8 +594,8 @@ public class APIcall_watch extends APIcall_main {
 
         }
 
-        metricList.put(metricname, points);
-        serverMetricList.put(serverName, metricList);
+        serverMetricList.put(metricname, points);
+        specificServerMetricList.put(serverName, serverMetricList);
 
 
     }

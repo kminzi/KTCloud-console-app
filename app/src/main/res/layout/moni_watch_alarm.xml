@@ -85,105 +85,43 @@
                 app:layout_constraintTop_toBottomOf="@+id/imageView23"
                 app:layout_constraintVertical_bias="0.0">
 
+
                 <TextView
                     android:id="@+id/txt_alarm_first"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="최근알람1"
+                    android:gravity="center_horizontal"
+                    android:text="알람명"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/txt_alarm_third"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="최근알람3"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/lay_alarm_third"
-                    app:layout_constraintTop_toBottomOf="@+id/lay_alarm_fisrst" />
-
-                <TextView
-                    android:id="@+id/txt_alarm_second"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="최근알람2"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lay_alarm_fisrst" />
-
                 <LinearLayout
-                    android:id="@+id/lay_alarm_fisrst"
+                    android:id="@+id/lay_alarm_first"
                     android:layout_width="0dp"
-                    android:layout_height="124dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_height="248dp"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txt_alarm_first">
 
                     <com.github.mikephil.charting.charts.LineChart
                         android:id="@+id/chart_alarm1"
                         android:layout_width="354dp"
-                        android:layout_height="110dp"
+                        android:layout_height="228dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="8dp"
                         app:layout_constraintEnd_toEndOf="@+id/textView5"
                         app:layout_constraintHorizontal_bias="0.024"
                         app:layout_constraintStart_toStartOf="@+id/textView5"
                         app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/lay_alarm_second"
-                    android:layout_width="180dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="4dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_alarm_second">
-
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/chart_alarm2"
-                        android:layout_width="152dp"
-                        android:layout_height="88dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        app:layout_constraintEnd_toEndOf="@+id/textView5"
-                        app:layout_constraintHorizontal_bias="0.024"
-                        app:layout_constraintStart_toStartOf="@+id/textView5"
-                        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/lay_alarm_third"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginTop="4dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/lay_alarm_second"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_alarm_third">
-
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/chart_alarm3"
-                        android:layout_width="158dp"
-                        android:layout_height="89dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        app:layout_constraintEnd_toEndOf="@+id/textView5"
-                        app:layout_constraintHorizontal_bias="0.024" />
-                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
@@ -214,6 +152,53 @@
                 app:layout_constraintBottom_toBottomOf="@+id/imageView23"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioGroup
+                android:id="@+id/rgroup_moni_alarm_order"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:checkedButton="@id/rbnt_moni_alarm_first"
+                android:orientation="horizontal"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RadioButton
+                    android:id="@+id/rbnt_moni_alarm_first"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/검회색글자"
+                    android:text="최근알람1"
+                    app:layout_constraintEnd_toStartOf="@+id/rgroup_moni_alarm"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioButton
+                    android:id="@+id/rbnt_moni_alarm_second"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/검회색글자"
+                    android:text="최근알람2"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_service_at_refresh"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioButton
+                    android:id="@+id/rbnt_moni_alarm_third"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/검회색글자"
+                    android:text="최근알람3"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_service_at_refresh"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </RadioGroup>
 
             <Button
                 android:id="@+id/btn_moni_main_metric"

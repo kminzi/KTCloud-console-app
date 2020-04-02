@@ -44,7 +44,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toTopOf="@+id/bar_bottom"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -57,6 +57,7 @@
                 android:layout_width="0dp"
                 android:layout_height="400dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toTopOf="@+id/bar_alarm"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -106,6 +107,7 @@
                 android:focusableInTouchMode="false"
                 android:gravity="left|center_vertical"
                 android:inputType="textPersonName"
+                android:onClick="AlarmClicked"
                 android:selectAllOnFocus="false"
                 android:text="알람"
                 android:textSize="17sp"
@@ -121,7 +123,6 @@
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/textboxline"
                 android:gravity="center"
-                android:text="@string/금액"
                 app:layout_constraintBottom_toBottomOf="@+id/txt_요금"
                 app:layout_constraintEnd_toEndOf="@+id/txt_요금"
                 app:layout_constraintStart_toStartOf="@+id/txt_요금"
@@ -136,7 +137,6 @@
                 android:layout_marginEnd="24dp"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="요금"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@+id/lay_server"
                 app:layout_constraintEnd_toEndOf="@+id/layout_1"
@@ -193,6 +193,7 @@
                     android:layout_marginStart="40dp"
                     android:background="@drawable/textboxline"
                     android:gravity="center_horizontal"
+                    android:onClick="ServerClicked"
                     android:text="사용 중"
                     app:layout_constraintBottom_toBottomOf="@+id/editText7"
                     app:layout_constraintEnd_toEndOf="@+id/editText7"
@@ -220,6 +221,7 @@
                     android:ems="5"
                     android:gravity="left|center_vertical"
                     android:inputType="textPersonName"
+                    android:onClick="ServerClicked"
                     android:text="서버"
                     android:textSize="18sp"
                     app:layout_constraintStart_toEndOf="@+id/btn_server"
@@ -261,6 +263,7 @@
                     android:layout_marginStart="40dp"
                     android:background="@drawable/textboxline"
                     android:gravity="center_horizontal"
+                    android:onClick="DBClicked"
                     android:text="사용 중"
                     app:layout_constraintBottom_toBottomOf="@+id/editText8"
                     app:layout_constraintEnd_toEndOf="@+id/editText8"
@@ -275,6 +278,7 @@
                     android:ems="7"
                     android:gravity="left|center_vertical"
                     android:inputType="textPersonName"
+                    android:onClick="DBClicked"
                     android:text="DB"
                     android:textSize="18sp"
                     app:layout_constraintStart_toEndOf="@+id/btn_monitoring"
@@ -313,19 +317,21 @@
         android:id="@+id/txt_monitoring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="41dp"
+        android:layout_marginStart="230dp"
+        android:layout_marginTop="41dp"
         android:layout_marginBottom="3dp"
         android:text="MONITORING"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_service" />
+        app:layout_constraintStart_toStartOf="@+id/bar_bottom"
+        app:layout_constraintTop_toTopOf="@+id/bar_bottom" />
 
     <ImageView
         android:id="@+id/img_dashboard"
         android:layout_width="47dp"
         android:layout_height="37dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="25dp"
         android:layout_marginBottom="18dp"
         android:onClick="DashboardClicked"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -337,9 +343,11 @@
         android:layout_width="47dp"
         android:layout_height="36dp"
         android:layout_marginStart="55dp"
+        android:layout_marginEnd="130dp"
         android:layout_marginBottom="18dp"
         android:onClick="MonitoringClicked"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/bar_bottom"
         app:layout_constraintStart_toEndOf="@+id/img_service"
         app:srcCompat="@drawable/ktlogo_monitoring3" />
 
@@ -348,44 +356,52 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="41dp"
         android:layout_marginBottom="3dp"
         android:text="DASHBOARD"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bar_bottom" />
 
     <TextView
         android:id="@+id/txt_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="41dp"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="41dp"
         android:layout_marginBottom="3dp"
         android:text="SERVICE"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_dashboard" />
+        app:layout_constraintStart_toStartOf="@+id/bar_bottom"
+        app:layout_constraintTop_toTopOf="@+id/bar_bottom" />
 
     <TextView
         android:id="@+id/txt_payment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="34dp"
+        android:layout_marginTop="41dp"
+        android:layout_marginEnd="36dp"
         android:layout_marginBottom="3dp"
         android:text="SETTING"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bar_bottom" />
 
     <ImageView
         android:id="@+id/img_payment"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="53dp"
+        android:layout_marginEnd="40dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_monitoirng"
         app:srcCompat="@drawable/payment" />
 
@@ -394,9 +410,11 @@
         android:layout_width="47dp"
         android:layout_height="38dp"
         android:layout_marginStart="55dp"
+        android:layout_marginEnd="225dp"
         android:layout_marginBottom="16dp"
         android:onClick="ServiceClicked"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_dashboard"
         app:srcCompat="@drawable/service_2" />
 

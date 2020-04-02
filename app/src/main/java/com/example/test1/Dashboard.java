@@ -224,6 +224,15 @@ public class Dashboard extends AppCompatActivity {
     }
 
     /**
+     * @brief 알람 텍스트 클릭 처리 함수
+     */
+    public void AlarmClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), Monitoring_alarm.class);
+        intent.putExtra("btn_value", "발생");
+        startActivity(intent);
+    }
+
+    /**
      * 하단바의 Dashboard 버튼 클릭 처리 함수
      */
     public void DashboardClicked(View v) {

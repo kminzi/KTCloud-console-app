@@ -28,6 +28,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class Monitoring_Metric extends AppCompatActivity {
     private MetricAdapter adapter;
@@ -347,23 +349,43 @@ public class Monitoring_Metric extends AppCompatActivity {
     }
 
     LineChart lineChart_metric;
+    ArrayList<LineDataSet> lineDataSet_metric;
+    ArrayList<String> labels_metric;
+    int count, size;
 
     public void firstClicked(View v){
+        count = 0;
         lineChart_metric = (LineChart) findViewById(R.id.chart_metric);
         lineChart_metric.invalidate();
         lineChart_metric.clear();
+
         apIcall_watch.setTime(period);//시간 설정
         apIcall_watch.setPeriod(cycle);
         apIcall_watch.setStatistics(statistic);
+
+        size = list_a.size();
 
         for(int i=0;i<list_a.size();i++){
             if(list_a.get(i).contains("-")){
 
             }else{
-                ShowAllClicked(list_a.get(i));
+                ShowAllClicked(list_a);
             }
         }
+    }
 
+    public void drawgraph(){
+//        boolean n_success = true;
+//        while(n_success){
+//            if(count==size) n_success = false;
+//        }
+        try{
+            TimeUnit.MILLISECONDS.sleep(10000);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        lineChart_metric.setData(new LineData(labels_metric,lineDataSet_metric));
     }
 
     /**
@@ -430,10 +452,12 @@ public class Monitoring_Metric extends AppCompatActivity {
     /**
      * @brief 속성 선택 후 메트릭을 그리기 위한 함수 - 모든 서버 메트릭
      */
-    public void ShowAllClicked(final String metricname) {
+    public void ShowAllClicked(final ArrayList<String> metricname) {//메트릭 이름 리스트
+        final ArrayList<LineDataSet> lineDataSet_metric = new ArrayList<>();
+        final ArrayList<String> labels_metric;
         final ArrayList<Entry> entries_metric = new ArrayList<>();
-        final LineDataSet dataset_metric = new LineDataSet(entries_metric, metricname);
-        final ArrayList<String> labels_metric = new ArrayList<String>();
+        final LineDataSet dataset_metric = new LineDataSet(entries_metric, metricname.get(1));
+        labels_metric = new ArrayList<String>();
 
         new Thread(new Runnable() {
             HashMap<String, String> list_metric = new HashMap<String, String>();
@@ -442,8 +466,8 @@ public class Monitoring_Metric extends AppCompatActivity {
             public void run() {
                 ArrayList<String[]> list = new ArrayList<String[]>();//서버 정보를 받아올 ArrayList
                 try {
-                    apIcall_watch.showMetric(metricname);
-                    list_metric = apIcall_watch.getInfo(metricname);
+                    apIcall_watch.showMetric(metricname.get(1));
+                    list_metric = apIcall_watch.getInfo(metricname.get(1));
                     xlist_metric = list_metric.keySet();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -470,14 +494,14 @@ public class Monitoring_Metric extends AppCompatActivity {
                             labels_metric.add(xarr_metric[i]);
                         }
 
-                        LineData data_networkin = new LineData(labels_metric, dataset_metric);
                         dataset_metric.setColors(Collections.singletonList(0xFF94D1CA));
                         dataset_metric.setLineWidth(3.5f);
                         dataset_metric.setDrawCubic(true); //선 둥글게 만들기
 
-                        lineChart_metric.setData(data_networkin);
+                        lineDataSet_metric.add(dataset_metric);
+                        count++;
                         lineChart_metric.animateY(2000);
-
+                        lineChart_metric.setData(new LineData(labels_metric,lineDataSet_metric));
                     }
                 });
             }

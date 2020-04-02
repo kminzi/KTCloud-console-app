@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,6 +51,9 @@ public class Monitoring_alarm extends AppCompatActivity {
     final String[] act =  new String[200];
     final String[] type =  new String[200];
 
+    private RadioGroup Rgroup_order;
+    private RadioButton Rbnt_first, Rbnt_second, Rbnt_third;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +64,10 @@ public class Monitoring_alarm extends AppCompatActivity {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
 
         final LineChart lineChart_alarm1 = (LineChart) findViewById(R.id.chart_alarm1);
-        final LineChart lineChart_alarm2 = (LineChart) findViewById(R.id.chart_alarm2);
-        final LineChart lineChart_alarm3 = (LineChart) findViewById(R.id.chart_alarm3);
+        final LineChart lineChart_alarm2 = (LineChart) findViewById(R.id.chart_alarm1);
+        final LineChart lineChart_alarm3 = (LineChart) findViewById(R.id.chart_alarm1);
+
+        final TextView alarmname = findViewById(R.id.txt_alarm_first);
 
         final ArrayList<Entry> entries_alarm1 = new ArrayList<>();
         final ArrayList<Entry> entries_alarm1_1 = new ArrayList<>();
@@ -82,6 +90,12 @@ public class Monitoring_alarm extends AppCompatActivity {
         final LineDataSet dataset_alarm3_1 = new LineDataSet(entries_alarm3_1, "threshold");
         final ArrayList<String> labels_alarm3 = new ArrayList<String>();
 
+
+        Rgroup_order = (RadioGroup) findViewById(R.id.rgroup_moni_alarm_order);
+        Rbnt_first = (RadioButton) findViewById(R.id.rbnt_moni_alarm_first);
+        Rbnt_second = (RadioButton) findViewById(R.id.rbnt_moni_alarm_second);
+        Rbnt_third = (RadioButton) findViewById(R.id.rbnt_moni_alarm_third);
+
         init();
 
         final String[] statevalue = new String[1];
@@ -98,13 +112,15 @@ public class Monitoring_alarm extends AppCompatActivity {
         }
         btn_status.setText(value);
 
+        statevalue[0] = value;
+
         //ALL, INSUFFICIENT_DATA, OK, ALARM
-        switch(value){
-            case "전체" : statevalue[0] = "ALL"; break;
-            case "발생" : statevalue[0] = "ALARM"; break;
-            case "안정" : statevalue[0] = "OK"; break;
-            case "데이터 부족" : statevalue[0] = "INSUFFICIENT_DATA"; break;
-        }
+//        switch(value){
+//            case "전체" : statevalue[0] = "ALL"; break;
+//            case "발생" : statevalue[0] = "ALARM"; break;
+//            case "안정" : statevalue[0] = "OK"; break;
+//            case "데이터 부족" : statevalue[0] = "INSUFFICIENT_DATA"; break;
+//        }
         new Thread(new Runnable() {
             ArrayList<String> list_name = new ArrayList<String>();//최근 ALARM 정보를 받아올 ArrayList
 
@@ -138,7 +154,7 @@ public class Monitoring_alarm extends AppCompatActivity {
                     xlist_alarm3 = list_alarm3.keySet();
                     thres_alarm3 = apIcall_watch.getAlarmThresholdInfo(list_name.get(2));
 
-                    list = apIcall_watch.listAlarms(statevalue[0]);
+                    list = apIcall_watch.listAlarms("ALL");
                     list_size[0] = list.size();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -219,13 +235,17 @@ public class Monitoring_alarm extends AppCompatActivity {
                         lineDataSet_alarm3.add(dataset_alarm3_1);
                         lineChart_alarm3.setData(new LineData(labels_alarm3,lineDataSet_alarm3));
 
+                        // 모니터링 메인화면에서 클릭한 알람 상태 변수에 따라 초기 화면 설정
+                        int idx = 0;
                         for (int i = 0; i < list.size(); i++) {
-                            state[i] = list.get(i)[1];
-                            condi[i] = list.get(i)[2];
-                            name[i] = list.get(i)[0];
-                            onoff[i] = list.get(i)[3];
-                            act[i] = list.get(i)[4];
-                            type[i] = list.get(i)[5];
+                            if (list.get(i)[1].equals(statevalue[0]) || statevalue[0].equals("전체")) {
+                                state[idx] = list.get(i)[1];
+                                condi[idx] = list.get(i)[2];
+                                name[idx] = list.get(i)[0];
+                                onoff[idx] = list.get(i)[3];
+                                act[idx] = list.get(i)[4];
+                                type[idx++] = list.get(i)[5];
+                            }
                         }
                         getData(name, state, condi, onoff,act, type);
                     }
@@ -294,7 +314,7 @@ public class Monitoring_alarm extends AppCompatActivity {
                                 getData(name, state, condi, onoff,act, type);
                                 idx = 0;
 
-                                btn_status.setText("발생");
+                                btn_status.setText("알람 발생");
                                 break;
 
                             case R.id.nor:
@@ -458,4 +478,3 @@ public class Monitoring_alarm extends AppCompatActivity {
         startActivity(intent);
     }
 }
-

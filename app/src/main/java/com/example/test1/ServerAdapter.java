@@ -61,6 +61,9 @@ public class ServerAdapter extends RecyclerView.Adapter {
         Button brs = ((MessageViewHolder) holder).buttonRestart;
 
         final String id=((MessageViewHolder) holder).id;
+        TextView name = ((MessageViewHolder) holder).name;
+        final String n = name.getText().toString() + " 서버 정지";
+        final String n1 = name.getText().toString() + " 서버 시작";
 
 
         bs.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +73,15 @@ public class ServerAdapter extends RecyclerView.Adapter {
                     @Override
                     public void run() {
                         try {
-                            if(!state.equals("Stopped")) api_server.stopServer(id);
+                            if(!state.equals("Stopped")) {
+                                api_server.stopServer(id);
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(v.getContext(), n, Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
                             else {
                                 handler.post(new Runnable() {
                                     @Override
@@ -100,7 +111,15 @@ public class ServerAdapter extends RecyclerView.Adapter {
                     @Override
                     public void run() {
                         try {
-                            if(!state.equals("Running")) api_server.startServer(id);
+                            if(!state.equals("Running")){
+                                api_server.startServer(id);
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(v.getContext(), n1, Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
                             else {
                                 handler.post(new Runnable() {
                                     @Override

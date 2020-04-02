@@ -1,5 +1,6 @@
 package com.example.test1;
 
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -59,6 +60,31 @@ public class APIcall_server extends APIcall_main {
             list.add(new String[]{(String) virtualmachine.get("displayname"),
                     s, (String) virtualmachine.get("state"), (String) virtualmachine.get("created"),
                     (String) virtualmachine.get("templatename"), (String)virtualmachine.get("id")});
+        }
+
+
+        if(zone.equals("전체")){
+            this.baseurl = "https://api.ucloudbiz.olleh.com/server/v2/client/api?";
+
+            req_message = generateReq(request);
+
+            obj = readJsonFromUrl(req_message);
+
+            parse_listvirtualmachinesresponse = (JSONObject) obj.get("listvirtualmachinesresponse");
+
+            parse_virtualmachine = (JSONArray) parse_listvirtualmachinesresponse.get("virtualmachine");
+
+            for (int i = 0; i < parse_virtualmachine.size(); i++) {
+                virtualmachine = (JSONObject) parse_virtualmachine.get(i);
+
+                String s = virtualmachine.get("cpunumber").toString() + " vCore";
+
+                //서버명, 스펙, 상태, 생성일시, 운영체제
+                list.add(new String[]{(String) virtualmachine.get("displayname"),
+                        s, (String) virtualmachine.get("state"), (String) virtualmachine.get("created"),
+                        (String) virtualmachine.get("templatename"), (String)virtualmachine.get("id")});
+            }
+
         }
 
         return list;
@@ -128,7 +154,7 @@ public class APIcall_server extends APIcall_main {
     /**
      * @throws ParseException
      * @brief Server 기능에 해당하는, VM을 재시작하기 위한 함수
-     * @param num 정지시키고자 하는 서버의 view내 상대적 위치
+     * @param id 정지시키고자 하는 서버의 id
      **/
     public void rebootServer(String id) throws IOException, InvalidKeyException, NoSuchAlgorithmException, ParseException {
 
@@ -158,4 +184,3 @@ public class APIcall_server extends APIcall_main {
 
     }
 }
-
