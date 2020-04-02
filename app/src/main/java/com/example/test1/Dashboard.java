@@ -41,7 +41,7 @@ public class Dashboard extends AppCompatActivity {
 
     int list_size, list_size_m, list_size_a;
 
-    TextView server_num, db_num;
+    TextView server_num, db_num, server_state, db_state;
     private RecyclerAdapter adapter_s; // 서버용 어답터
     private RecyclerAdapter adapter_m; // 모니터링용 어답터
     private RecyclerAdapter adapter_a; // 알람용 어답터
@@ -51,19 +51,13 @@ public class Dashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
 
-//        ProgressBar progress = (ProgressBar) findViewById(R.id.progressbar);
-//        progress.setMax(100);
-//        progress.setProgress(30);
-//        progress.setSecondaryProgress(70);
-
-
         View buttonlayout = getLayoutInflater().inflate(R.layout.techcenter, null);
         ActionBar ab = getSupportActionBar();
         ab.setCustomView(buttonlayout);
         //ab.setDisplayOptions(ActionBar.Dis);
 
         //액션바 배경색 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF2CBBB6));
 
         init();
 
@@ -79,6 +73,8 @@ public class Dashboard extends AppCompatActivity {
 
         server_num = (TextView) findViewById(R.id.txt_server_number);
         db_num = (TextView) findViewById(R.id.txt_monitoring_number);
+        server_state = (TextView)findViewById(R.id.txt_server_state);
+        db_state = (TextView)findViewById(R.id.txt_db_state);
 
         //dashboard 목록 가져오기
         new Thread(new Runnable() {
@@ -102,13 +98,20 @@ public class Dashboard extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {//UI접근
-                        server_num.setText(list.size() + "개 사용 중");
+                        int stop=0, run=0;
                         for (int i = 0; i < list.size(); i++) {
-                            title_s[i] = list.get(i)[0];
-                            content_s[i] = "스펙 : " + list.get(i)[1] + " 상태 : " + list.get(i)[2];
-                            os_s[i] = list.get(i)[4];
+
+                            if(list.get(i)[2].equals("Stopped"))stop++;
+                            else if(list.get(i)[2].equals("Running"))run++;
+
+//                            title_s[i] = list.get(i)[0];
+//                            content_s[i] = "스펙 : " + list.get(i)[1] + " 상태 : " + list.get(i)[2];
+//                            os_s[i] = list.get(i)[4];
                         }
-                        getData_s(title_s, content_s, os_s);
+                        String tmp = "RUN : " + String.valueOf(run) + " / STOP : " + String.valueOf(stop);
+                        server_num.setText(list.size() + "개 사용 중");
+                        server_state.setText(tmp);
+                        //getData_s(title_s, content_s, os_s);
                     }
                 });
             }
@@ -136,12 +139,18 @@ public class Dashboard extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {//UI접근
+                        int stop=0, run=0;
                         db_num.setText(list_m.size() + "개 사용 중");
                         for (int i = 0; i < list_m.size(); i++) {
+
+                            if(list_m.get(i)[1].equals("Stopped"))stop++;
+                            else if(list_m.get(i)[1].equals("Running"))run++;
                             title_m[i] = list_m.get(i)[0];
                             content_m[i] = "용량 : " + list_m.get(i)[3] + " 상태 : " + list_m.get(i)[1];
                         }
-                        getData_m(title_m, content_m);
+                        String tmp = "RUN : " + String.valueOf(run) + " / STOP : " + String.valueOf(stop);
+                        db_state.setText(tmp);
+                        //getData_m(title_m, content_m);
                     }
                 });
             }
@@ -268,23 +277,23 @@ public class Dashboard extends AppCompatActivity {
 
 
     private void init() {
-        // recyclerView = server list
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_server);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        adapter_s = new RecyclerAdapter();
-        recyclerView.setAdapter(adapter_s);
-
-        // recyclerView2 = monitoring list
-        RecyclerView recyclerView2 = findViewById(R.id.recyclerView_monitoring);
-
-        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
-        recyclerView2.setLayoutManager(linearLayoutManager2);
-
-        adapter_m = new RecyclerAdapter();
-        recyclerView2.setAdapter(adapter_m);
+//        // recyclerView = server list
+//        RecyclerView recyclerView = findViewById(R.id.recyclerView_server);
+//
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//
+//        adapter_s = new RecyclerAdapter();
+//        recyclerView.setAdapter(adapter_s);
+//
+//        // recyclerView2 = monitoring list
+//        RecyclerView recyclerView2 = findViewById(R.id.recyclerView_monitoring);
+//
+//        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
+//        recyclerView2.setLayoutManager(linearLayoutManager2);
+//
+//        adapter_m = new RecyclerAdapter();
+//        recyclerView2.setAdapter(adapter_m);
 
         // recyclerView3 = alarm list
         RecyclerView recyclerView3 = findViewById(R.id.recyclerView_alarm);

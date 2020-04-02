@@ -46,7 +46,8 @@ public class service_lb extends AppCompatActivity implements View.OnClickListene
         final Handler handler = new Handler();
 
         //액션바 배경색 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF2CBBB6));
+
 
         init();
 

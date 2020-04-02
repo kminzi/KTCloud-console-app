@@ -46,7 +46,8 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.service_server);
 
         //액션바 배경색 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF2CBBB6));
+
 
         init();
         list_size=0;

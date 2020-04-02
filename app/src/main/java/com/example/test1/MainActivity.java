@@ -33,9 +33,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, Loading.class);//로딩화면 띄우기
         startActivity(intent);
 
-
         //액션바 배경색 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF2CBBB6));
 
 //        appData = getSharedPreferences("appData", MODE_PRIVATE);
 //        load();

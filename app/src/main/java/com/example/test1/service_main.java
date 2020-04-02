@@ -21,11 +21,12 @@ public class service_main extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.service_main);
-
         //액션바 배경색 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF2CBBB6));
+
 
     }
+
     //액션버튼 메뉴 액션바에 집어 넣기
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -41,7 +42,7 @@ public class service_main extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.tel:
-                String num ="080-2580-005";
+                String num = "080-2580-005";
                 Intent intent2 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num));//자동 전화하기 화면으로 전환
                 startActivity(intent2);
                 break;
@@ -66,6 +67,7 @@ public class service_main extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), service_disk.class);
         startActivity(intent);
     }
+
     /**
      * @brief 메뉴 중 LoadBalancer 버튼 클릭 처리 함수
      */
@@ -73,6 +75,7 @@ public class service_main extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), service_lb.class);
         startActivity(intent);
     }
+
     /**
      * @brief 메뉴 중 autoscaling 버튼 클릭 처리 함수
      */
@@ -80,6 +83,7 @@ public class service_main extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), service_autoscaling.class);
         startActivity(intent);
     }
+
     /**
      * @brief 메뉴 중 DB 버튼 클릭 처리 함수
      */
@@ -87,6 +91,7 @@ public class service_main extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), service_db.class);
         startActivity(intent);
     }
+
     /**
      * @brief 메뉴 중 NAS 버튼 클릭 처리 함수
      */

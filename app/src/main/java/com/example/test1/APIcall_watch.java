@@ -24,7 +24,7 @@ public class APIcall_watch extends APIcall_main {
     private static String namespace = "ucloud/server";
     private static String period = "60";
     private static String unit = "Bytes";
-//    private static String statevalue = "ALL"; // 출력할 알람 상태 저장 변수
+    private static String statevalue = "ALL"; // 출력할 알람 상태 저장 변수
 
     /**
      * @brief APIcall_watch 클래스의 생성자
@@ -659,7 +659,7 @@ public class APIcall_watch extends APIcall_main {
      * @throws ParseException
      * @brief 메트릭에 대해 사용자 정의 알람 리스트 출력을 위한 함수
      **/
-    public ArrayList<String[]> listAlarms(String statevalue) throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
+    public ArrayList<String[]> listAlarms() throws InvalidKeyException, NoSuchAlgorithmException, ParseException, IOException {
         int button = 7;
 
         //ALL, INSUFFICIENT_DATA, OK, ALARM

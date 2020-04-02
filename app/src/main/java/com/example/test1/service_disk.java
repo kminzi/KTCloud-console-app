@@ -46,7 +46,8 @@ public class service_disk extends AppCompatActivity implements View.OnClickListe
 
 
         //액션바 배경색 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF2CBBB6));
+
 
         init();
 

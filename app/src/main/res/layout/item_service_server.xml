@@ -58,6 +58,7 @@
                 android:layout_height="2dp"
                 android:layout_marginTop="4dp"
                 android:background="@color/colorPrimaryDark"
+                app:layout_constraintEnd_toEndOf="@+id/imageView23"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_service_server" />
@@ -92,7 +93,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/stop"
+            android:background="@drawable/ic_play_circle_outline"
             app:layout_constraintStart_toStartOf="@+id/txt_server_os_back"
             app:layout_constraintTop_toBottomOf="@+id/txt_server_disk_back" />
 
@@ -101,7 +102,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="12dp"
-            android:background="@drawable/start"
+            android:background="@drawable/ic_stop_circle_outline"
             app:layout_constraintStart_toStartOf="@+id/btn_service_server_stop"
             app:layout_constraintTop_toBottomOf="@+id/btn_service_server_stop" />
 
@@ -110,7 +111,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="12dp"
-            android:background="@drawable/restart"
+            android:background="@drawable/ic_refresh_circle_outline"
             app:layout_constraintStart_toStartOf="@+id/btn_service_server_start"
             app:layout_constraintTop_toBottomOf="@+id/btn_service_server_start" />
 
@@ -223,9 +224,9 @@
             android:background="@null"
             android:textSize="15sp"
             android:text="정지"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_service_server_stop"
-            app:layout_constraintStart_toEndOf="@+id/btn_service_server_stop"
-            app:layout_constraintTop_toTopOf="@+id/btn_service_server_stop" />
+            app:layout_constraintBottom_toBottomOf="@+id/btn_service_server_start"
+            app:layout_constraintStart_toEndOf="@+id/btn_service_server_start"
+            app:layout_constraintTop_toTopOf="@+id/btn_service_server_start" />
 
         <Button
             android:id="@+id/btn_service_server_start_txt"
@@ -236,9 +237,9 @@
             android:background="@null"
             android:textSize="15sp"
             android:text="시작"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_service_server_start"
-            app:layout_constraintStart_toEndOf="@+id/btn_service_server_start"
-            app:layout_constraintTop_toTopOf="@+id/btn_service_server_start" />
+            app:layout_constraintBottom_toBottomOf="@+id/btn_service_server_stop"
+            app:layout_constraintStart_toEndOf="@+id/btn_service_server_stop"
+            app:layout_constraintTop_toTopOf="@+id/btn_service_server_stop" />
 
         <Button
             android:id="@+id/btn_service_server_reStart_txt"

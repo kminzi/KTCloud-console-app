@@ -61,7 +61,8 @@ public class Monitoring_alarm extends AppCompatActivity {
         final Handler handler = new Handler();
 
         //액션바 배경색 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF2CBBB6));
+
 
         final LineChart lineChart_alarm1 = (LineChart) findViewById(R.id.chart_alarm1);
         final LineChart lineChart_alarm2 = (LineChart) findViewById(R.id.chart_alarm1);
@@ -112,15 +113,15 @@ public class Monitoring_alarm extends AppCompatActivity {
         }
         btn_status.setText(value);
 
-        statevalue[0] = value;
-
         //ALL, INSUFFICIENT_DATA, OK, ALARM
-//        switch(value){
-//            case "전체" : statevalue[0] = "ALL"; break;
-//            case "발생" : statevalue[0] = "ALARM"; break;
-//            case "안정" : statevalue[0] = "OK"; break;
-//            case "데이터 부족" : statevalue[0] = "INSUFFICIENT_DATA"; break;
-//        }
+        switch(value){
+            case "전체" : statevalue[0] = "전체"; break;
+            case "발생" : statevalue[0] = "알람 발생"; break;
+            case "안정" : statevalue[0] = "안정"; break;
+            case "데이터 부족" : statevalue[0] = "데이터 부족"; break;
+        }
+
+
         new Thread(new Runnable() {
             ArrayList<String> list_name = new ArrayList<String>();//최근 ALARM 정보를 받아올 ArrayList
 
@@ -154,8 +155,10 @@ public class Monitoring_alarm extends AppCompatActivity {
                     xlist_alarm3 = list_alarm3.keySet();
                     thres_alarm3 = apIcall_watch.getAlarmThresholdInfo(list_name.get(2));
 
-                    list = apIcall_watch.listAlarms("ALL");
+                    list = apIcall_watch.listAlarms();
                     list_size[0] = list.size();
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InvalidKeyException e) {
@@ -207,37 +210,13 @@ public class Monitoring_alarm extends AppCompatActivity {
                         lineDataSet_alarm1.add(dataset_alarm1_1);
                         lineChart_alarm1.setData(new LineData(labels_alarm1,lineDataSet_alarm1));
 
-
-                        dataset_alarm2.setColors(Collections.singletonList(0xFF94D1CA)); //그래프 선 색상 변경
-                        dataset_alarm2.setLineWidth(3.5f); //그래프 선 굵기 변경
-                        dataset_alarm2.setDrawCubic(true); //선 둥글게 만들기
-
-                        lineDataSet_alarm2.add(dataset_alarm2);
-                        lineChart_alarm2.animateY(2000);//아래에서 올라오는 애니메이션 적용
-
-                        dataset_alarm2_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
-                        dataset_alarm2_1.setLineWidth(3.5f); //그래프 선 굵기 변경
-                        dataset_alarm2_1.setDrawCubic(true); //선 둥글게 만들기
-                        lineDataSet_alarm2.add(dataset_alarm2_1);
-                        lineChart_alarm2.setData(new LineData(labels_alarm2,lineDataSet_alarm2));
+                        alarmname.setText(list_name.get(0));
 
 
-                        dataset_alarm3.setColors(Collections.singletonList(0xFF94D1CA)); //그래프 선 색상 변경
-                        dataset_alarm3.setLineWidth(3.5f); //그래프 선 굵기 변경
-                        dataset_alarm3.setDrawCubic(true); //선 둥글게 만들기
-
-                        lineDataSet_alarm3.add(dataset_alarm3);
-                        lineChart_alarm3.animateY(2000);//아래에서 올라오는 애니메이션 적용
-
-                        dataset_alarm3_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
-                        dataset_alarm3_1.setLineWidth(3.5f); //그래프 선 굵기 변경
-                        dataset_alarm3_1.setDrawCubic(true); //선 둥글게 만들기
-                        lineDataSet_alarm3.add(dataset_alarm3_1);
-                        lineChart_alarm3.setData(new LineData(labels_alarm3,lineDataSet_alarm3));
-
-                        // 모니터링 메인화면에서 클릭한 알람 상태 변수에 따라 초기 화면 설정
                         int idx = 0;
+                        // 모니터링 메인화면에서 클릭한 알람 상태 변수에 따라 초기 화면 설정
                         for (int i = 0; i < list.size(); i++) {
+
                             if (list.get(i)[1].equals(statevalue[0]) || statevalue[0].equals("전체")) {
                                 state[idx] = list.get(i)[1];
                                 condi[idx] = list.get(i)[2];
@@ -247,7 +226,84 @@ public class Monitoring_alarm extends AppCompatActivity {
                                 type[idx++] = list.get(i)[5];
                             }
                         }
-                        getData(name, state, condi, onoff,act, type);
+
+                        getData(name, state, condi, onoff,act, type, idx);
+
+
+                        Rgroup_order.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+
+                            public void onCheckedChanged(RadioGroup rgroup, int rbnt) {
+                                // TODO Auto-generated method stub
+                                switch (rbnt) {
+                                    case R.id.rbnt_moni_alarm_first:
+
+                                        lineDataSet_alarm1.clear();
+                                        lineChart_alarm1.clear();
+
+                                        alarmname.setText(list_name.get(0));
+
+                                        dataset_alarm1.setColors(Collections.singletonList(0xFF94D1CA)); //그래프 선 색상 변경
+                                        dataset_alarm1.setLineWidth(3.5f); //그래프 선 굵기 변경
+                                        dataset_alarm1.setDrawCubic(true); //선 둥글게 만들기
+
+                                        lineDataSet_alarm1.add(dataset_alarm1);
+                                        lineChart_alarm1.animateY(2000);//아래에서 올라오는 애니메이션 적용
+
+                                        dataset_alarm1_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
+                                        dataset_alarm1_1.setLineWidth(3.5f); //그래프 선 굵기 변경
+                                        dataset_alarm1_1.setDrawCubic(true); //선 둥글게 만들기
+                                        lineDataSet_alarm1.add(dataset_alarm1_1);
+                                        lineChart_alarm1.setData(new LineData(labels_alarm1,lineDataSet_alarm1));
+                                        break;
+
+                                    case R.id.rbnt_moni_alarm_second:
+                                        lineDataSet_alarm2.clear();
+                                        lineChart_alarm2.clear();
+
+                                        alarmname.setText(list_name.get(1));
+
+                                        dataset_alarm2.setColors(Collections.singletonList(0xFF94D1CA)); //그래프 선 색상 변경
+                                        dataset_alarm2.setLineWidth(3.5f); //그래프 선 굵기 변경
+                                        dataset_alarm2.setDrawCubic(true); //선 둥글게 만들기
+
+                                        lineDataSet_alarm2.add(dataset_alarm2);
+                                        lineChart_alarm2.animateY(2000);//아래에서 올라오는 애니메이션 적용
+
+                                        dataset_alarm2_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
+                                        dataset_alarm2_1.setLineWidth(3.5f); //그래프 선 굵기 변경
+                                        dataset_alarm2_1.setDrawCubic(true); //선 둥글게 만들기
+
+                                        lineDataSet_alarm2.add(dataset_alarm2_1);
+                                        lineChart_alarm2.setData(new LineData(labels_alarm2,lineDataSet_alarm2));
+
+
+                                        break;
+
+                                    case R.id.rbnt_moni_alarm_third:
+                                        lineDataSet_alarm3.clear();
+                                        lineChart_alarm3.clear();
+
+                                        alarmname.setText(list_name.get(2));
+
+                                        dataset_alarm3.setColors(Collections.singletonList(0xFF94D1CA)); //그래프 선 색상 변경
+                                        dataset_alarm3.setLineWidth(3.5f); //그래프 선 굵기 변경
+                                        dataset_alarm3.setDrawCubic(true); //선 둥글게 만들기
+
+                                        lineDataSet_alarm3.add(dataset_alarm3);
+                                        lineChart_alarm3.animateY(2000);//아래에서 올라오는 애니메이션 적용
+
+                                        dataset_alarm3_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
+                                        dataset_alarm3_1.setLineWidth(3.5f); //그래프 선 굵기 변경
+                                        dataset_alarm3_1.setDrawCubic(true); //선 둥글게 만들기
+
+                                        lineDataSet_alarm3.add(dataset_alarm3_1);
+                                        lineChart_alarm3.setData(new LineData(labels_alarm3,lineDataSet_alarm3));
+                                        break;
+                                }
+                            }
+                        });
+
+
                     }
                 });
             }
@@ -298,9 +354,11 @@ public class Monitoring_alarm extends AppCompatActivity {
                         int idx = 0;
                         switch (item.getItemId()) {
                             case R.id.occ:
+
                                 //maAdapter.notifyItemRangeRemoved(0, list.size());
                                 maAdapter.rmItem();
                                 valInit();
+
                                 for (int i = 0; i < list.size(); i++) {
                                     if(list.get(i)[1].equals("알람 발생")) {
                                         state[idx] = list.get(i)[1];
@@ -311,10 +369,10 @@ public class Monitoring_alarm extends AppCompatActivity {
                                         type[idx++] = list.get(i)[5];
                                     }
                                 }
-                                getData(name, state, condi, onoff,act, type);
+                                getData(name, state, condi, onoff,act, type, idx);
                                 idx = 0;
 
-                                btn_status.setText("알람 발생");
+                                btn_status.setText("발생");
                                 break;
 
                             case R.id.nor:
@@ -331,7 +389,7 @@ public class Monitoring_alarm extends AppCompatActivity {
                                         type[idx++] = list.get(i)[5];
                                     }
                                 }
-                                getData(name, state, condi, onoff,act, type);
+                                getData(name, state, condi, onoff,act, type, idx);
                                 idx = 0;
 
                                 btn_status.setText("안정");
@@ -351,7 +409,7 @@ public class Monitoring_alarm extends AppCompatActivity {
                                         type[idx++] = list.get(i)[5];
                                     }
                                 }
-                                getData(name, state, condi, onoff,act, type);
+                                getData(name, state, condi, onoff,act, type, idx);
                                 idx = 0;
 
                                 btn_status.setText("데이터 부족");
@@ -369,7 +427,7 @@ public class Monitoring_alarm extends AppCompatActivity {
                                     act[idx] = list.get(i)[4];
                                     type[idx++] = list.get(i)[5];
                                 }
-                                getData(name, state, condi, onoff,act, type);
+                                getData(name, state, condi, onoff,act, type, idx);
                                 idx = 0;
 
                                 btn_status.setText("전체");
@@ -411,7 +469,7 @@ public class Monitoring_alarm extends AppCompatActivity {
         return true;
     }
 
-    private void getData(String[] name, String[] state, String[] condi, String[] onoff, String[] act, String[] type) {
+    private void getData(String[] name, String[] state, String[] condi, String[] onoff, String[] act, String[] type, int listSize) {
         // 임의의 데이터입니다.
         List<String> listName = Arrays.asList(name);
         List<String> listState = Arrays.asList(state);
@@ -427,7 +485,7 @@ public class Monitoring_alarm extends AppCompatActivity {
 
         List<Integer> listResId = Arrays.asList(tmp);
 
-        for (int i = 0; i < list_size[0]; i++) {
+        for (int i = 0; i < listSize; i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             MoniAlarmData data = new MoniAlarmData();
             data.setName(listName.get(i));

@@ -40,7 +40,8 @@ public class Monitoring extends AppCompatActivity {
         setContentView(R.layout.monitoring);
 
         //액션바 배경색 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF2CBBB6));
+
 
         final LineChart lineChart_networkin = (LineChart) findViewById(R.id.chart_networkin);
         final LineChart lineChart_networkout = (LineChart) findViewById(R.id.chart_networkout);

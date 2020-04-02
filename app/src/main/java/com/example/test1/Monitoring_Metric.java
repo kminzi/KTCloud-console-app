@@ -57,7 +57,8 @@ public class Monitoring_Metric extends AppCompatActivity {
         setContentView(R.layout.moni_watch_metric);
 
         //액션바 배경색 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF94D1CA));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF2CBBB6));
+
 
         RadioGroup rg = (RadioGroup) findViewById(R.id.rg_metric_opt);
         final RadioButton all = (RadioButton) findViewById(R.id.rbtn_metric_allServer);
