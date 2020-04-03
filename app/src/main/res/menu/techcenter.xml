@@ -9,13 +9,6 @@
 
     <menu>
         <item
-            android:id="@+id/web"
-            android:icon="@android:drawable/sym_action_chat"
-            android:title="웹으로 문의하기"
-            android:textSize="10sp"
-            app:showAsAction="never">@style/popupTheme1</item>
-
-        <item
             android:id="@+id/tel"
             android:icon="@android:drawable/sym_action_call"
             android:title="상담원 연결"

@@ -59,6 +59,10 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
         final String[] zonename = new String[100];
         final String[] osname = new String[100];
         final String[] id = new String[100];
+        final String[] addr = new String[100];
+        final String[] spec = new String[100];
+        final String[] disk = new String[100];
+
 
         btn_zone = (Button)findViewById(R.id.btn_server_zone_search);
         btn_zone.setOnClickListener(this);
@@ -66,6 +70,7 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
         txt_zone = (EditText)findViewById(R.id.txt_server_zone_search);
         txt_zone.setFocusable(false);
         txt_zone.setOnClickListener(this);
+        api_server.setZone("Seoul-M2");
         txt_zone.setText(api_server.getZone());
 
         //사용자가 입력한 위치, 상태에 따른 서버 목록 가져오기
@@ -97,15 +102,18 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
                 handler.post(new Runnable() {
                     @Override
                     public void run() {//UI접근
-                        for (int i = 0; i < list_size; i++) {
+                        for (int i = 0; i < list_size; i++) {//서버명, 스펙, 상태, 생성일시, 운영체제, 내부주소, CPU/메모리, 디스크
                             state[i] = list.get(i)[2];
                             created[i] = list.get(i)[3] ;
                             name[i] = list.get(i)[0];
                             zonename[i] = api_server.getZone();
                             osname[i] = list.get(i)[4];
                             id[i] = list.get(i)[5];
+                            spec[i] = list.get(i)[1];
+                            addr[i] = list.get(i)[7];
+
                         }
-                        getData_service_s(state, created, name, zonename, osname, id);
+                        getData_service_s(state, created, name, zonename, osname, id, spec, addr, disk);
                     }
                 });
             }
@@ -130,7 +138,8 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
 //        return true;
 //    }
 
-    private void getData_service_s(String[] state, String[] created, String[] name, String[] zonename, String[] osname,String[] id) {
+    private void getData_service_s(String[] state, String[] created, String[] name, String[] zonename,
+                                   String[] osname,String[] id, String[] spec, String[] addr, String[] disk) {
         // 임의의 데이터입니다.
         List<String> listState = Arrays.asList(state);
         List<String> listCreated = Arrays.asList(created);
@@ -138,6 +147,9 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
         List<String> listZone = Arrays.asList(zonename);
         List<String> listOsname = Arrays.asList(osname);
         List<String> listid = Arrays.asList(id);
+        List<String> listspec = Arrays.asList(spec);
+        List<String> listaddr = Arrays.asList(addr);
+        List<String> listdisk = Arrays.asList(disk);
 
         Integer[] tmp = new Integer[list_size];
 
@@ -160,6 +172,9 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
             sData.setOsname(listOsname.get(i));
             sData.setCreated(listCreated.get(i));
             sData.setId(listid.get(i));
+            sData.setAddr(listaddr.get(i));
+            sData.setCpu(listspec.get(i));
+            sData.setDisk(listdisk.get(i));
             // 각 값이 들어간 data를 adapter에 추가합니다.
             svAdpater.addItem(sData);
         }
@@ -178,10 +193,10 @@ public class service_server extends AppCompatActivity implements View.OnClickLis
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.web:
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://cloud.kt.com/portal/portal.notice.html?type="));//문의하기 웹으로 전환
-                startActivity(intent);
-                break;
+//            case R.id.web:
+//                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://cloud.kt.com/portal/portal.notice.html?type="));//문의하기 웹으로 전환
+//                startActivity(intent);
+//                break;
             case R.id.tel:
                 String num ="080-2580-005";
                 Intent intent2 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + num));//자동 전화하기 화면으로 전환

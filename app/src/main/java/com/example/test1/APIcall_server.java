@@ -55,11 +55,13 @@ public class APIcall_server extends APIcall_main {
             virtualmachine = (JSONObject) parse_virtualmachine.get(i);
 
             String s = virtualmachine.get("cpunumber").toString() + " vCore";
+            String l = String.valueOf((long)virtualmachine.get("memory")/1024) + " GB";
 
-            //서버명, 스펙, 상태, 생성일시, 운영체제
+            //서버명, 스펙, 상태, 생성일시, 운영체제, 내부주소, CPU/메모리, 디스크
             list.add(new String[]{(String) virtualmachine.get("displayname"),
                     s, (String) virtualmachine.get("state"), (String) virtualmachine.get("created"),
-                    (String) virtualmachine.get("templatename"), (String)virtualmachine.get("id")});
+                    (String) virtualmachine.get("templatename"), (String)virtualmachine.get("id"),
+                    (String)virtualmachine.get("ipaddress"), l});
         }
 
 

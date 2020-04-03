@@ -31,6 +31,7 @@ class ServerData {
     public void setAddr(String addr) {
         this.addr = addr;
     }
+
     public String getCpu() {
         return cpu;
     }

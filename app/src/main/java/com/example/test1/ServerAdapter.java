@@ -3,6 +3,7 @@ package com.example.test1;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.SparseBooleanArray;
@@ -207,7 +208,7 @@ public class ServerAdapter extends RecyclerView.Adapter {
             item = view.findViewById(R.id.lay_service_server_item);
             addr = view.findViewById(R.id.txt_service_server_addr);
             cpu = view.findViewById(R.id.txt_service_server_cpu);
-            disk = view.findViewById(R.id.txt_service_server_disk);
+//            disk = view.findViewById(R.id.txt_service_server_disk);
 
             buttonStop = view.findViewById(R.id.btn_service_server_stop_txt);
             buttonStart = view.findViewById(R.id.btn_service_server_start_txt);
@@ -221,12 +222,22 @@ public class ServerAdapter extends RecyclerView.Adapter {
 
             imageView.setImageResource(data.getResId());
             name.setText(data.getName());
-            state.setText(data.getState());
+
+            if(data.getState().equals("Stopped")){
+                state.setTextColor(Color.RED);
+                state.setText(data.getState());
+            }else if(data.getState().equals("Running")){
+                state.setTextColor(0xff04B431);
+                state.setText(data.getState());
+            }else{
+                state.setText(data.getState());
+            }
+
             osname.setText(data.getOsname());
             zonename.setText(data.getZonename());
             addr.setText(data.getAddr());
             cpu.setText(data.getCpu());
-            disk.setText(data.getDisk());
+//            disk.setText(data.getDisk());
             created.setText(data.getCreated());
             id = data.getId();
 

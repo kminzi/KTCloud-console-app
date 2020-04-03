@@ -91,10 +91,10 @@
             android:id="@+id/btn_service_server_stop"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/ic_play_circle_outline"
-            app:layout_constraintStart_toStartOf="@+id/txt_server_os_back"
-            app:layout_constraintTop_toBottomOf="@+id/txt_server_disk_back" />
+            app:layout_constraintStart_toStartOf="@+id/txt_server_cpu_back"
+            app:layout_constraintTop_toBottomOf="@+id/txt_server_cpu_back" />
 
         <Button
             android:id="@+id/btn_service_server_start"
@@ -180,7 +180,7 @@
             android:background="@null"
             android:ems="5"
             android:inputType="textPersonName"
-            android:text="내부주소 : "
+            android:text="Memory : "
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/txt_server_zone_back"
@@ -194,25 +194,11 @@
             android:background="@null"
             android:ems="5"
             android:inputType="textPersonName"
-            android:text="CPU/메모리 : "
+            android:text="CPU : "
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/txt_server_addr_back"
             app:layout_constraintTop_toBottomOf="@+id/txt_server_addr_back" />
-
-        <TextView
-            android:id="@+id/txt_server_disk_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="@null"
-            android:ems="5"
-            android:inputType="textPersonName"
-            android:text="디스크 : "
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/txt_server_cpu_back"
-            app:layout_constraintTop_toBottomOf="@+id/txt_server_cpu_back" />
 
         <Button
             android:id="@+id/btn_service_server_stop_txt"
@@ -312,16 +298,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/txt_server_cpu_back"
             app:layout_constraintStart_toEndOf="@+id/txt_server_cpu_back"
             app:layout_constraintTop_toTopOf="@+id/txt_server_cpu_back" />
-
-        <TextView
-            android:id="@+id/txt_service_server_disk"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="디스크 용량 받아오기"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@+id/txt_server_disk_back"
-            app:layout_constraintStart_toEndOf="@+id/txt_server_disk_back"
-            app:layout_constraintTop_toTopOf="@+id/txt_server_disk_back" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
