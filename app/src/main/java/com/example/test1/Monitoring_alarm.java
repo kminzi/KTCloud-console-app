@@ -203,6 +203,7 @@ public class Monitoring_alarm extends AppCompatActivity {
 
                         lineDataSet_alarm1.add(dataset_alarm1);
                         lineChart_alarm1.animateY(2000);//아래에서 올라오는 애니메이션 적용
+                        lineChart_alarm1.setDescription(null);
 
                         dataset_alarm1_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
                         dataset_alarm1_1.setLineWidth(3.5f); //그래프 선 굵기 변경
@@ -248,6 +249,7 @@ public class Monitoring_alarm extends AppCompatActivity {
 
                                         lineDataSet_alarm1.add(dataset_alarm1);
                                         lineChart_alarm1.animateY(2000);//아래에서 올라오는 애니메이션 적용
+                                        lineChart_alarm1.setDescription(null);
 
                                         dataset_alarm1_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
                                         dataset_alarm1_1.setLineWidth(3.5f); //그래프 선 굵기 변경
@@ -268,6 +270,7 @@ public class Monitoring_alarm extends AppCompatActivity {
 
                                         lineDataSet_alarm2.add(dataset_alarm2);
                                         lineChart_alarm2.animateY(2000);//아래에서 올라오는 애니메이션 적용
+                                        lineChart_alarm2.setDescription(null);
 
                                         dataset_alarm2_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
                                         dataset_alarm2_1.setLineWidth(3.5f); //그래프 선 굵기 변경
@@ -291,6 +294,7 @@ public class Monitoring_alarm extends AppCompatActivity {
 
                                         lineDataSet_alarm3.add(dataset_alarm3);
                                         lineChart_alarm3.animateY(2000);//아래에서 올라오는 애니메이션 적용
+                                        lineChart_alarm3.setDescription(null);
 
                                         dataset_alarm3_1.setColors(Collections.singletonList(0xFFff0000)); //그래프 선 색상 변경
                                         dataset_alarm3_1.setLineWidth(3.5f); //그래프 선 굵기 변경

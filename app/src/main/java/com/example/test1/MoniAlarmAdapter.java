@@ -153,7 +153,6 @@ public class MoniAlarmAdapter extends RecyclerView.Adapter {
             va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-
                     int value = (int) animation.getAnimatedValue();
                     item.getLayoutParams().height = value;
                     item.requestLayout();
