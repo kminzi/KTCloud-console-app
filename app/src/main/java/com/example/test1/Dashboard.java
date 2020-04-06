@@ -220,6 +220,7 @@ public class Dashboard extends AppCompatActivity {
      * @brief 서버 아이콘 클릭 처리 함수
      */
     public void ServerClicked(View v) {
+        api_server.setZone("Seoul-M2");
         Intent intent = new Intent(getApplicationContext(), service_server.class);
         startActivity(intent);
     }

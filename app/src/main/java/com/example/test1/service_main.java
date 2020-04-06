@@ -18,6 +18,8 @@ import java.util.List;
 
 public class service_main extends AppCompatActivity {
 
+    APIcall_server api_server = new APIcall_server();
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.service_main);
@@ -56,6 +58,7 @@ public class service_main extends AppCompatActivity {
      * @brief 메뉴 중 서버 버튼 클릭 처리 함수
      */
     public void ServerClicked(View v) {
+        api_server.setZone("Seoul-M2");
         Intent intent = new Intent(getApplicationContext(), service_server.class);
         startActivity(intent);
     }
